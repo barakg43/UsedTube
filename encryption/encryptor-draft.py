@@ -2,12 +2,10 @@ import cv2
 import numpy as np
 import os
 import os
-
-
 class Encryptor:
 
     def __init__(self):
-        self.file_size = 64153731  # for testing purpose
+        self.file_size=64153731
 
     def encrypt(self, file_path, video_path):
         """"
@@ -17,85 +15,123 @@ class Encryptor:
         """
         cover_video = cv2.VideoCapture(video_path)
         # W,H
+        self.file_size=os.path.getsize(file_path)
+        print( self.file_size)
         DIMS, ENCODING, FPS = self.get_cover_video_metadata(cover_video)
-
-        # get bytes amount in the file
-        self.file_size = os.path.getsize(file_path)
-        print(self.file_size)
-        frame_amount_in_cover = int(cover_video.get(cv2.CAP_PROP_FRAME_COUNT))
-        bytes_amount_in_frame = DIMS[0] * DIMS[1]
+        length = int(cover_video.get(cv2.CAP_PROP_FRAME_COUNT))
+        count=0
+        frame_number=1
         with open(file_path, 'rb') as file_to_encrypt:
             output_video = cv2.VideoWriter("../resources/output.mp4", ENCODING, FPS, DIMS)
-            file_bytes_chunk = self.read_binary_chunk_from_file(bytes_amount_in_frame, file_to_encrypt)
-            while (cover_video.isOpened() and file_bytes_chunk):
-                is_success_read_video_frame = self.add_cover_video_frames_to_output_before_file_frame(cover_video,
-                                                                                                      output_video, 24)
-                if not is_success_read_video_frame:
+            file_bytes_chunk = file_to_encrypt.read(DIMS[0] * DIMS[1])
+            while(cover_video.isOpened()and file_bytes_chunk):
+                ret=True
+                # for i in range(24):
+                ret, frame = cover_video.read()
+                # output_video.write(frame)
+                frame_number+=1
+                    # if not ret:
+                        #     break
+                if not ret:
                     break
-                if (file_bytes_chunk):
-                    bytes_as_pixels2d = self.create_2d_image_frame_grayscale(DIMS, file_bytes_chunk)
-                    pixels_as_frame = self.create_3d_frame_from_gray_image(bytes_as_pixels2d)
-                    output_video.write(pixels_as_frame)
-                    file_bytes_chunk = self.read_binary_chunk_from_file(bytes_amount_in_frame, file_to_encrypt)
-            # Closes all the video sources
+                if(file_bytes_chunk):
+                   filled_array = np.zeros(DIMS[1] * DIMS[0])
+                   filled_array[:len(file_bytes_chunk)] = list(file_bytes_chunk)
+                   bytes_as_pixels2d = np.array(filled_array).reshape(DIMS[1], DIMS[0])
+
+                   np.savetxt('frame_%s.csv' % count, bytes_as_pixels2d, fmt="%d", delimiter=",")
+                   pixels_as_frame = np.dstack([bytes_as_pixels2d, bytes_as_pixels2d, bytes_as_pixels2d])
+                   # print('frame number:'+str(frame_number))
+                   output_video.write(pixels_as_frame)
+                   frame_number += 1
+                   # print(pixels_as_frame)
+                   file_bytes_chunk = file_to_encrypt.read(DIMS[0] * DIMS[1])
+                   count+=1
             cover_video.release()
             output_video.release()
+            # Closes all the frames
             cv2.destroyAllWindows()
+            print("number of file frame:"+str(count))
+            # print(frame)
+            # create a frame based on the file's binary
 
-    def create_3d_frame_from_gray_image(self, bytes_as_pixels2d):
-        pixels_as_frame = np.dstack([bytes_as_pixels2d, bytes_as_pixels2d, bytes_as_pixels2d])
-        return pixels_as_frame
 
-    def create_2d_image_frame_grayscale(self, DIMS, file_bytes_chunk):
-        filled_array = np.zeros(DIMS[1] * DIMS[0])
-        filled_array[:len(file_bytes_chunk)] = list(file_bytes_chunk)
-        bytes_as_pixels2d = np.array(filled_array).reshape(DIMS[1], DIMS[0])
-        return bytes_as_pixels2d
 
-    def read_binary_chunk_from_file(self, max_bytes_to_read, file_to_encrypt):
-        file_bytes_chunk = file_to_encrypt.read(max_bytes_to_read)
-        return file_bytes_chunk
 
-    def add_cover_video_frames_to_output_before_file_frame(self, cover_video, output_video, frame_amount):
-        for i in range(frame_amount):
-            ret, frame = cover_video.read()
-            if not ret:  # can't read more video frame to output video
-                break
-            output_video.write(frame)
-        return ret
+            print(6)
+    # def read_video(self,cap):
+    #     if (cap.isOpened() == False):
+    #         print("Error opening video stream or file")
+    #
+    #     # Read until video is completed
+    #     frame_num = 0
+    #     while (cap.isOpened()):
+    #         # Capture frame-by-frame
+    #         ret, frame = cap.read()
+    #         # print(frame_num)
+    #         if ret == True:
+    #
+    #             # Display the resulting frame
+    #             processed_frame = single_frame_processor(frame)
+    #             result_video.write(processed_frame)
+    #             cv2.imshow("frame_string", processed_frame)
+    #             frame_num += 1
+    #             drawProgressBar(frame_num / length)
+    #             # # Press Q on keyboard to  exit
+    #             if cv2.waitKey(1) & 0xFF == ord('q'):
+    #                 break
+    #
+    #         # Break the loop
+    #         else:
+    #             break
+    #
+    #     # When everything done, release the video capture object
+    #     cap.release()
+    #     result_video.release()
+    #
+    #     # Closes all the frames
+    #     cv2.destroyAllWindows()
 
     def get_cover_video_metadata(self, cover_video):
         DIMS = (int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         FPS = cover_video.get(cv2.CAP_PROP_FPS)
         ENCODING = cv2.VideoWriter.fourcc(*'mp4v')
         return DIMS, ENCODING, FPS
-
     def decrypt(self, metadata):
+
         cover_video = cv2.VideoCapture(metadata)
         DIMS, ENCODING, FPS = self.get_cover_video_metadata(cover_video)
-        frame_size = DIMS[1] * DIMS[0]
-        file_as_binary_array = np.empty(0)
-        remain_file_bytes_to_read = self.file_size
-        while cover_video.isOpened():
+        start_frame_number = 25
+        # cover_video.set(cv2.CAP_PROP_POS_FRAMES, start_frame_number)
+        remain_file_size_to_read=self.file_size
+        frame_size=DIMS[1] * DIMS[0]
+        file_as_pixel_array=np.empty(0)
+        count=0
+
+        while (cover_video.isOpened()):
+
             ret, encrypt_frame = cover_video.read()
             if not ret:
                 break
-            bytes_amount_to_read = frame_size if remain_file_bytes_to_read > frame_size else remain_file_bytes_to_read
-            remain_file_bytes_to_read -= bytes_amount_to_read
-            file_bytes_chunk = self.create_file_binary_chunk_from_video_frame(frame_size, bytes_amount_to_read,
-                                                                              encrypt_frame)
-            file_as_binary_array = np.concatenate((file_as_binary_array, file_bytes_chunk))
-        # write the bytes array to file
-        decrypt_file = open("../resources/sample_decrypt.pdf", "wb")
-        decrypt_file.write(file_as_binary_array.tobytes())
-        # Closes all the video sources
-        cover_video.release()
-        cv2.destroyAllWindows()
 
-    def create_file_binary_chunk_from_video_frame(self, frame_size, bytes_amount_to_read, encrypt_frame):
-        bytes_as_pixels2d_list3 = np.split(encrypt_frame, 3, axis=2)
-        flatten_pixel_array = bytes_as_pixels2d_list3[0].reshape(frame_size)[:bytes_amount_to_read]
-        return flatten_pixel_array
+            remain_file_size_to_read-=frame_size
+            filled_array = np.zeros(frame_size)
+            # np.savetxt('frame_%s.csv' % count, bytes_as_pixels2d, fmt="%d", delimiter=",")
+            bytes_as_pixels2d_list3 =  np.split(encrypt_frame,3,axis=2)
+            bytes_amount=frame_size if remain_file_size_to_read>frame_size else remain_file_size_to_read
+            flatten_pixel_array= bytes_as_pixels2d_list3[0].reshape(DIMS[0] * DIMS[1])[:bytes_amount]
+            file_as_pixel_array=np.concatenate((file_as_pixel_array, flatten_pixel_array))
+            print('Position:', cover_video.get(cv2.CAP_PROP_POS_FRAMES))
+            # np.savetxt('frame_dec_%s.csv' % count, bytes_as_pixels2d_list3[0].reshape(2160,3840), fmt="%d", delimiter=",")
+            count+=1
+            # cover_video.set(cv2.CAP_PROP_POS_FRAMES, start_frame_number*(count+1))
+
+        decrypt_file = open("../resources/sample_decrypt.pdf", "wb")
+        decrypt_file.write(file_as_pixel_array.tobytes())
+        cover_video.release()
+        # Closes all the frames
+        cv2.destroyAllWindows()
+        # print("number of file frame:" + str(count))
 
 
 enc = Encryptor()
