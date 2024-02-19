@@ -3,3 +3,4 @@
 .vscode
 usedTube
 *__pycache__*
+*output_files*
