@@ -58,7 +58,7 @@ class Encryptor:
             self.chunk_size = self.strategy.calculate_chunk_size()
         encrypted_frames = []
         file_bytes_chunk = file_to_encrypt.read(self.chunk_size)
-        while file_bytes_chunk > 0:
+        while file_bytes_chunk:
             # strategy.encrypt returns an encrypted frame
             encrypted_frames.append(self.strategy.encrypt(file_bytes_chunk))
             # read next chunk

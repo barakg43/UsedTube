@@ -19,5 +19,5 @@ class EncryptionStrategy(ABC):
         pass
 
     def calculate_chunk_size(self):
-        self.chunk_size = self.dims_multiplied // self.bytes_2_pixels_ratio
+        self.chunk_size = int(self.dims_multiplied / self.bytes_2_pixels_ratio)
         return self.chunk_size
