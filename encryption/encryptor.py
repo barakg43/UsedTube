@@ -2,8 +2,8 @@ from typing import IO
 import cv2
 import numpy as np
 import os
-from strategy.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
-from strategy.one_byte_to_one_pixel import OneByteToOnePixel
+from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
+from multiprocessing.pool import ThreadPool
 
 """
 CHUNK_SIZE SHOULD BE CALCULATED ONCE, BASED ON ENCRYPTION METHOD WE WILL CHOOSE
@@ -12,26 +12,14 @@ IF ONLY ONE COVER VIDEO IS USED, METADATA SHOULD ALSO BE RETRIEVED ONCE
 
 
 class Encryptor:
-    PROTO_1B_TO_PIX = 0
-    PROTO_3B_TO_2PIX = 1
-
-    def __init__(self, proto: int):
-        self.file_size = None
-        self.encoding = None
-        self.fps = None
-        self.strategy = None
-        self.chunk_size = None
-
-        match proto:
-            case Encryptor.PROTO_1B_TO_PIX:
-                self.strategy = OneByteToOnePixel()
-
-            case Encryptor.PROTO_3B_TO_2PIX:
-                self.strategy = ThreeBytesToTwoPixels()
-
-            case _:
-                raise ValueError(f"encryption protocol with id={proto} is undefined!")
-
+    def __init__(self, strategy: EncryptionStrategy):
+        self.file_size:int = None
+        self.encoding:int = None
+        self.fps:int = None
+        self.chunk_size:int = None
+        self.strategy:EncryptionStrategy = strategy
+        self.workers = ThreadPool(25) # Arbitrary; Inspired by FPS
+        
     def get_cover_video_metadata(self, cover_video):
         self.strategy.dims = (
             int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -51,16 +39,23 @@ class Encryptor:
         :param cover_video_path:
         :parameter file_to_encrypt an open file descriptor in 'rb' to the file
         """
+        
         cover_video = cv2.VideoCapture(cover_video_path)
         self.collect_metadata(file_to_encrypt, cover_video)
         output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
+
         if self.chunk_size is None:
             self.chunk_size = self.strategy.calculate_chunk_size()
-        encrypted_frames = []
+
+        encrypted_frames = [None] * np.ceil(self.file_size / self.chunk_size)
+        # read chunks sequentially and start strategy.encrypt
         file_bytes_chunk = file_to_encrypt.read(self.chunk_size)
+        chunk_number = 0
         while file_bytes_chunk:
             # strategy.encrypt returns an encrypted frame
-            encrypted_frames.append(self.strategy.encrypt(file_bytes_chunk))
+            self.workers.join()
+            # ^^^^^^^^^^^^^^^^ U STOPPED HERE
+            self.strategy.encrypt(file_bytes_chunk, encrypted_frames, chunk_number)
             # read next chunk
             file_bytes_chunk = file_to_encrypt.read(self.chunk_size)
 

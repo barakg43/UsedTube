@@ -1,6 +1,7 @@
+from typing import override
 import numpy as np
 
-from encryption.strategy.encryption_strategy import EncryptionStrategy
+from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
 
 
 class OneByteToOnePixel(EncryptionStrategy):
@@ -10,10 +11,11 @@ class OneByteToOnePixel(EncryptionStrategy):
         self.bytes_2_pixels_ratio = 1
         self.fourcc = "RGBA"
         self.out_format = ".avi"
-
-    def encrypt(self, file_bytes_chunk):
+        
+    @override
+    def encrypt(self, file_bytes_chunk, frames_collection, i):
         chunk_as_grayscale_frame = self.create_2d_image_frame_grayscale(file_bytes_chunk)
-        return self.create_3d_frame_from_gray_frame(chunk_as_grayscale_frame)
+        frames_collection[i] = self.create_3d_frame_from_gray_frame(chunk_as_grayscale_frame)
 
     def decrypt(self, bytes_amount_to_read, encrypted_frame):
         bytes_as_pixels2d_list3 = np.split(encrypted_frame, 3, axis=2)

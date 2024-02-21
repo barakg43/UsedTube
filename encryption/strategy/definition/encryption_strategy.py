@@ -8,10 +8,9 @@ class EncryptionStrategy(ABC):
         self.bytes_2_pixels_ratio: float = None
         self.fourcc: str = None
         self.out_format: str = None
-        self.chunk_size: int = None
 
     @abstractmethod
-    def encrypt(self, bytes_chunk):
+    def encrypt(self, bytes_chunk, frames_collection, i):
         pass
 
     @abstractmethod
@@ -19,5 +18,4 @@ class EncryptionStrategy(ABC):
         pass
 
     def calculate_chunk_size(self):
-        self.chunk_size = int(self.dims_multiplied / self.bytes_2_pixels_ratio)
-        return self.chunk_size
+        return int(self.dims_multiplied / self.bytes_2_pixels_ratio)
