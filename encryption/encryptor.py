@@ -43,15 +43,16 @@ class Encryptor:
         """
         cover_video = cv2.VideoCapture(cover_video_path)
         self.collect_metadata(file_to_encrypt, cover_video)
-        output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
 
         if self.chunk_size == 0:
             self.chunk_size = self.strategy.calculate_chunk_size()
 
         encrypted_frames = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=object)
         futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
+
         # read chunks sequentially and start strategy.encrypt
         bytes_chunk = file_to_encrypt.read(self.chunk_size)
+
         chunk_number = 0
         while bytes_chunk:
             # strategy.encrypt returns an encrypted frame
@@ -63,16 +64,19 @@ class Encryptor:
 
         wait(futures)
 
+        output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
         for frame in encrypted_frames:
             output_video.write(frame)
 
 
         # Closes all the video sources
-
         cover_video.release()
         output_video.release()
 
     def decrypt(self, encrypted_file_as_video_path, file_size, decrypted_file):
+        # CHANGE THE IO OPERATIONS TO BE SEQUENTIAL
+        # IMPLEMENT CONCURRENCY HERE ASWELL
+
         enc_file_videocap = cv2.VideoCapture(encrypted_file_as_video_path)
         self.get_cover_video_metadata(enc_file_videocap)
 
