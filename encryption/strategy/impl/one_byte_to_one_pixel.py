@@ -13,8 +13,8 @@ class OneByteToOnePixel(EncryptionStrategy):
         self.out_format = ".avi"
         
     @override
-    def encrypt(self, file_bytes_chunk, frames_collection, i):
-        chunk_as_grayscale_frame = self.create_2d_image_frame_grayscale(file_bytes_chunk)
+    def encrypt(self, bytes_chunk, frames_collection, i):
+        chunk_as_grayscale_frame = self.create_2d_image_frame_grayscale(bytes_chunk)
         frames_collection[i] = self.create_3d_frame_from_gray_frame(chunk_as_grayscale_frame)
 
     def decrypt(self, bytes_amount_to_read, encrypted_frame):

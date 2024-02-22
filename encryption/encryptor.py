@@ -1,9 +1,11 @@
+import concurrent.futures
 from typing import IO
 import cv2
 import numpy as np
 import os
 from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
-from multiprocessing.pool import ThreadPool
+from concurrent.futures import ThreadPoolExecutor, wait
+
 
 """
 CHUNK_SIZE SHOULD BE CALCULATED ONCE, BASED ON ENCRYPTION METHOD WE WILL CHOOSE
@@ -13,13 +15,13 @@ IF ONLY ONE COVER VIDEO IS USED, METADATA SHOULD ALSO BE RETRIEVED ONCE
 
 class Encryptor:
     def __init__(self, strategy: EncryptionStrategy):
-        self.file_size:int = None
-        self.encoding:int = None
-        self.fps:int = None
-        self.chunk_size:int = None
-        self.strategy:EncryptionStrategy = strategy
-        self.workers = ThreadPool(25) # Arbitrary; Inspired by FPS
-        
+        self.file_size: int = 0
+        self.encoding: int = 0
+        self.fps: int = 0
+        self.chunk_size: int = 0
+        self.strategy: EncryptionStrategy = strategy
+        self.workers: ThreadPoolExecutor = ThreadPoolExecutor(25)  # Arbitrary; Inspired by FPS
+
     def get_cover_video_metadata(self, cover_video):
         self.strategy.dims = (
             int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -39,29 +41,34 @@ class Encryptor:
         :param cover_video_path:
         :parameter file_to_encrypt an open file descriptor in 'rb' to the file
         """
-        
         cover_video = cv2.VideoCapture(cover_video_path)
         self.collect_metadata(file_to_encrypt, cover_video)
         output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
 
-        if self.chunk_size is None:
+        if self.chunk_size == 0:
             self.chunk_size = self.strategy.calculate_chunk_size()
 
-        encrypted_frames = [None] * np.ceil(self.file_size / self.chunk_size)
+        encrypted_frames = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=object)
+        futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
         # read chunks sequentially and start strategy.encrypt
-        file_bytes_chunk = file_to_encrypt.read(self.chunk_size)
+        bytes_chunk = file_to_encrypt.read(self.chunk_size)
         chunk_number = 0
-        while file_bytes_chunk:
+        while bytes_chunk:
             # strategy.encrypt returns an encrypted frame
-            self.workers.join()
-            # ^^^^^^^^^^^^^^^^ U STOPPED HERE
-            self.strategy.encrypt(file_bytes_chunk, encrypted_frames, chunk_number)
+            futures[chunk_number] = self.workers.submit(self.strategy.encrypt, bytes_chunk, encrypted_frames,
+                                                        chunk_number)
             # read next chunk
-            file_bytes_chunk = file_to_encrypt.read(self.chunk_size)
+            bytes_chunk = file_to_encrypt.read(self.chunk_size)
+            chunk_number += 1
+
+        wait(futures)
 
         for frame in encrypted_frames:
             output_video.write(frame)
+
+
         # Closes all the video sources
+
         cover_video.release()
         output_video.release()
 

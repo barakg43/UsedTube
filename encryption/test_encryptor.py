@@ -1,6 +1,8 @@
+import time
 from pathlib import Path
 import unittest
-from encryptor import Encryptor
+from encryption.encryptor import Encryptor
+from encryption.strategy.impl.one_byte_to_one_pixel import OneByteToOnePixel
 
 RESOURCES_DIR = Path('../resources/')
 OUTPUT_DIR = Path('../output_files/')
@@ -25,8 +27,14 @@ class EncryptorTest(unittest.TestCase):
         paths = self.paths_dict()
         pdf_file = open(paths[PDF_PATH], 'rb')
         decrypted_pdf_file = open(paths[DEC_PDF_PATH], "wb")
+        encS_time = time.time()
         self.enc.encrypt(pdf_file, paths[COVER_VID_PATH], paths[ENC_OUT_VID_PATH])
+        encE_time = time.time()
+        print(f"Encoded In {encE_time - encS_time}")
+        encS_time = time.time()
         self.enc.decrypt(paths[ENC_OUT_VID_PATH], 64153731, decrypted_pdf_file)
+        encE_time = time.time()
+        print(f"Decoded In {encE_time - encS_time}")
         pdf_file.close()
         decrypted_pdf_file.close()
         original_file = open(paths[PDF_PATH], 'rb')
@@ -44,7 +52,7 @@ class EncryptorTest(unittest.TestCase):
         self.assertEqual(res, True)
 
     def test_encryptor_pdf_1B_1P(self):
-        self.test_pdf_encryption(Encryptor.PROTO_1B_TO_PIX)
+        self.test_pdf_encryption(OneByteToOnePixel())
 
     def test_encryptor_pdf_3B_2P(self):
-        self.test_pdf_encryption(Encryptor.PROTO_3B_TO_2PIX)
+        self.test_pdf_encryption()
