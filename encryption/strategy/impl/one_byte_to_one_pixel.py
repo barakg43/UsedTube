@@ -11,17 +11,16 @@ class OneByteToOnePixel(EncryptionStrategy):
         self.bytes_2_pixels_ratio = 1
         self.fourcc = "RGBA"
         self.out_format = ".avi"
-        
+
     @override
     def encrypt(self, bytes_chunk, frames_collection, i):
         chunk_as_grayscale_frame = self.create_2d_image_frame_grayscale(bytes_chunk)
         frames_collection[i] = self.create_3d_frame_from_gray_frame(chunk_as_grayscale_frame)
 
-    def decrypt(self, bytes_amount_to_read, encrypted_frame):
+    @override
+    def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
         bytes_as_pixels2d_list3 = np.split(encrypted_frame, 3, axis=2)
-        flattened_pixel_array = bytes_as_pixels2d_list3[0].reshape(self.chunk_size)[:bytes_amount_to_read]
-        return flattened_pixel_array
-        pass
+        bytes_collection[i] = bytes_as_pixels2d_list3[0].reshape(self.chunk_size)[:bytes_amount_to_read]
 
     def create_2d_image_frame_grayscale(self, file_bytes_chunk):
         filled_array = np.zeros(self.dims_multiplied, dtype=np.uint8)
@@ -32,3 +31,6 @@ class OneByteToOnePixel(EncryptionStrategy):
     def create_3d_frame_from_gray_frame(self, bytes_as_pixels2d):
         pixels_as_frame = np.dstack([bytes_as_pixels2d, bytes_as_pixels2d, bytes_as_pixels2d])
         return pixels_as_frame
+
+
+PROTO_1B_1P = OneByteToOnePixel()
