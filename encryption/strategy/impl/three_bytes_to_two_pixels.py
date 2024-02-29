@@ -1,7 +1,8 @@
 import numpy as np
-from encryption.strategy.encryption_strategy import EncryptionStrategy
+from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
 
 
+PROTO_1B_TO_PIX = 0
 
 class ThreeBytesToTwoPixels(EncryptionStrategy):
     def __init__(self):
@@ -33,3 +34,5 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
     def decrypt(self, bytes_amount_to_read, encrypted_frame):
         pass
 
+
+PROTO_3B_TO_2PIX = ThreeBytesToTwoPixels()
