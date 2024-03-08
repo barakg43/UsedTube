@@ -15,7 +15,7 @@ class EncryptionStrategy(ABC):
         pass
 
     @abstractmethod
-    def decrypt(self, bytes_amount_to_read, encrypted_frame):
+    def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
         pass
 
     def calculate_chunk_size(self):
