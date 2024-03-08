@@ -3,6 +3,7 @@ from typing import IO
 from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
 from encryption.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
 from concurrent.futures import ThreadPoolExecutor, wait
+import hashlib
 
 encrypt_logger = logging.getLogger(ENCRYPT_LOGGER)
 decrypt_logger = logging.getLogger(DECRYPT_LOGGER)
@@ -22,6 +23,7 @@ class Encryptor:
         self.workers: ThreadPoolExecutor = ThreadPoolExecutor(25)  # Arbitrary; Inspired by FPS
         self.enc_logger = logging.getLogger(ENCRYPT_LOGGER)
         self.dec_logger = logging.getLogger(DECRYPT_LOGGER)
+        self.original_sha256=""
 
     def get_cover_video_metadata(self, cover_video):
         self.strategy.dims = (
@@ -42,6 +44,8 @@ class Encryptor:
         :param cover_video_path:
         :parameter file_to_encrypt an open file descriptor in 'rb' to the file
         """
+
+        # self.original_sha256 = self.generateSha256ForFile(file_to_encrypt)
         cover_video = cv2.VideoCapture(cover_video_path)
         self.collect_metadata(file_to_encrypt, cover_video)
 
@@ -76,7 +80,9 @@ class Encryptor:
         # Closes all the video sources
         cover_video.release()
         output_video.release()
-
+    def generateSha256ForFile(self,file_bytes:IO):
+        sha256Hashed = hashlib.file_digest(file_bytes, 'sha256').hexdigest()
+        return sha256Hashed
     def decrypt(self, encrypted_file_as_video_path, file_size, decrypted_file):
         # CHANGE THE IO OPERATIONS TO BE SEQUENTIAL
         # IMPLEMENT CONCURRENCY HERE ASWELL
@@ -111,6 +117,7 @@ class Encryptor:
 
         for _bytes in decrypted_bytes:
             decrypted_file.write(bytes(_bytes.tolist()))
+
 
         enc_file_videocap.release()
         cv2.destroyAllWindows()

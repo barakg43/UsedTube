@@ -27,7 +27,8 @@ class EncryptorTest(unittest.TestCase):
         self.enc = Encryptor(proto)
         paths = self.paths_dict()
         pdf_file = open(paths[PDF_PATH], 'rb')
-        decrypted_pdf_file = open(paths[DEC_PDF_PATH], "wb")
+
+        decrypted_pdf_file = open(paths[DEC_PDF_PATH], "wb+")
         begin_time = time.time()
         self.enc.encrypt(pdf_file, paths[COVER_VID_PATH], paths[ENC_OUT_VID_PATH])
         end_time = time.time()
@@ -36,6 +37,8 @@ class EncryptorTest(unittest.TestCase):
         self.enc.decrypt(paths[ENC_OUT_VID_PATH], 64153731, decrypted_pdf_file)
         end_time = time.time()
         print(f"Decoded In {end_time - begin_time}")
+        original_sha256 = self.enc.generateSha256ForFile(pdf_file)
+        decrypted_sha256 = self.enc.generateSha256ForFile(decrypted_pdf_file)
         pdf_file.close()
         decrypted_pdf_file.close()
         original_file = open(paths[PDF_PATH], 'rb')
@@ -51,7 +54,7 @@ class EncryptorTest(unittest.TestCase):
             bytes_asserted += 1
         print(f"bytes asserted: {bytes_asserted}")
         self.assertEqual(res, True)
-
+        self.assertEqual(original_sha256,decrypted_sha256)
     def test_encryptor_pdf_1B_1P(self):
         self.test_pdf_encryption(PROTO_1B_1P)
 
