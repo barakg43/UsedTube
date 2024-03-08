@@ -3,6 +3,7 @@ from pathlib import Path
 import unittest
 from encryption.encryptor import Encryptor
 from encryption.strategy.impl.one_byte_to_one_pixel import PROTO_1B_1P
+from encryption.strategy.impl.three_bytes_to_two_pixels import PROTO_3B_TO_2PIX
 
 RESOURCES_DIR = Path('../resources/')
 OUTPUT_DIR = Path('../output_files/')
@@ -55,4 +56,4 @@ class EncryptorTest(unittest.TestCase):
         self.test_pdf_encryption(PROTO_1B_1P)
 
     def test_encryptor_pdf_3B_2P(self):
-        self.test_pdf_encryption()
+        self.test_pdf_encryption(PROTO_3B_TO_2PIX)
