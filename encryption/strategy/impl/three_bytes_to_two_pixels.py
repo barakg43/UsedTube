@@ -64,10 +64,25 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
     def interleaving_two_np_arrays(self, np_array1: np.array, np_array2: np.array):
         return np.ravel(np.column_stack((np_array1, np_array2)))
 
+    def construct_byte_from_2_pixels(self, two_pixels_of_3bytes):
+        # print("before", two_pixels_of_3bytes)
+        pixel1 = two_pixels_of_3bytes[0]
+        pixel2 = two_pixels_of_3bytes[1]
+        print("pixel1", pixel1)
+        # print("pixel2", pixel2)
+        leftmost_pixel1 = pixel1 & 0xF0
+        rightmost_pixel2 = pixel2 >> 4
+        print(np.vectorize(np.binary_repr)(pixel1, width=8))
+        print(np.vectorize(np.binary_repr)(pixel2, width=8))
+
+        print(np.vectorize(np.binary_repr)(leftmost_pixel1 | rightmost_pixel2, width=8))
+        # print(np.vectorize(np.binary_repr)(rightmost_pixel2, width=8))
+        print("after", leftmost_pixel1 | rightmost_pixel2)
+        return leftmost_pixel1 | rightmost_pixel2
+
     def transform_bytes(self, three_bytes):
         leftmost = (three_bytes & 0xF0) >> 4
         rightmost = (three_bytes & 0x0F) << 4
-
         return rightmost | leftmost
 
 
