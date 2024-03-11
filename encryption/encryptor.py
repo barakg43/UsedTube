@@ -80,9 +80,12 @@ class Encryptor:
         # Closes all the video sources
         cover_video.release()
         output_video.release()
-    def generateSha256ForFile(self,file_bytes:IO):
+        cv2.destroyAllWindows()
+
+    def generateSha256ForFile(self, file_bytes: IO):
         sha256Hashed = hashlib.file_digest(file_bytes, 'sha256').hexdigest()
         return sha256Hashed
+
     def decrypt(self, encrypted_file_as_video_path, file_size, decrypted_file):
         # CHANGE THE IO OPERATIONS TO BE SEQUENTIAL
         # IMPLEMENT CONCURRENCY HERE ASWELL
