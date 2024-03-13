@@ -59,7 +59,6 @@ class Encryptor:
             self.enc_logger.debug("calculating chunk size")
             self.chunk_size = self.strategy.calculate_chunk_size()
 
-        return
         encrypted_frames = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=object)
         futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
         self.enc_logger.debug(f"about to process {len(futures)} chunks")
