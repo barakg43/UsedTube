@@ -1,7 +1,8 @@
 import logging
+
 import encryption.constants as c
 
-LOG_DIR = "../../"+"../logs/"
+LOG_DIR = "../" + "../logs/"
 ENCRYPTION_LOGS = f"{LOG_DIR}encrypt.log"
 DECRYPTION_LOGS = f"{LOG_DIR}decrypt.log"
 formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s ### %(message)s', datefmt="%Y-%m-%d %H:%M:%S")

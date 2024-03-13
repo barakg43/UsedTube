@@ -1,6 +1,7 @@
 import time
-from pathlib import Path
 import unittest
+from pathlib import Path
+
 from encryption.encryptor import Encryptor
 from encryption.strategy.impl.one_byte_to_one_pixel import PROTO_1B_1P
 from encryption.strategy.impl.three_bytes_to_two_pixels import PROTO_3B_TO_2PIX
@@ -55,7 +56,8 @@ class EncryptorTest(unittest.TestCase):
             bytes_asserted += 1
         print(f"bytes asserted: {bytes_asserted}")
         self.assertEqual(res, True)
-        self.assertEqual(original_sha256,decrypted_sha256)
+        self.assertEqual(original_sha256, decrypted_sha256)
+
     def test_encryptor_pdf_1B_1P(self):
         self.test_pdf_encryption(PROTO_1B_1P)
 
