@@ -1,4 +1,5 @@
 from typing import override
+
 import numpy as np
 
 from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
@@ -20,7 +21,7 @@ class OneByteToOnePixel(EncryptionStrategy):
     @override
     def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
         bytes_as_pixels2d_list3 = np.split(encrypted_frame, 3, axis=2)
-        bytes_collection[i] = bytes_as_pixels2d_list3[0].reshape(self.chunk_size)[:bytes_amount_to_read]
+        bytes_collection[i] = bytes_as_pixels2d_list3[0].reshape(-1)[:bytes_amount_to_read]
 
     def create_2d_image_frame_grayscale(self, file_bytes_chunk):
         filled_array = np.zeros(self.dims_multiplied, dtype=np.uint8)
