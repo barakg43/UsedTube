@@ -51,13 +51,14 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
         pixel_flatten = encrypted_frame.reshape((-1, 3))
         original_pixels = pixel_flatten[::2]
         reversed_pixels = pixel_flatten[1::2]
-        reconstruct_frame_bytes = np.array(self.construct_byte_from_2_pixels(original_pixels, reversed_pixels))
+        reconstruct_frame_bytes = np.array(
+            self.construct_original_bytes_from_2_pixels_array(original_pixels, reversed_pixels))
         bytes_collection[i] = reconstruct_frame_bytes.reshape(-1)[:bytes_amount_to_read]
 
     def interleaving_two_np_arrays(self, np_array1: np.array, np_array2: np.array):
         return np.ravel(np.column_stack((np_array1, np_array2)))
 
-    def construct_byte_from_2_pixels(self, original_pixels, invert_pixels):
+    def construct_original_bytes_from_2_pixels_array(self, original_pixels, invert_pixels):
         leftmost_pixel1 = np.bitwise_and(original_pixels, 0xF0)
         rightmost_pixel2 = np.right_shift(invert_pixels, 4)
         return np.bitwise_or(leftmost_pixel1, rightmost_pixel2)
