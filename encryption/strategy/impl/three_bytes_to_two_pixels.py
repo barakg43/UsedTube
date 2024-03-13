@@ -12,7 +12,6 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
         self.bytes_2_pixels_ratio = 3 / 2
         self.fourcc = "RGBA"
         self.out_format = ".avi"
-        self.total_frame_number = 0
 
         # self.fourcc = "mp4v"
         # self.out_format = ".mp4"
@@ -32,8 +31,6 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
         ByteA = P1[0][0-3] | (P2[0][0-3] >> 4 )
         """
 
-        print(f" ------------------ ENCRYPT frame id: {i} ------------------")
-        start_time = time.time()
         total_bytes_per_channel = np.multiply(*self.dims)
         frame = np.zeros((total_bytes_per_channel, 3), dtype=np.uint8)
         chunks = np.reshape(list(bytes_chunk), (-1, 3))
@@ -42,9 +39,6 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
         pixels = combined_chunks.reshape((-1, 3))
         frame[:pixels.shape[0]] = pixels
         frames_collection[i] = frame.reshape((self.dims[1], self.dims[0], 3))
-        total_time = time.time() - start_time
-        print(f" total time to process frame {i}:{total_time:.4f} sec")
-        self.total_frame_number += 1
 
     @override
     def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
@@ -53,17 +47,12 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
         #     [self.construct_byte_from_2_pixels(two_pixels_of_3bytes) for two_pixels_of_3bytes in
         #      frame_2chucks_group])
         # bytes_collection[i] = reconstruct_frame_bytes.reshape(-1)[:bytes_amount_to_read]
-        print(f" ------------------ DENCRYPT frame id: {i} ------------------")
-
         start_time = time.time()
         pixel_flatten = encrypted_frame.reshape((-1, 3))
-        frame_2chucks_group = encrypted_frame.reshape((-1, 2, 3))
         original_pixels = pixel_flatten[::2]
         reversed_pixels = pixel_flatten[1::2]
         reconstruct_frame_bytes = np.array(self.construct_byte_from_2_pixels(original_pixels, reversed_pixels))
         bytes_collection[i] = reconstruct_frame_bytes.reshape(-1)[:bytes_amount_to_read]
-        total_time = time.time() - start_time
-        print(f" total time to process frame {i}:{total_time:.4f} sec")
 
     def interleaving_two_np_arrays(self, np_array1: np.array, np_array2: np.array):
         return np.ravel(np.column_stack((np_array1, np_array2)))
