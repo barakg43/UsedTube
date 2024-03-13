@@ -4,7 +4,7 @@ from pathlib import Path
 
 from encryption.encryptor import Encryptor
 from encryption.strategy.impl.one_byte_to_one_pixel import PROTO_1B_1P
-from encryption.strategy.impl.three_bytes_to_two_pixels import PROTO_3B_TO_2PIX
+from encryption.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
 
 RESOURCES_DIR = Path('../resources/')
 OUTPUT_DIR = Path('../output_files/')
@@ -18,7 +18,7 @@ class EncryptorTest(unittest.TestCase):
 
     def paths_dict(self):
         paths_dict = {PDF_PATH: (RESOURCES_DIR / "sample-file2.pdf").as_posix(),
-                      ENC_OUT_VID_PATH: (OUTPUT_DIR / f"output-video{self.enc.strategy.out_format}").as_posix(),
+                      ENC_OUT_VID_PATH: (OUTPUT_DIR / f"output-video.{self.enc.strategy.out_format}").as_posix(),
                       COVER_VID_PATH: (RESOURCES_DIR / "sample.mp4").as_posix(),
                       DEC_PDF_PATH: (OUTPUT_DIR / "sample-file2-decrypted.pdf").as_posix()}
 
@@ -62,4 +62,4 @@ class EncryptorTest(unittest.TestCase):
         self.test_pdf_encryption(PROTO_1B_1P)
 
     def test_encryptor_pdf_3B_2P(self):
-        self.test_pdf_encryption(PROTO_3B_TO_2PIX)
+        self.test_pdf_encryption(ThreeBytesToTwoPixels(fourcc="RGBA", out_format="avi"))
