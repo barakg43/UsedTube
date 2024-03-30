@@ -2,12 +2,10 @@ import concurrent.futures
 import hashlib
 import logging
 import os
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, wait
 from typing import IO
-
 import cv2
 import numpy as np
-
 from encryption.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
 from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
 
@@ -51,7 +49,6 @@ class Encryptor:
         :parameter file_to_encrypt an open file descriptor in 'rb' to the file
         """
 
-        # self.original_sha256 = self.generateSha256ForFile(file_to_encrypt)
         cover_video = cv2.VideoCapture(cover_video_path)
         self.collect_metadata(file_to_encrypt, cover_video)
 
@@ -59,7 +56,6 @@ class Encryptor:
             self.enc_logger.debug("calculating chunk size")
             self.chunk_size = self.strategy.calculate_chunk_size()
 
-        return
         encrypted_frames = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=object)
         futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
         self.enc_logger.debug(f"about to process {len(futures)} chunks")
@@ -69,10 +65,8 @@ class Encryptor:
         chunk_number = 0
         while bytes_chunk:
             # strategy.encrypt returns an encrypted frame
-            # futures[chunk_number] = self.workers.submit(self.strategy.encrypt, bytes_chunk, encrypted_frames,
-            #                                             chunk_number)
-            futures[chunk_number] = self.strategy.encrypt(bytes_chunk, encrypted_frames,
-                                                          chunk_number)
+            futures[chunk_number] = self.workers.submit(self.strategy.encrypt, bytes_chunk, encrypted_frames,
+                                                        chunk_number)
             # read next chunk
             chunk_number += 1
             bytes_chunk = file_to_encrypt.read(self.chunk_size)
@@ -80,7 +74,7 @@ class Encryptor:
 
         self.enc_logger.debug(f"total of {chunk_number} chunks were submitted to workers")
 
-        # wait(futures)
+        wait(futures)
         self.enc_logger.debug("waiting for workers to finish processing chunks...")
         output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
         for frame in encrypted_frames:
