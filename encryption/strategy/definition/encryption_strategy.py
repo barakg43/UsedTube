@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 class EncryptionStrategy(ABC):
     def __init__(self):
+        # W, H
         self.dims: tuple[int, int] = None
         self.dims_multiplied: int = 0
         self.chunk_size: int = 0
