@@ -30,16 +30,17 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
         the reassembly of the a byte will be as follows:
         ByteA = P1[0][0-3] | (P2[0][0-3] >> 4 )
         """
-
         total_bytes_per_channel = np.multiply(*self.dims)
         frame = np.zeros((total_bytes_per_channel, 3), dtype=np.uint8)
-        chunks = np.reshape(list(bytes_chunk), (-1, 3))
+        bytes_list = list(bytes_chunk)
+        bytes_array = np.zeros(int(np.ceil(len(bytes_list) / 3)) * 3, dtype=np.uint8)
+        bytes_array[:len(bytes_list)] = bytes_list
+        chunks = np.reshape(bytes_array, (-1, 3))
+
         transformed_chunks = self.swap_right_left_bits(chunks)
         combined_chunks = self.interleaving_two_np_arrays(chunks, transformed_chunks)
         pixels = combined_chunks.reshape((-1, 3))
-
         frame[:pixels.shape[0]] = pixels
-
         frames_collection[i] = frame.reshape((self.dims[1], self.dims[0], 3))
         # self.save_frame_to_csv(True, i, frames_collection)
 
@@ -73,11 +74,13 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
     def construct_original_bytes_from_2_pixels_array(self, original_pixels, invert_pixels):
         leftmost_pixel1 = np.bitwise_and(original_pixels, 0xF0)
         rightmost_pixel2 = np.right_shift(invert_pixels, 4)
+
         return np.bitwise_or(leftmost_pixel1, rightmost_pixel2)
 
     def swap_right_left_bits(self, bytes_nparray: np.ndarray):
         leftmost = np.right_shift(bytes_nparray, 4)
         rightmost = np.left_shift(np.bitwise_and(bytes_nparray, 0x0F), 4)
+
         return np.bitwise_or(rightmost, leftmost)
 
     def transform_bytes(self, three_bytes):
