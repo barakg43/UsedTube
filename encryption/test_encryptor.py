@@ -4,7 +4,7 @@ from pathlib import Path
 
 from encryption.encryptor import Encryptor
 from encryption.strategy.impl.one_byte_to_one_pixel import PROTO_1B_1P
-from encryption.strategy.impl.three_bytes_to_two_pixels import PROTO_3B_TO_2PIX
+from encryption.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
 
 RESOURCES_DIR = Path('../resources/')
 OUTPUT_DIR = Path('../output_files/')
@@ -18,13 +18,15 @@ class EncryptorTest(unittest.TestCase):
 
     def paths_dict(self):
         paths_dict = {PDF_PATH: (RESOURCES_DIR / "sample-file2.pdf").as_posix(),
-                      ENC_OUT_VID_PATH: (OUTPUT_DIR / f"output-video{self.enc.strategy.out_format}").as_posix(),
+                      ENC_OUT_VID_PATH: (
+                              OUTPUT_DIR / f"output-video_{self.enc.strategy.fourcc}.{self.enc.strategy.out_format}")
+                      .as_posix(),
                       COVER_VID_PATH: (RESOURCES_DIR / "sample.mp4").as_posix(),
-                      DEC_PDF_PATH: (OUTPUT_DIR / "sample-file2-decrypted.pdf").as_posix()}
+                      DEC_PDF_PATH: (OUTPUT_DIR / f"sample-file2-decrypted_{self.enc.strategy.fourcc}.pdf").as_posix()}
 
         return paths_dict
 
-    def test_pdf_encryption(self, proto):
+    def check_pdf_encryption(self, proto):
         self.enc = Encryptor(proto)
         paths = self.paths_dict()
         pdf_file = open(paths[PDF_PATH], 'rb')
@@ -45,21 +47,17 @@ class EncryptorTest(unittest.TestCase):
         decrypted_file = open(paths[DEC_PDF_PATH], "rb")
         original_sha256 = self.enc.generateSha256ForFile(original_file)
         decrypted_sha256 = self.enc.generateSha256ForFile(decrypted_file)
-        input_content = original_file.read()
-        output_content = decrypted_file.read()
         original_file.close()
         decrypted_file.close()
-        res = True
-        bytes_asserted = 0
-        for (byte1, byte2) in zip(input_content, output_content):
-            res = byte1 == byte2
-            bytes_asserted += 1
-        print(f"bytes asserted: {bytes_asserted}")
-        self.assertEqual(res, True)
         self.assertEqual(original_sha256, decrypted_sha256)
+
+    def perform_test_3P_2B(self, codec, file_ext):
+        # Replace this with your actual test implementation
+        print(f"#### Testing codec '{codec}' with file extension '.{file_ext}' ###")
+        self.check_pdf_encryption(ThreeBytesToTwoPixels(fourcc=codec, out_format=file_ext))
 
     def test_encryptor_pdf_1B_1P(self):
         self.test_pdf_encryption(PROTO_1B_1P)
 
     def test_encryptor_pdf_3B_2P(self):
-        self.test_pdf_encryption(PROTO_3B_TO_2PIX)
+        self.assertTrue(self.test_pdf_encryption(ThreeBytesToTwoPixels(fourcc="xvid", out_format="mp4")))

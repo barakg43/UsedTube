@@ -67,6 +67,9 @@ class Encryptor:
             # strategy.encrypt returns an encrypted frame
             futures[chunk_number] = self.workers.submit(self.strategy.encrypt, bytes_chunk, encrypted_frames,
                                                         chunk_number)
+            #  use encrypt without ThreadPool
+            # futures[chunk_number] = self.strategy.encrypt(bytes_chunk, encrypted_frames,
+            #                                               chunk_number)
             # read next chunk
             chunk_number += 1
             bytes_chunk = file_to_encrypt.read(self.chunk_size)
@@ -76,7 +79,7 @@ class Encryptor:
 
         wait(futures)
         self.enc_logger.debug("waiting for workers to finish processing chunks...")
-        output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
+        output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)  # TODO: fix encoding
         for frame in encrypted_frames:
             output_video.write(frame)
 
@@ -113,15 +116,16 @@ class Encryptor:
 
             bytes_amount_to_read = self.calculate_total_bytes(bytes_left_to_read)
             bytes_left_to_read -= bytes_amount_to_read
-            futures[frame_number] = self.strategy.decrypt(bytes_amount_to_read, encrypted_frame,
-                                                          decrypted_bytes, frame_number)
-            # futures[frame_number] = self.workers.submit(self.strategy.decrypt, bytes_amount_to_read, encrypted_frame,
-            #                                             decrypted_bytes, frame_number)
+            #  use decrypt without ThreadPool
+            # futures[frame_number] = self.strategy.decrypt(bytes_amount_to_read, encrypted_frame,
+            #                                               decrypted_bytes, frame_number)
+            futures[frame_number] = self.workers.submit(self.strategy.decrypt, bytes_amount_to_read, encrypted_frame,
+                                                        decrypted_bytes, frame_number)
             self.dec_logger.debug(f"encryptor submitted chunk #{frame_number} for decryption")
             frame_number += 1
         self.enc_logger.debug(f"total of {frame_number} frames were submitted to workers")
 
-        # wait(futures)
+        wait(futures)
 
         for _bytes in decrypted_bytes:
             decrypted_file.write(bytes(_bytes.tolist()))

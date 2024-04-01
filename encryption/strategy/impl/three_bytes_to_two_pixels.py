@@ -7,14 +7,14 @@ from encryption.strategy.definition.encryption_strategy import EncryptionStrateg
 
 
 class ThreeBytesToTwoPixels(EncryptionStrategy):
-    def __init__(self):
+    def __init__(self, fourcc: str, out_format: str):
         super().__init__()
-        self.bytes_2_pixels_ratio = 3 / 2
-        self.fourcc = "RGBA"
-        self.out_format = ".avi"
+        self.bytes_2_pixels_ratio = 2 / 3
+        self.fourcc = fourcc
+        self.out_format = out_format
 
-        # self.fourcc = "mp4v"
-        # self.out_format = ".mp4"
+        # self.fourcc = "RGBA"
+        # self.out_format = ".avi"
 
     @override
     def encrypt(self, bytes_chunk, frames_collection, i):
@@ -37,8 +37,19 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
         transformed_chunks = self.swap_right_left_bits(chunks)
         combined_chunks = self.interleaving_two_np_arrays(chunks, transformed_chunks)
         pixels = combined_chunks.reshape((-1, 3))
+
         frame[:pixels.shape[0]] = pixels
+
         frames_collection[i] = frame.reshape((self.dims[1], self.dims[0], 3))
+        # self.save_frame_to_csv(True, i, frames_collection)
+
+    def save_frame_to_csv(self, is_encrypted, i, frames_collection):
+        if (i == 0):
+            print("save frame to file...")
+            np.savetxt(
+                f"../output_files/frames_collection[0]_{'encrypted' if is_encrypted else 'decrypted'}_{self.fourcc}.csv",
+                np.vectorize(np.binary_repr)(frames_collection[i], width=8), delimiter=",")
+            print("finish save frame to file...")
 
     @override
     def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
@@ -48,6 +59,7 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
         #      frame_2chucks_group])
         # bytes_collection[i] = reconstruct_frame_bytes.reshape(-1)[:bytes_amount_to_read]
         start_time = time.time()
+        # self.save_frame_to_csv(False, i, encrypted_frame)
         pixel_flatten = encrypted_frame.reshape((-1, 3))
         original_pixels = pixel_flatten[::2]
         reversed_pixels = pixel_flatten[1::2]
@@ -73,6 +85,5 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
         rightmost = (three_bytes & 0x0F) << 4
         return rightmost | leftmost
 
-
-PROTO_3B_TO_2PIX = ThreeBytesToTwoPixels()
+# PROTO_3B_TO_2PIX = ThreeBytesToTwoPixels()
 # print(PROTO_3B_TO_2PIX.transform_bytes(0b11010000))
