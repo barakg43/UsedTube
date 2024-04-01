@@ -4,8 +4,10 @@ import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, wait
 from typing import IO
+
 import cv2
 import numpy as np
+
 from encryption.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
 from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
 
@@ -72,8 +74,8 @@ class Encryptor:
             #                                               chunk_number)
             # read next chunk
             chunk_number += 1
+            self.enc_logger.debug(f"encryptor submitted chunk {bytes_chunk} number #{chunk_number} for encryption")
             bytes_chunk = file_to_encrypt.read(self.chunk_size)
-            self.enc_logger.debug(f"encryptor submitted chunk #{chunk_number} for encryption")
 
         self.enc_logger.debug(f"total of {chunk_number} chunks were submitted to workers")
 
@@ -121,7 +123,8 @@ class Encryptor:
             #                                               decrypted_bytes, frame_number)
             futures[frame_number] = self.workers.submit(self.strategy.decrypt, bytes_amount_to_read, encrypted_frame,
                                                         decrypted_bytes, frame_number)
-            self.dec_logger.debug(f"encryptor submitted chunk #{frame_number} for decryption")
+            self.dec_logger.debug(
+                f"encryptor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for decryption")
             frame_number += 1
         self.enc_logger.debug(f"total of {frame_number} frames were submitted to workers")
 
