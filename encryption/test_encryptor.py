@@ -1,3 +1,4 @@
+import os
 import time
 import unittest
 from pathlib import Path
@@ -17,12 +18,12 @@ DEC_PDF_PATH = 3
 class EncryptorTest(unittest.TestCase):
 
     def paths_dict(self):
-        paths_dict = {PDF_PATH: (RESOURCES_DIR / "sample-file2.pdf").as_posix(),
+        paths_dict = {PDF_PATH: (RESOURCES_DIR / "sample-file.pdf").as_posix(),
                       ENC_OUT_VID_PATH: (
                               OUTPUT_DIR / f"output-video_{self.enc.strategy.fourcc}.{self.enc.strategy.out_format}")
                       .as_posix(),
                       COVER_VID_PATH: (RESOURCES_DIR / "sample.mp4").as_posix(),
-                      DEC_PDF_PATH: (OUTPUT_DIR / f"sample-file2-decrypted_{self.enc.strategy.fourcc}.pdf").as_posix()}
+                      DEC_PDF_PATH: (OUTPUT_DIR / f"sample-file-decrypted_{self.enc.strategy.fourcc}.pdf").as_posix()}
 
         return paths_dict
 
@@ -37,8 +38,8 @@ class EncryptorTest(unittest.TestCase):
         end_time = time.time()
         print(f"Encoded In {end_time - begin_time}")
         begin_time = time.time()
-
-        self.enc.decrypt(paths[ENC_OUT_VID_PATH], 64153731, decrypted_pdf_file)
+        file_size = os.stat(paths[PDF_PATH]).st_size
+        self.enc.decrypt(paths[ENC_OUT_VID_PATH], file_size, decrypted_pdf_file)
         end_time = time.time()
         print(f"Decoded In {end_time - begin_time}")
         pdf_file.close()
@@ -57,7 +58,7 @@ class EncryptorTest(unittest.TestCase):
         self.check_pdf_encryption(ThreeBytesToTwoPixels(fourcc=codec, out_format=file_ext))
 
     def test_encryptor_pdf_1B_1P(self):
-        self.test_pdf_encryption(PROTO_1B_1P)
+        self.check_pdf_encryption(PROTO_1B_1P)
 
     def test_encryptor_pdf_3B_2P(self):
-        self.assertTrue(self.test_pdf_encryption(ThreeBytesToTwoPixels(fourcc="xvid", out_format="mp4")))
+        self.assertTrue(self.check_pdf_encryption(ThreeBytesToTwoPixels(fourcc="xvid", out_format="mp4")))
