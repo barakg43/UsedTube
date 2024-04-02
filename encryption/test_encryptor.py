@@ -3,7 +3,10 @@ import time
 import unittest
 from pathlib import Path
 
+import numpy as np
+
 from encryption.encryptor import Encryptor
+from encryption.strategy.impl.bit_to_block import BitToBlock
 from encryption.strategy.impl.one_byte_to_one_pixel import PROTO_1B_1P
 from encryption.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
 
@@ -42,32 +45,37 @@ class EncryptorTest(unittest.TestCase):
         self.enc.decrypt(paths[ENC_OUT_VID_PATH], file_size, decrypted_pdf_file)
         end_time = time.time()
         print(f"Decoded In {end_time - begin_time}")
-        pdf_file.seek(0)
-        decrypted_pdf_file.seek(0)
-
         original_sha256 = self.enc.generateSha256ForFile(pdf_file)
         decrypted_sha256 = self.enc.generateSha256ForFile(decrypted_pdf_file)
-
         input_content = pdf_file.read()
         output_content = decrypted_pdf_file.read()
         res = True
         bytes_asserted = 0
         for (byte1, byte2) in zip(input_content, output_content):
-            res = byte1 == byte2
-            if not res:
+            if byte1 != byte2:
                 bytes_asserted += 1
-                # print(f"input: {np.binary_repr(byte1, width=8)}, output: {np.binary_repr(byte2, width=8)}")
-
+                print(f"input: {np.binary_repr(byte1, width=8)}, output: {np.binary_repr(byte2, width=8)}")
+                if (bytes_asserted > 9):
+                    break
         print(f"bytes asserted: {bytes_asserted}")
 
         pdf_file.close()
         decrypted_pdf_file.close()
+
         return original_sha256, decrypted_sha256
 
     def perform_test_3P_2B(self, codec, file_ext):
         # Replace this with your actual test implementation
-        print(f"#### Testing codec '{codec}' with file extension '.{file_ext}' ###")
+        print(f"#### 3P_2B: Testing codec '{codec}' with file extension '.{file_ext}' ###")
         sha256_1, sha256_2 = self.check_pdf_encryption(ThreeBytesToTwoPixels(fourcc=codec, out_format=file_ext))
+        print(sha256_1)
+        print(sha256_2)
+        self.assertEqual(sha256_1, sha256_2)
+
+    def perform_test_1Bit_Block(self, codec, file_ext):
+        # Replace this with your actual test implementation
+        print(f"#### Bit to Block: Testing codec '{codec}' with file extension '.{file_ext}' ###")
+        sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(fourcc=codec, out_format=file_ext))
         print(sha256_1)
         print(sha256_2)
         self.assertEqual(sha256_1, sha256_2)
