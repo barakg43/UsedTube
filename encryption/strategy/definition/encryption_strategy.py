@@ -2,14 +2,14 @@ from abc import ABC, abstractmethod
 
 
 class EncryptionStrategy(ABC):
-    def __init__(self):
+    def __init__(self, fourcc: str = "RGBA", out_format: str = "avi"):
         # W, H
         self.dims: tuple[int, int] = None
         self.dims_multiplied: int = 0
         self.chunk_size: int = 0
         self.bytes_2_pixels_ratio: float = 0
-        self.fourcc: str = None
-        self.out_format: str = None
+        self.fourcc: str = fourcc
+        self.out_format: str = out_format
 
     @abstractmethod
     def encrypt(self, bytes_chunk, frames_collection, i):
