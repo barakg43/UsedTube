@@ -8,10 +8,8 @@ from encryption.strategy.definition.encryption_strategy import EncryptionStrateg
 
 class ThreeBytesToTwoPixels(EncryptionStrategy):
     def __init__(self, fourcc: str, out_format: str):
-        super().__init__()
+        super().__init__(fourcc, out_format)
         self.bytes_2_pixels_ratio = 2 / 3
-        self.fourcc = fourcc
-        self.out_format = out_format
 
         # self.fourcc = "RGBA"
         # self.out_format = ".avi"
@@ -80,7 +78,7 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
     def swap_right_left_bits(self, bytes_nparray: np.ndarray):
         leftmost = np.right_shift(bytes_nparray, 4)
         rightmost = np.left_shift(np.bitwise_and(bytes_nparray, 0x0F), 4)
-
+        # print("encrypted:", np.binary_repr(leftmost[0], width=8), np.binary_repr(rightmost[0], width=8))
         return np.bitwise_or(rightmost, leftmost)
 
     def transform_bytes(self, three_bytes):
