@@ -11,7 +11,7 @@ class OneByteToOnePixel(EncryptionStrategy):
         super().__init__()
         self.bytes_2_pixels_ratio = 1
         self.fourcc = "RGBA"
-        self.out_format = ".avi"
+        self.out_format = "OtO.avi"
 
     @override
     def encrypt(self, bytes_chunk, frames_collection, i):
