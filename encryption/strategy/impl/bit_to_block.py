@@ -43,25 +43,47 @@ class BitToBlock(EncryptionStrategy):
         col = ((block_size * block) % width)
         return row, col
 
+    def save_frame_to_csv(self, is_encrypted, i, frames_collection):
+        if (i == 0):
+            print("save frame to file...")
+            np.savetxt(
+                f"../output_files/frames_collection[0]_{'encrypted' if is_encrypted else 'decrypted'}_{self.fourcc}.csv",
+                np.vectorize(np.binary_repr)(np.copy(frames_collection[i]), width=8), delimiter=",")
+            print("finish save frame to file...")
+
     def position_generator(self, num_blocks, width):
         for block in range(num_blocks):
             yield *self.__calculate_position(block, width), block
 
     def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
+        print(f"####### decrypt {i} #######")
         block_size = self.block_size
         width = self.dims[0]
         num_blocks = bytes_amount_to_read * 8
         ########
 
-        blocks = np.array(
-            [
-                encrypted_frame[row: row + block_size, col: col + block_size] for row, col, _
-                in self.position_generator(num_blocks, width)
-            ]
-        )
-        decoded_bits = np.array(list(map(lambda block: 1 if np.mean(block) > 127 else 0, blocks)), dtype=np.uint8)
-        bytes_collection[i] = np.packbits(decoded_bits)
+        # blocks = np.array(
+        #     [
+        #         encrypted_frame[row: row + block_size, col: col + block_size] for row, col, _
+        #         in self.position_generator(num_blocks, width)
+        #     ]
+        # )
+        # Create a NumPy array
 
-# btb = BitToBlock()
-# frame = btb.encrypt(b'GAL AVIEZRI G.AVIEZRI@gmail.com', [], 0)
+        blocks = encrypted_frame.reshape(-1, self.block_size, 3)
+
+        # print(np.apply_along_axis(lambda block: print("block", block), arr=arr, axis=0))
+
+        # decoded_bits = np.array(list(map(lambda block: 1 if np.mean(block) > 127 else 0, blocks)), dtype=np.uint8)
+        blocks_mean = np.array([np.average(block) for block in blocks], dtype=np.uint8)
+        print("uniq", np.unique(blocks_mean))
+        decoded_bits = np.where(blocks_mean > 127, 1, 0)[:bytes_amount_to_read * 8]
+
+        print(f"bits {i}-size {decoded_bits.shape}:", decoded_bits)
+
+        # decoded_bits = np.apply_along_axis(lambda block: print("block", block), arr=blocks, axis=3)
+        bytes_collection[i] = np.packbits(decoded_bits)
+        print("result: ", bytes_collection[i].shape, bytes_collection[i])
+# btb = BitToBlock(fourcc="RGBA", out_format="avi")
+# frame = btb.encrypt(b'GAL AVIEZRI G.AVIEZRI@gmail.comdsfdsdfsfsfdsdfsdfdsfsdfsdfsdfsdf', [], 0)
 # btb.decrypt(31, frame, [], 0)
