@@ -118,7 +118,8 @@ class Encryptor:
             if not ret:
                 break
 
-            bytes_amount_to_read = self.calculate_total_bytes(bytes_left_to_read)
+            bytes_amount_to_read = self.calculate_bytes_amount_to_read(bytes_left_to_read)
+            print(f"chunk {bytes_amount_to_read} bytes #{frame_number} for decryption")
             bytes_left_to_read -= bytes_amount_to_read
             #  use decrypt without ThreadPool
             futures[frame_number] = self.strategy.decrypt(bytes_amount_to_read, encrypted_frame,
@@ -126,6 +127,8 @@ class Encryptor:
             # futures[frame_number] = self.workers.submit(self.strategy.decrypt, bytes_amount_to_read, encrypted_frame,
             #                                             decrypted_bytes, frame_number)
             self.dec_logger.debug(
+                f"encryptor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for decryption")
+            print(
                 f"encryptor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for decryption")
             frame_number += 1
         self.enc_logger.debug(f"total of {frame_number} frames were submitted to workers")

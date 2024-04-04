@@ -12,9 +12,13 @@ class BitToBlock(EncryptionStrategy):
         self.bytes_2_pixels_ratio = 8 * block_size ** 2
 
     def encrypt(self, bytes_chunk, frames_collection, i):
+        print(f"####### encrypt {i} #######")
+        print("original: ", len(bytes_chunk), np.array(list(bytes_chunk)))
+
         bits = np.unpackbits(np.frombuffer(bytes_chunk, dtype=np.uint8))
         width, height = self.dims
         block_size = self.block_size
+        print(f"bits {i}-size {bits.shape}:", bits)
         blocks_arr = np.array(
             list(
                 map(
