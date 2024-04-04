@@ -141,6 +141,7 @@ class Encryptor:
         enc_file_videocap.release()
         cv2.destroyAllWindows()
 
-    def calculate_total_bytes(self, bytes_left_to_read):
-        bytes_amount_to_read = self.chunk_size if bytes_left_to_read > self.strategy.dims_multiplied else bytes_left_to_read
+    def calculate_bytes_amount_to_read(self, bytes_left_to_read):
+        bytes_amount_in_frame = self.strategy.dims_multiplied / self.strategy.bytes_2_pixels_ratio
+        bytes_amount_to_read = self.chunk_size if bytes_left_to_read > bytes_amount_in_frame else bytes_left_to_read
         return bytes_amount_to_read
