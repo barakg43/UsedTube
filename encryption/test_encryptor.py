@@ -56,9 +56,9 @@ class EncryptorTest(unittest.TestCase):
         for (byte1, byte2) in zip(input_content, output_content):
             if byte1 != byte2:
                 bytes_asserted += 1
-                print(f"input: {np.binary_repr(byte1, width=8)}, output: {np.binary_repr(byte2, width=8)}")
-                if (bytes_asserted > 9):
-                    break
+                if (bytes_asserted < 9):
+                    print(f"input: {np.binary_repr(byte1, width=8)}, output: {np.binary_repr(byte2, width=8)}")
+                    # break
         print(f"bytes asserted: {bytes_asserted}")
 
         pdf_file.close()
