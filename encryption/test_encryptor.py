@@ -21,12 +21,14 @@ DEC_PDF_PATH = 3
 class EncryptorTest(unittest.TestCase):
 
     def paths_dict(self):
-        paths_dict = {PDF_PATH: (RESOURCES_DIR / "sample-file.pdf").as_posix(),
+        original_file_ext = "pdf"
+        paths_dict = {PDF_PATH: (RESOURCES_DIR / f"sample-file.{original_file_ext}").as_posix(),
                       ENC_OUT_VID_PATH: (
                               OUTPUT_DIR / f"output-video_{self.enc.strategy.fourcc}.{self.enc.strategy.out_format}")
                       .as_posix(),
                       COVER_VID_PATH: (RESOURCES_DIR / "sample.mp4").as_posix(),
-                      DEC_PDF_PATH: (OUTPUT_DIR / f"sample-file-decrypted_{self.enc.strategy.fourcc}.pdf").as_posix()}
+                      DEC_PDF_PATH: (
+                              OUTPUT_DIR / f"sample-file-decrypted_{self.enc.strategy.fourcc}.{original_file_ext}").as_posix()}
 
         return paths_dict
 
