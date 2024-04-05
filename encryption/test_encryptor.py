@@ -59,7 +59,8 @@ class EncryptorTest(unittest.TestCase):
                 if (bytes_asserted < 9):
                     print(f"input: {np.binary_repr(byte1, width=8)}, output: {np.binary_repr(byte2, width=8)}")
                     # break
-        print(f"bytes asserted: {bytes_asserted}")
+        if bytes_asserted > 0:
+            print(f"bytes asserted: {bytes_asserted}")
 
         pdf_file.close()
         decrypted_pdf_file.close()
@@ -70,16 +71,12 @@ class EncryptorTest(unittest.TestCase):
         # Replace this with your actual test implementation
         print(f"#### 3P_2B: Testing codec '{codec}' with file extension '.{file_ext}' ###")
         sha256_1, sha256_2 = self.check_pdf_encryption(ThreeBytesToTwoPixels(fourcc=codec, out_format=file_ext))
-        print(sha256_1)
-        print(sha256_2)
         self.assertEqual(sha256_1, sha256_2)
 
     def perform_test_1Bit_Block(self, codec, file_ext):
         # Replace this with your actual test implementation
         print(f"#### Bit to Block: Testing codec '{codec}' with file extension '.{file_ext}' ###")
         sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(fourcc=codec, out_format=file_ext))
-        print(sha256_1)
-        print(sha256_2)
         self.assertEqual(sha256_1, sha256_2)
 
     def test_encryptor_pdf_1B_1P(self):
