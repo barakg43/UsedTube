@@ -63,6 +63,7 @@ class Encryptor:
         self.enc_logger.debug(f"about to process {len(futures)} chunks")
         # read chunks sequentially and start strategy.encrypt
         bytes_chunk = file_to_encrypt.read(self.chunk_size)
+        self.strategy.frames_amount = np.ceil(self.file_size / self.chunk_size)
 
         chunk_number = 0
         while bytes_chunk:
@@ -107,12 +108,13 @@ class Encryptor:
 
         decrypted_bytes = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=object)
         futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
-
         if self.chunk_size is None:
             self.dec_logger.debug("calculating chunk size...")
             self.chunk_size = self.strategy.calculate_chunk_size()
         self.dec_logger.debug(f"about to process {len(futures)} frames")
         frame_number = 0
+        self.strategy.frames_amount = np.ceil(file_size / self.chunk_size)
+
         while bytes_left_to_read > 0:
             ret, encrypted_frame = enc_file_videocap.read()
             if not ret:
