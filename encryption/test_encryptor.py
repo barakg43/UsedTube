@@ -1,3 +1,4 @@
+import io
 import os
 import time
 import unittest
@@ -35,10 +36,11 @@ class EncryptorTest(unittest.TestCase):
     def check_pdf_encryption(self, proto):
         self.enc = Encryptor(proto)
         paths = self.paths_dict()
-        pdf_file = open(paths[PDF_PATH], 'rb')
-
+        # pdf_file = open(paths[PDF_PATH], 'rb') TODO remove comment
+        pdf_file = io.BytesIO((np.arange(100, dtype=np.uint8) + 1).tobytes())
         decrypted_pdf_file = open(paths[DEC_PDF_PATH], "wb+")
         begin_time = time.time()
+
         self.enc.encrypt(pdf_file, paths[COVER_VID_PATH], paths[ENC_OUT_VID_PATH])
         end_time = time.time()
         print(f"Encoded In {end_time - begin_time}")
