@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 
 from encryption.constants import BYTES_PER_PIXEL, BITS_PER_BYTE
@@ -48,7 +50,7 @@ class BitToBlock(EncryptionStrategy):
         return bytes_as_rows
 
     def encrypt(self, bytes_chunk, frames_collection, i):
-
+        begin_time = time.time()
         width, height = self.dims
         # split the chuck to rows(row_size = width / block_size)
         bytes_as_rows = self.__build_bytes_matrix(bytes_chunk)
@@ -62,6 +64,8 @@ class BitToBlock(EncryptionStrategy):
         filled_frame[:blocks_arr.shape[0], : blocks_arr.shape[1]] = blocks_arr
 
         frames_collection[i] = filled_frame
+        end_time = time.time()
+        print(f"## Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec ##")
 
     def __calculate_position(self, block_num, width):
         block_size = self.block_size
@@ -91,6 +95,7 @@ class BitToBlock(EncryptionStrategy):
             yield *self.__calculate_position(block_num, width), block_num
 
     def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
+        begin_time = time.time()
         block_size = self.block_size
         width = self.dims[0]
         num_blocks = bytes_amount_to_read * 8
@@ -99,3 +104,5 @@ class BitToBlock(EncryptionStrategy):
         # convert the pixel color to bits
         decoded_bits = np.where(blocks_mean > 127, 1, 0)[:bytes_amount_to_read * BITS_PER_BYTE]
         bytes_collection[i] = np.packbits(decoded_bits)
+        end_time = time.time()
+        print(f"## Decrypt frame {i + 1}/{self.frames_amount:.0f} end {end_time - begin_time:.2f} sec##")
