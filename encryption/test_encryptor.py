@@ -77,7 +77,7 @@ class EncryptorTest(unittest.TestCase):
     def perform_test_1Bit_Block(self, codec, file_ext):
         # Replace this with your actual test implementation
         print(f"#### Bit to Block: Testing codec '{codec}' with file extension '.{file_ext}' ###")
-        sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(block_size=8, fourcc=codec, out_format=file_ext))
+        sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(fourcc=codec, out_format=file_ext))
         print(sha256_1)
         print(sha256_2)
         self.assertEqual(sha256_1, sha256_2)
