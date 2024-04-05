@@ -21,12 +21,14 @@ DEC_PDF_PATH = 3
 class EncryptorTest(unittest.TestCase):
 
     def paths_dict(self):
-        paths_dict = {PDF_PATH: (RESOURCES_DIR / "sample-file.pdf").as_posix(),
+        original_file_ext = "pdf"
+        paths_dict = {PDF_PATH: (RESOURCES_DIR / f"sample-file2.{original_file_ext}").as_posix(),
                       ENC_OUT_VID_PATH: (
                               OUTPUT_DIR / f"output-video_{self.enc.strategy.fourcc}.{self.enc.strategy.out_format}")
                       .as_posix(),
                       COVER_VID_PATH: (RESOURCES_DIR / "sample.mp4").as_posix(),
-                      DEC_PDF_PATH: (OUTPUT_DIR / f"sample-file-decrypted_{self.enc.strategy.fourcc}.pdf").as_posix()}
+                      DEC_PDF_PATH: (
+                              OUTPUT_DIR / f"sample-file-decrypted_{self.enc.strategy.fourcc}.{original_file_ext}").as_posix()}
 
         return paths_dict
 
@@ -34,9 +36,9 @@ class EncryptorTest(unittest.TestCase):
         self.enc = Encryptor(proto)
         paths = self.paths_dict()
         pdf_file = open(paths[PDF_PATH], 'rb')
-
         decrypted_pdf_file = open(paths[DEC_PDF_PATH], "wb+")
         begin_time = time.time()
+
         self.enc.encrypt(pdf_file, paths[COVER_VID_PATH], paths[ENC_OUT_VID_PATH])
         end_time = time.time()
         print(f"Encoded In {end_time - begin_time}")
@@ -54,10 +56,11 @@ class EncryptorTest(unittest.TestCase):
         for (byte1, byte2) in zip(input_content, output_content):
             if byte1 != byte2:
                 bytes_asserted += 1
-                print(f"input: {np.binary_repr(byte1, width=8)}, output: {np.binary_repr(byte2, width=8)}")
-                if (bytes_asserted > 9):
-                    break
-        print(f"bytes asserted: {bytes_asserted}")
+                if (bytes_asserted < 9):
+                    print(f"input: {np.binary_repr(byte1, width=8)}, output: {np.binary_repr(byte2, width=8)}")
+                    # break
+        if bytes_asserted > 0:
+            print(f"bytes asserted: {bytes_asserted}")
 
         pdf_file.close()
         decrypted_pdf_file.close()
@@ -68,16 +71,12 @@ class EncryptorTest(unittest.TestCase):
         # Replace this with your actual test implementation
         print(f"#### 3P_2B: Testing codec '{codec}' with file extension '.{file_ext}' ###")
         sha256_1, sha256_2 = self.check_pdf_encryption(ThreeBytesToTwoPixels(fourcc=codec, out_format=file_ext))
-        print(sha256_1)
-        print(sha256_2)
         self.assertEqual(sha256_1, sha256_2)
 
     def perform_test_1Bit_Block(self, codec, file_ext):
         # Replace this with your actual test implementation
         print(f"#### Bit to Block: Testing codec '{codec}' with file extension '.{file_ext}' ###")
         sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(fourcc=codec, out_format=file_ext))
-        print(sha256_1)
-        print(sha256_2)
         self.assertEqual(sha256_1, sha256_2)
 
     def test_encryptor_pdf_1B_1P(self):

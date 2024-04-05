@@ -1,3 +1,4 @@
 ENCRYPT_LOGGER = "EncryptionLogger"
 DECRYPT_LOGGER = "DecryptionLogger"
-MAX_UINT8 = 255
+BITS_PER_BYTE = 8
+BYTES_PER_PIXEL = 3

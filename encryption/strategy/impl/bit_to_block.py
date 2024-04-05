@@ -1,63 +1,108 @@
+import time
+
 import numpy as np
 
-from encryption.constants import MAX_UINT8
+from encryption.constants import BYTES_PER_PIXEL, BITS_PER_BYTE
 from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
 
 
 class BitToBlock(EncryptionStrategy):
     def __init__(self, block_size=4, fourcc: str = "RBGA", out_format: str = "avi"):
         super().__init__(fourcc, out_format)
-
         self.block_size = block_size
-        self.bytes_2_pixels_ratio = 8 * block_size ** 2
+        self.bytes_2_pixels_ratio = BITS_PER_BYTE * (block_size ** 2)
 
-    def encrypt(self, bytes_chunk, frames_collection, i):
+    def __create_blocks_from_bytes(self, bytes_row):
+        # repeat the bytes columns over the block size(block size:4) - [1,2,3,4] -> [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4]
+        bits_block_repeated_over_width = np.repeat(bytes_row, self.block_size * BYTES_PER_PIXEL, axis=0)
+        # repeat the bytes rows over the block size(block size:4)- [1,2,3,4] -> [[1,2,3,4] [1,2,3,4] [1,2,3,4] [1,2,3,4]])
+        bits_block_repeated_over_height = np.tile(bits_block_repeated_over_width, (self.block_size, 1))
+        return bits_block_repeated_over_height
+
+    def __build_bytes_matrix(self, bytes_chunk):
+        """
+        Builds a bytes matrix from the given bytes chunk.
+
+        Parameters:
+            bytes_chunk (bytes): The input bytes chunk.
+
+        Returns:
+             numpy.ndarray: The bytes matrix built from the bytes chunk.
+
+        :param bytes_chunk (bytes): The input bytes chunk.
+        :return numpy.ndarray: The bytes matrix built from the bytes chunk.
+        Example :
+            bytes=[1 2 3 4 5 6 7 8 9 10]
+            block_size=4
+            width=16 bytes
+
+            result will be : [[1 2 3 4]
+                            [5 6 7 8]
+                            [9 10 0 0]] as binary representation
+        """
         bits = np.unpackbits(np.frombuffer(bytes_chunk, dtype=np.uint8))
         width, height = self.dims
+        bits_amount = bits.shape[0]
+        row_amount = int(np.ceil(bits_amount * self.block_size / width))
+        bytes_array = np.zeros(row_amount * width // self.block_size, dtype=np.uint8)
+        bytes_array[:bits_amount] = bits * 255
+        bytes_as_rows = bytes_array.reshape(row_amount, -1)
+        return bytes_as_rows
+
+    def encrypt(self, bytes_chunk, frames_collection, i):
+        begin_time = time.time()
+        width, height = self.dims
+        # split the chuck to rows(row_size = width / block_size)
+        bytes_as_rows = self.__build_bytes_matrix(bytes_chunk)
+
+        # create array block from bytes
+        blocks_arr = np.apply_along_axis(self.__create_blocks_from_bytes,
+                                         arr=bytes_as_rows, axis=1).reshape(-1, width, BYTES_PER_PIXEL)
+        # create empty frame
+        filled_frame = np.zeros((height, width, BYTES_PER_PIXEL), dtype=np.uint8)
+        # fill the frame with
+        filled_frame[:blocks_arr.shape[0], : blocks_arr.shape[1]] = blocks_arr
+
+        frames_collection[i] = filled_frame
+        end_time = time.time()
+        print(f"## Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec ##")
+
+    def __calculate_position(self, block_num, width):
         block_size = self.block_size
-        blocks_arr = np.array(
-            list(
-                map(
-                    lambda bit:
-                    np.full((block_size, block_size, 3), dtype=np.uint8, fill_value=bit * MAX_UINT8),
-                    bits
-                )
-            )
-        )
-
-        frame = np.zeros((height, width, 3), dtype=np.uint8)
-
-        num_blocks = blocks_arr.shape[0]
-        for row, col, idx in self.position_generator(num_blocks, width):
-            frame[row: row + block_size, col:col + block_size] = blocks_arr[idx]
-        # return frame
-        frames_collection[i] = frame
-
-    def __calculate_position(self, block, width):
-        block_size = self.block_size
-        row = ((block_size * block) // width) * block_size
-        col = ((block_size * block) % width)
+        row = ((block_size * block_num) // width) * block_size
+        col = ((block_size * block_num) % width)
         return row, col
 
+    def __save_frame_to_csv(self, is_print_in_binary, is_encrypted, i, frames_collection):
+
+        if (i == 0):
+            print(f"saving frame {i} to file...")
+            str_array = []
+            if is_print_in_binary:
+                array = np.vectorize(np.binary_repr)(np.copy(frames_collection[i]), width=BITS_PER_BYTE)
+            else:
+                array = frames_collection[i]
+            for row in range(self.dims[1]):
+                for col in range(self.dims[0]):
+                    str_array.append(str(array[row, col]))
+
+            np.savetxt(
+                f"../output_files/frames_collection[0]_{'encrypted' if is_encrypted else 'decrypted'}_{self.fourcc}.csv",
+                np.array(str_array).reshape(self.dims[1], self.dims[0]), delimiter=",", fmt="%s")
+
     def position_generator(self, num_blocks, width):
-        for block in range(num_blocks):
-            yield *self.__calculate_position(block, width), block
+        for block_num in range(num_blocks):
+            yield *self.__calculate_position(block_num, width), block_num
 
     def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
+        begin_time = time.time()
         block_size = self.block_size
         width = self.dims[0]
         num_blocks = bytes_amount_to_read * 8
-        ########
-
-        blocks = np.array(
-            [
-                encrypted_frame[row: row + block_size, col: col + block_size] for row, col, _
-                in self.position_generator(num_blocks, width)
-            ]
-        )
-        decoded_bits = np.array(list(map(lambda block: 1 if np.mean(block) > 127 else 0, blocks)), dtype=np.uint8)
+        blocks_mean = np.array([np.mean(encrypted_frame[row: row + block_size, col:col + block_size]) for row, col, _
+                                in self.position_generator(num_blocks, width)])
+        # convert the pixel color to bits
+        decoded_bits = np.where(blocks_mean > 127, 1, 0)[:bytes_amount_to_read * BITS_PER_BYTE]
         bytes_collection[i] = np.packbits(decoded_bits)
-
-# btb = BitToBlock()
-# frame = btb.encrypt(b'GAL AVIEZRI G.AVIEZRI@gmail.com', [], 0)
-# btb.decrypt(31, frame, [], 0)
+        end_time = time.time()
+        print(f"## Decrypt frame {i + 1}/{self.frames_amount:.0f} end {end_time - begin_time:.2f} sec##")
