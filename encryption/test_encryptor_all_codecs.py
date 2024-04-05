@@ -38,8 +38,8 @@ for codec_pair in codec_arry:
         EncryptorTest.perform_test_1Bit_Block(self, codec_arg, file_ext_arg)
 
 
-    setattr(EncryptorTest, test_method_name_3P_2B, test_3p_2B)
+    # setattr(EncryptorTest, test_method_name_3P_2B, test_3p_2B)
     setattr(EncryptorTest, test_method_name_Bit_Block, test_bit_block)
-    break
+
 if __name__ == '__main__':
     unittest.main()
