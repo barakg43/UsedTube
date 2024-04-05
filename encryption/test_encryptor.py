@@ -1,4 +1,3 @@
-import io
 import os
 import time
 import unittest
@@ -23,7 +22,7 @@ class EncryptorTest(unittest.TestCase):
 
     def paths_dict(self):
         original_file_ext = "pdf"
-        paths_dict = {PDF_PATH: (RESOURCES_DIR / f"sample-file.{original_file_ext}").as_posix(),
+        paths_dict = {PDF_PATH: (RESOURCES_DIR / f"sample-file2.{original_file_ext}").as_posix(),
                       ENC_OUT_VID_PATH: (
                               OUTPUT_DIR / f"output-video_{self.enc.strategy.fourcc}.{self.enc.strategy.out_format}")
                       .as_posix(),
@@ -36,8 +35,7 @@ class EncryptorTest(unittest.TestCase):
     def check_pdf_encryption(self, proto):
         self.enc = Encryptor(proto)
         paths = self.paths_dict()
-        # pdf_file = open(paths[PDF_PATH], 'rb') TODO remove comment
-        pdf_file = io.BytesIO((np.arange(100, dtype=np.uint8) + 1).tobytes())
+        pdf_file = open(paths[PDF_PATH], 'rb')
         decrypted_pdf_file = open(paths[DEC_PDF_PATH], "wb+")
         begin_time = time.time()
 
