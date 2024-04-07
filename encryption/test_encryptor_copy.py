@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 
 from encryption.encryptor import Encryptor
-from encryption.strategy.impl.bit_to_block import BitToBlock
+from encryption.strategy.impl.bit_to_block_copy import BitToBlock
 from encryption.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
 
 RESOURCES_DIR = Path('../resources/')

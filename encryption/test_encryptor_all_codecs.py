@@ -1,6 +1,6 @@
 import unittest
 
-from encryption.test_encryptor import EncryptorTest
+from encryption.test_encryptor_copy import EncryptorTest
 
 codec_arry = [
     ['RGBA', 'avi'],  # too big
