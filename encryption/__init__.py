@@ -5,6 +5,8 @@ from pathlib import Path
 import encryption.constants as c
 
 LOG_DIR = Path(os.path.dirname(__file__)).parent / "logs"
+if not os.path.exists(LOG_DIR):
+    os.mkdir(LOG_DIR)
 ENCRYPTION_LOGS = f"{LOG_DIR}/encrypt.log"
 DECRYPTION_LOGS = f"{LOG_DIR}/decrypt.log"
 formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s ### %(message)s', datefmt="%Y-%m-%d %H:%M:%S")

@@ -11,6 +11,8 @@ from encryption.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPi
 
 RESOURCES_DIR = Path('../resources/')
 OUTPUT_DIR = Path('../output_files/')
+if not os.path.exists(OUTPUT_DIR):
+    os.mkdir(OUTPUT_DIR)
 PDF_PATH = 0
 ENC_OUT_VID_PATH = 1
 COVER_VID_PATH = 2
