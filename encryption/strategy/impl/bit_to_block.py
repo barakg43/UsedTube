@@ -71,7 +71,7 @@ class BitToBlock(EncryptionStrategy):
         end_time = time.time()
         # if i == 0:
         # show(filled_frame)
-        print(f"## Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec ##")
+        print(f"## Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.4f} sec ##")
 
     def __save_frame_to_csv(self, is_print_in_binary, is_encrypted, i, array):
 
@@ -120,4 +120,4 @@ class BitToBlock(EncryptionStrategy):
         # width, height = self.dims
         end_time = time.time()
 
-        print(f"## Decrypt frame {i + 1}/{self.frames_amount:.0f} end {end_time - begin_time:.2f} sec##")
+        print(f"## Decrypt frame {i + 1}/{self.frames_amount:.0f} end {end_time - begin_time:.4f} sec##")
