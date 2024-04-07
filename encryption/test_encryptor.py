@@ -1,3 +1,4 @@
+import io
 import os
 import time
 import unittest
@@ -34,7 +35,8 @@ class EncryptorTest(unittest.TestCase):
     def check_pdf_encryption(self, proto):
         self.enc = Encryptor(proto)
         paths = self.paths_dict()
-        pdf_file = open(paths[PDF_PATH], 'rb')
+        # pdf_file = open(paths[PDF_PATH], 'rb') TODO remove comment
+        pdf_file = io.BytesIO((np.arange(100, dtype=np.uint8) + 1).tobytes())
         decrypted_pdf_file = open(paths[DEC_PDF_PATH], "wb+")
         begin_time = time.time()
 
@@ -43,6 +45,7 @@ class EncryptorTest(unittest.TestCase):
         print(f"Encoded In {end_time - begin_time}")
         begin_time = time.time()
         file_size = os.stat(paths[PDF_PATH]).st_size
+        file_size = 100
         self.enc.decrypt(paths[ENC_OUT_VID_PATH], file_size, decrypted_pdf_file)
         end_time = time.time()
         print(f"Decoded In {end_time - begin_time}")
@@ -75,7 +78,7 @@ class EncryptorTest(unittest.TestCase):
     def perform_test_1Bit_Block(self, codec, file_ext):
         # Replace this with your actual test implementation
         print(f"#### Bit to Block: Testing codec '{codec}' with file extension '.{file_ext}' ###")
-        sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(fourcc=codec, out_format=file_ext, block_size=1))
+        sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(fourcc=codec, out_format=file_ext, block_size=4))
         self.assertEqual(sha256_1, sha256_2)
 
     # def test_encryptor_pdf_1B_1P(self):

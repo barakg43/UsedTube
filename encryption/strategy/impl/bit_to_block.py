@@ -42,10 +42,11 @@ class BitToBlock(EncryptionStrategy):
         """
         bits = np.unpackbits(np.frombuffer(bytes_chunk, dtype=np.uint8))
         width, height = self.dims
-        bits_amount = bits.shape[0]
-        row_amount = int(np.ceil(bits_amount * self.block_size / width))
+        bytes_list = list(bytes_chunk)
+        bytes_amount = len(bytes_list)
+        row_amount = int(np.ceil(bytes_amount * self.block_size / width))
         bytes_array = np.zeros(row_amount * width // self.block_size, dtype=np.uint8)
-        bytes_array[:bits_amount] = bits * 255
+        bytes_array[:bytes_amount] = bytes_list
         bytes_as_rows = bytes_array.reshape(row_amount, -1)
         return bytes_as_rows
 
@@ -66,6 +67,7 @@ class BitToBlock(EncryptionStrategy):
         frames_collection[i] = filled_frame
         end_time = time.time()
         print(f"## Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec ##")
+        self.__save_frame_to_csv(False, True, i, frames_collection)
 
     def __calculate_position(self, block_num, width):
         block_size = self.block_size
@@ -98,7 +100,7 @@ class BitToBlock(EncryptionStrategy):
         begin_time = time.time()
         block_size = self.block_size
         width = self.dims[0]
-        num_blocks = bytes_amount_to_read * 8
+        num_blocks = bytes_amount_to_read
         # blocks_mean = np.mean(encrypted_frame.reshape(num_blocks, block_size, block_size, -1), axis=(1, 3))
         # #
         # # c = 4
@@ -121,11 +123,11 @@ class BitToBlock(EncryptionStrategy):
         # # result = switchv(View, J)
 
         blocks_mean = np.array([np.mean(encrypted_frame[row: row + block_size, col:col + block_size]) for row, col, _
-                                in self.position_generator(num_blocks, width)])
+                                in self.position_generator(num_blocks, width)], dtype=np.uint8)
 
         # convert the pixel color to bits
-        decoded_bits = np.where(blocks_mean > 127, 1, 0)[:bytes_amount_to_read * BITS_PER_BYTE]
-        bytes_collection[i] = np.packbits(decoded_bits)
+        # decoded_bits = np.where(blocks_mean > 127, 1, 0)[:bytes_amount_to_read * BITS_PER_BYTE]
+        bytes_collection[i] = blocks_mean[:bytes_amount_to_read]
         end_time = time.time()
         # self.__save_frame_to_csv(False, False, i, bytes_collection)
         print(f"## Decrypt frame {i + 1}/{self.frames_amount:.0f} end {end_time - begin_time:.2f} sec##")

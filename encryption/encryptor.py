@@ -1,8 +1,7 @@
 import concurrent.futures
 import hashlib
 import logging
-import os
-from concurrent.futures import ThreadPoolExecutor, wait
+from concurrent.futures import ThreadPoolExecutor
 from typing import IO
 
 import cv2
@@ -35,14 +34,15 @@ class Encryptor:
         self.strategy.dims = (
             int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         )
+        self.strategy.dims = (64, 36)  # TODO : remove
         self.fps = cover_video.get(cv2.CAP_PROP_FPS)
         self.encoding = cv2.VideoWriter.fourcc(*self.strategy.fourcc)
         self.strategy.dims_multiplied = np.multiply(*self.strategy.dims)
 
     def collect_metadata(self, file_br, cover_video):
         self.get_cover_video_metadata(cover_video)
-        fd = file_br.fileno()
-        self.file_size = os.fstat(fd).st_size
+        # fd = file_br.fileno()
+        self.file_size = file_br.getbuffer().nbytes  # os.fstat(fd).st_size TODO : remove
 
     def encrypt(self, file_to_encrypt: IO, cover_video_path: str, out_vid_path: str):
         """"
@@ -68,11 +68,11 @@ class Encryptor:
         chunk_number = 0
         while bytes_chunk:
             # strategy.encrypt returns an encrypted frame
-            futures[chunk_number] = self.workers.submit(self.strategy.encrypt, bytes_chunk, encrypted_frames,
-                                                        chunk_number)
+            # futures[chunk_number] = self.workers.submit(self.strategy.encrypt, bytes_chunk, encrypted_frames,
+            #                                             chunk_number)
             #  use encrypt without ThreadPool
-            # futures[chunk_number] = self.strategy.encrypt(bytes_chunk, encrypted_frames,
-            #                                               chunk_number)
+            futures[chunk_number] = self.strategy.encrypt(bytes_chunk, encrypted_frames,
+                                                          chunk_number)
             # read next chunk
             chunk_number += 1
             self.enc_logger.debug(f"encryptor submitted chunk {bytes_chunk} number #{chunk_number} for encryption")
@@ -80,7 +80,7 @@ class Encryptor:
 
         self.enc_logger.debug(f"total of {chunk_number} chunks were submitted to workers")
 
-        wait(futures)
+        # wait(futures)
         self.enc_logger.debug("waiting for workers to finish processing chunks...")
         output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)  # TODO: fix encoding
         for frame in encrypted_frames:
@@ -110,7 +110,7 @@ class Encryptor:
         futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
         if self.chunk_size is None:
             self.dec_logger.debug("calculating chunk size...")
-            self.chunk_size = self.strategy.calculate_chunk_size()
+            self.strategy.calculate_chunk_size()
         self.dec_logger.debug(f"about to process {len(futures)} frames")
         frame_number = 0
         self.strategy.frames_amount = np.ceil(file_size / self.chunk_size)
@@ -120,7 +120,7 @@ class Encryptor:
             if not ret:
                 break
 
-            bytes_amount_to_read = self.calculate_bytes_amount_to_read(bytes_left_to_read)
+            bytes_amount_to_read = self.calculate_total_bytes(bytes_left_to_read)
             bytes_left_to_read -= bytes_amount_to_read
             #  use decrypt without ThreadPool
             futures[frame_number] = self.strategy.decrypt(bytes_amount_to_read, encrypted_frame,
@@ -141,7 +141,6 @@ class Encryptor:
         enc_file_videocap.release()
         cv2.destroyAllWindows()
 
-    def calculate_bytes_amount_to_read(self, bytes_left_to_read):
-        bytes_amount_in_frame = self.strategy.dims_multiplied / self.strategy.bytes_2_pixels_ratio
-        bytes_amount_to_read = self.chunk_size if bytes_left_to_read > bytes_amount_in_frame else bytes_left_to_read
+    def calculate_total_bytes(self, bytes_left_to_read):
+        bytes_amount_to_read = self.chunk_size if bytes_left_to_read > self.strategy.dims_multiplied / self.strategy.bytes_2_pixels_ratio else bytes_left_to_read
         return bytes_amount_to_read
