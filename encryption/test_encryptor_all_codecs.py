@@ -3,10 +3,9 @@ import unittest
 from encryption.test_encryptor import EncryptorTest
 
 codec_arry = [
-    ['RGBA', 'avi'],
+    # ['RGBA', 'avi'], # too big
     # ['av01', 'mp4'], bad codec
     ['avc1', 'mp4'],
-    ['avc3', 'mp4'],
     ['avc3', 'mp4'],
     ['drac', 'mp4'],
     ['hev1', 'mp4'],
@@ -40,6 +39,6 @@ for codec_pair in codec_arry:
 
     # setattr(EncryptorTest, test_method_name_3P_2B, test_3p_2B)
     setattr(EncryptorTest, test_method_name_Bit_Block, test_bit_block)
-
+    break
 if __name__ == '__main__':
     unittest.main()

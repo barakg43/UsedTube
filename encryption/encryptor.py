@@ -26,7 +26,7 @@ class Encryptor:
         self.fps: int = 0
         self.chunk_size: int = 0
         self.strategy: EncryptionStrategy = strategy
-        self.workers: ThreadPoolExecutor = ThreadPoolExecutor(25)  # Arbitrary; Inspired by FPS
+        self.workers: ThreadPoolExecutor = ThreadPoolExecutor(40)  # Arbitrary; Inspired by FPS
         self.enc_logger = logging.getLogger(ENCRYPT_LOGGER)
         self.dec_logger = logging.getLogger(DECRYPT_LOGGER)
         self.original_sha256 = ""
@@ -123,17 +123,17 @@ class Encryptor:
             bytes_amount_to_read = self.calculate_bytes_amount_to_read(bytes_left_to_read)
             bytes_left_to_read -= bytes_amount_to_read
             #  use decrypt without ThreadPool
-            # futures[frame_number] = self.strategy.decrypt(bytes_amount_to_read, encrypted_frame,
-            #                                               decrypted_bytes, frame_number)
-            futures[frame_number] = self.workers.submit(self.strategy.decrypt, bytes_amount_to_read, encrypted_frame,
-                                                        decrypted_bytes, frame_number)
+            futures[frame_number] = self.strategy.decrypt(bytes_amount_to_read, encrypted_frame,
+                                                          decrypted_bytes, frame_number)
+            # futures[frame_number] = self.workers.submit(self.strategy.decrypt, bytes_amount_to_read, encrypted_frame,
+            #                                             decrypted_bytes, frame_number)
             self.dec_logger.debug(
                 f"encryptor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for decryption")
 
             frame_number += 1
         self.enc_logger.debug(f"total of {frame_number} frames were submitted to workers")
 
-        wait(futures)
+        # wait(futures)
 
         for _bytes in decrypted_bytes:
             decrypted_file.write(bytes(_bytes.tolist()))

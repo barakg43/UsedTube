@@ -99,10 +99,33 @@ class BitToBlock(EncryptionStrategy):
         block_size = self.block_size
         width = self.dims[0]
         num_blocks = bytes_amount_to_read * 8
+        # blocks_mean = np.mean(encrypted_frame.reshape(num_blocks, block_size, block_size, -1), axis=(1, 3))
+        # #
+        # # c = 4
+        # # N = width  # Note that c is a factor of N
+        # # # Just an example array
+        # # # A = np.arange(1, N + 1).reshape(1, -1) + np.arange(100, 100 * (N + 1), 100).reshape(-1, 1)
+        # # stP, stR, stC = encrypted_frame.strides
+        # # View = np.lib.stride_tricks.as_strided(encrypted_frame, (N // c, N // c, c, 3), (c * stR, c * stC, stR, stC))
+        # #
+        # # # You can now vectorize your function to work on such data
+        # #
+        # # def switch(X, J):
+        # #     print(X, J)
+        # #     return X.T - J  # Just an example
+        # #
+        # # switchv = np.vectorize(switch, signature='(c,c),()->(c,c)')
+        # #
+        # # # And now switchv can be called on your data
+        # # J = 1
+        # # result = switchv(View, J)
+
         blocks_mean = np.array([np.mean(encrypted_frame[row: row + block_size, col:col + block_size]) for row, col, _
                                 in self.position_generator(num_blocks, width)])
+
         # convert the pixel color to bits
         decoded_bits = np.where(blocks_mean > 127, 1, 0)[:bytes_amount_to_read * BITS_PER_BYTE]
         bytes_collection[i] = np.packbits(decoded_bits)
         end_time = time.time()
+        # self.__save_frame_to_csv(False, False, i, bytes_collection)
         print(f"## Decrypt frame {i + 1}/{self.frames_amount:.0f} end {end_time - begin_time:.2f} sec##")
