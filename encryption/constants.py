@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+PROJECT_ROOT = Path(os.path.dirname(__file__)).parent
 ENCRYPT_LOGGER = "EncryptionLogger"
 DECRYPT_LOGGER = "DecryptionLogger"
 BITS_PER_BYTE = 8
