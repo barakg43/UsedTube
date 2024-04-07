@@ -23,7 +23,7 @@ class EncryptorTest(unittest.TestCase):
 
     def paths_dict(self):
         original_file_ext = "pdf"
-        paths_dict = {PDF_PATH: (RESOURCES_DIR / f"sample-file.{original_file_ext}").as_posix(),
+        paths_dict = {PDF_PATH: (RESOURCES_DIR / f"sample-file3.{original_file_ext}").as_posix(),
                       ENC_OUT_VID_PATH: (
                               OUTPUT_DIR / f"output-video_{self.enc.strategy.fourcc}.{self.enc.strategy.out_format}")
                       .as_posix(),
@@ -77,7 +77,7 @@ class EncryptorTest(unittest.TestCase):
     def perform_test_1Bit_Block(self, codec, file_ext):
         # Replace this with your actual test implementation
         print(f"#### Bit to Block: Testing codec '{codec}' with file extension '.{file_ext}' ###")
-        sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(fourcc=codec, out_format=file_ext, block_size=4))
+        sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(fourcc=codec, out_format=file_ext))
         self.assertEqual(sha256_1, sha256_2)
 
     # def test_encryptor_pdf_1B_1P(self):
