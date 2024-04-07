@@ -11,6 +11,8 @@ from encryption.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPi
 
 RESOURCES_DIR = Path('../resources/')
 OUTPUT_DIR = Path('../output_files/')
+if not os.path.exists(OUTPUT_DIR):
+    os.mkdir(OUTPUT_DIR)
 PDF_PATH = 0
 ENC_OUT_VID_PATH = 1
 COVER_VID_PATH = 2
@@ -32,7 +34,7 @@ class EncryptorTest(unittest.TestCase):
         return paths_dict
 
     def check_pdf_encryption(self, proto):
-        self.enc = Encryptor(proto)
+        self.enc = Encryptor(proto, concurrent_execution=False)
         paths = self.paths_dict()
         pdf_file = open(paths[PDF_PATH], 'rb')
         decrypted_pdf_file = open(paths[DEC_PDF_PATH], "wb+")
@@ -75,7 +77,7 @@ class EncryptorTest(unittest.TestCase):
     def perform_test_1Bit_Block(self, codec, file_ext):
         # Replace this with your actual test implementation
         print(f"#### Bit to Block: Testing codec '{codec}' with file extension '.{file_ext}' ###")
-        sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(fourcc=codec, out_format=file_ext, block_size=1))
+        sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(fourcc=codec, out_format=file_ext, block_size=4))
         self.assertEqual(sha256_1, sha256_2)
 
     # def test_encryptor_pdf_1B_1P(self):
