@@ -101,6 +101,7 @@ class BitToBlock(EncryptionStrategy):
         block_size = self.block_size
         width = self.dims[0]
         num_blocks = bytes_amount_to_read
+
         # blocks_mean = np.mean(encrypted_frame.reshape(num_blocks, block_size, block_size, -1), axis=(1, 3))
         # #
         # # c = 4
@@ -121,9 +122,13 @@ class BitToBlock(EncryptionStrategy):
         # # # And now switchv can be called on your data
         # # J = 1
         # # result = switchv(View, J)
+        def print_blocks_mean(array):
+            print("block :", array)
+            return array
 
-        blocks_mean = np.array([np.mean(encrypted_frame[row: row + block_size, col:col + block_size]) for row, col, _
-                                in self.position_generator(num_blocks, width)], dtype=np.uint8)
+        blocks_mean = np.array(
+            [print_blocks_mean(encrypted_frame[row: row + block_size, col:col + block_size]) for row, col, _
+             in self.position_generator(num_blocks, width)], dtype=np.uint8)
 
         # convert the pixel color to bits
         # decoded_bits = np.where(blocks_mean > 127, 1, 0)[:bytes_amount_to_read * BITS_PER_BYTE]
