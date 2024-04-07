@@ -12,6 +12,8 @@ from encryption.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPi
 
 RESOURCES_DIR = Path('../resources/')
 OUTPUT_DIR = Path('../output_files/')
+if not os.path.exists(OUTPUT_DIR):
+    os.mkdir(OUTPUT_DIR)
 PDF_PATH = 0
 ENC_OUT_VID_PATH = 1
 COVER_VID_PATH = 2
@@ -33,7 +35,7 @@ class EncryptorTest(unittest.TestCase):
         return paths_dict
 
     def check_pdf_encryption(self, proto):
-        self.enc = Encryptor(proto)
+        self.enc = Encryptor(proto, concurrent_execution=False)
         paths = self.paths_dict()
         # pdf_file = open(paths[PDF_PATH], 'rb') TODO remove comment
         pdf_file = io.BytesIO((np.arange(100, dtype=np.uint8) + 1).tobytes())
