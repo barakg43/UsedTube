@@ -1,7 +1,8 @@
 import concurrent.futures
 import hashlib
 import logging
-from concurrent.futures import ThreadPoolExecutor
+import os
+from concurrent.futures import ThreadPoolExecutor, wait
 from typing import IO
 
 import cv2
@@ -33,20 +34,18 @@ class Encryptor:
         self.dec_logger = logging.getLogger(DECRYPT_LOGGER)
         self.original_sha256 = ""
 
-
     def get_cover_video_metadata(self, cover_video):
         self.strategy.dims = (
             int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         )
-        self.strategy.dims = (64, 36)  # TODO : remove
         self.fps = cover_video.get(cv2.CAP_PROP_FPS)
         self.encoding = cv2.VideoWriter.fourcc(*self.strategy.fourcc)
         self.strategy.dims_multiplied = np.multiply(*self.strategy.dims)
 
     def collect_metadata(self, file_br, cover_video):
         self.get_cover_video_metadata(cover_video)
-        # fd = file_br.fileno()
-        self.file_size = file_br.getbuffer().nbytes  # os.fstat(fd).st_size TODO : remove
+        fd = file_br.fileno()
+        self.file_size = os.fstat(fd).st_size
 
     def encrypt(self, file_to_encrypt: IO, cover_video_path: str, out_vid_path: str):
         """"
@@ -68,13 +67,9 @@ class Encryptor:
         # read chunks sequentially and start strategy.encrypt
         bytes_chunk = file_to_encrypt.read(self.chunk_size)
         self.strategy.frames_amount = np.ceil(self.file_size / self.chunk_size)
-
         chunk_number = 0
         while bytes_chunk:
-            # strategy.encrypt returns an encrypted frame
-            futures[chunk_number] = self.workers.submit(self.strategy.encrypt, bytes_chunk, encrypted_frames,
-                                                        chunk_number)
-            #  use encrypt without ThreadPool
+            # use encrypt without ThreadPool
             if self.workers:
                 futures[chunk_number] = self.workers.submit(self.strategy.encrypt, bytes_chunk, encrypted_frames,
                                                             chunk_number)
@@ -150,7 +145,6 @@ class Encryptor:
             wait(futures)
 
         list(map(lambda _bytes: decrypted_file.write(bytes(_bytes.tolist())), decrypted_bytes))
-
 
         enc_file_videocap.release()
         cv2.destroyAllWindows()

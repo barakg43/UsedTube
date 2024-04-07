@@ -1,11 +1,11 @@
 import unittest
 
-from encryption.test_encryptor_copy import EncryptorTest
+from encryption.test_encryptor import EncryptorTest
 
 codec_arry = [
     ['RGBA', 'avi'],  # too big
     # ['av01', 'mp4'], bad codec
-['mp4v', 'mp4'],
+    ['mp4v', 'mp4'],
     ['avc1', 'mp4'],
     ['avc3', 'mp4'],
     ['drac', 'mp4'],

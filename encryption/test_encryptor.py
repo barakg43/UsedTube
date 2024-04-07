@@ -1,4 +1,3 @@
-import io
 import os
 import time
 import unittest
@@ -7,7 +6,7 @@ from pathlib import Path
 import numpy as np
 
 from encryption.encryptor import Encryptor
-from encryption.strategy.impl.bit_to_block_copy import BitToBlock
+from encryption.strategy.impl.bit_to_block import BitToBlock
 from encryption.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
 
 RESOURCES_DIR = Path('../resources/')
@@ -37,8 +36,7 @@ class EncryptorTest(unittest.TestCase):
     def check_pdf_encryption(self, proto):
         self.enc = Encryptor(proto, concurrent_execution=False)
         paths = self.paths_dict()
-        # pdf_file = open(paths[PDF_PATH], 'rb') TODO remove comment
-        pdf_file = io.BytesIO((np.arange(100, dtype=np.uint8) + 1).tobytes())
+        pdf_file = open(paths[PDF_PATH], 'rb')
         decrypted_pdf_file = open(paths[DEC_PDF_PATH], "wb+")
         begin_time = time.time()
 
@@ -47,7 +45,6 @@ class EncryptorTest(unittest.TestCase):
         print(f"Encoded In {end_time - begin_time}")
         begin_time = time.time()
         file_size = os.stat(paths[PDF_PATH]).st_size
-        file_size = 100
         self.enc.decrypt(paths[ENC_OUT_VID_PATH], file_size, decrypted_pdf_file)
         end_time = time.time()
         print(f"Decoded In {end_time - begin_time}")
