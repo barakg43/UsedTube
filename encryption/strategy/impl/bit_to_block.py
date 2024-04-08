@@ -49,11 +49,10 @@ class BitToBlock(EncryptionStrategy):
         """
         bits = np.unpackbits(np.frombuffer(bytes_chunk, dtype=np.uint8))
         width, height = self.dims
-        bytes_list = list(bytes_chunk)
-        bytes_amount = len(bytes_list)
-        row_amount = int(np.ceil(bytes_amount * self.block_size / width))
+        bits_amount = bits.shape[0]
+        row_amount = int(np.ceil(bits_amount * self.block_size / width))
         bytes_array = np.zeros(row_amount * width // self.block_size, dtype=np.uint8)
-        bytes_array[:bytes_amount] = bytes_list
+        bytes_array[:bits_amount] = bits * 255
         bytes_as_rows = bytes_array.reshape(row_amount, -1)
         return np.repeat(bytes_as_rows[:, :, np.newaxis], BYTES_PER_PIXEL, axis=2)
 
@@ -70,9 +69,9 @@ class BitToBlock(EncryptionStrategy):
         filled_frame[:frame_of_blocks.shape[0], : frame_of_blocks.shape[1]] = frame_of_blocks
         frames_collection[i] = filled_frame
         end_time = time.time()
-        if i == 0:
-            show(filled_frame)
-        print(f"## Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec ##")
+        # if i == 0:
+        # show(filled_frame)
+        print(f"## Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.4f} sec ##")
 
     def __save_frame_to_csv(self, is_print_in_binary, is_encrypted, i, array):
 
@@ -121,4 +120,4 @@ class BitToBlock(EncryptionStrategy):
         # width, height = self.dims
         end_time = time.time()
 
-        print(f"## Decrypt frame {i + 1}/{self.frames_amount:.0f} end {end_time - begin_time:.2f} sec##")
+        print(f"## Decrypt frame {i + 1}/{self.frames_amount:.0f} end {end_time - begin_time:.4f} sec##")

@@ -27,7 +27,7 @@ class Encryptor:
         self.chunk_size: int = 0
         self.strategy: EncryptionStrategy = strategy
         if concurrent_execution:
-            self.workers: ThreadPoolExecutor = ThreadPoolExecutor(40)  # Arbitrary; Inspired by FPS
+            self.workers: ThreadPoolExecutor = ThreadPoolExecutor(25)  # Arbitrary; Inspired by FPS
         else:
             self.workers = None
         self.enc_logger = logging.getLogger(ENCRYPT_LOGGER)
