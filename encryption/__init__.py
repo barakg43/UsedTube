@@ -23,7 +23,7 @@ def init_logger(log_path, logger_name):
     logger = logging.getLogger(logger_name)
 
     logger.addHandler(f_handler)
-
+    logger.addHandler(logging.StreamHandler())  # print to console
     logger.setLevel(logging.DEBUG)
 
 
@@ -44,7 +44,7 @@ def init_logger_async(log_path, logger_name):
         while True:
             try:
                 record = log_queue.get(block=True, timeout=None)
-                with open(log_path, 'a') as file:
+                with open(log_path, 'w') as file:
                     file.write(formatter.format(record) + '\n')
             except Exception as e:
                 logging.getLogger(c.GENERAL_LOGGER).critical(e.with_traceback())
@@ -56,6 +56,7 @@ def init_logger_async(log_path, logger_name):
     listener_thread.start()
 
     logger.addHandler(queue_handler)
+    logger.addHandler(logging.StreamHandler())  # print to console
 
 
 init_logger_async(ENCRYPTION_LOGS, c.ENCRYPT_LOGGER)

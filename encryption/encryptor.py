@@ -107,7 +107,7 @@ class Encryptor:
                                                               chunk_number)
             # read next chunk
             chunk_number += 1
-            self.enc_logger.debug(f"encryptor submitted chunk number #{chunk_number} for encryption")
+            # self.enc_logger.debug(f"encryptor submitted chunk number #{chunk_number} for encryption")
             bytes_chunk = file_to_encrypt.read(self.chunk_size)
 
         self.enc_logger.debug(f"total of {chunk_number} chunks were submitted to workers")
@@ -163,8 +163,8 @@ class Encryptor:
                 futures[frame_number] = self.strategy.decrypt(bytes_amount_to_read, encrypted_frame,
                                                               decrypted_bytes, frame_number)
             frame_number += 1
-            self.dec_logger.debug(
-                f"encryptor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for decryption")
+            # self.dec_logger.debug(
+            #     f"encryptor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for decryption")
 
         self.enc_logger.debug(f"total of {frame_number} frames were submitted to workers")
 
