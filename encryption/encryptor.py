@@ -13,6 +13,7 @@ from encryption.strategy.definition.encryption_strategy import EncryptionStrateg
 
 encrypt_logger = logging.getLogger(ENCRYPT_LOGGER)
 decrypt_logger = logging.getLogger(DECRYPT_LOGGER)
+
 """
 CHUNK_SIZE SHOULD BE CALCULATED ONCE, BASED ON ENCRYPTION METHOD WE WILL CHOOSE
 IF ONLY ONE COVER VIDEO IS USED, METADATA SHOULD ALSO BE RETRIEVED ONCE
@@ -47,6 +48,34 @@ class Encryptor:
         fd = file_br.fileno()
         self.file_size = os.fstat(fd).st_size
 
+    def __write_frames_concurrently_to_video(self, encrypted_frames, output_video,
+                                             futures: np.ndarray[concurrent.futures.Future]):
+        frame_amount_in_block = 10
+
+        def process_frame(frame):
+            output_video.write(frame)
+            return None  # to remove the frame form memory
+
+        for start_index in np.arange(0, len(encrypted_frames), frame_amount_in_block):
+            end_index = start_index + frame_amount_in_block
+            wait(futures[start_index:end_index])
+            encrypted_frames[start_index:end_index] = list(map(process_frame, encrypted_frames[start_index:end_index]))
+
+    def __write_bytes_concurrently_to_file(self, decrypted_bytes, decrypted_file,
+                                           futures: np.ndarray[concurrent.futures.Future]):
+        bytes_amount_in_block = 1000
+
+        def process_byte(byte):
+            decrypted_file.write(bytes(byte.tolist()))
+            return None  # to remove the byte form memory
+
+        for start_index in np.arange(0, len(decrypted_bytes), bytes_amount_in_block):
+            end_index = start_index + bytes_amount_in_block
+            wait(futures[start_index:end_index])
+            decrypted_bytes[start_index:end_index] = list(
+                map(process_byte,
+                    decrypted_bytes[start_index:end_index]))
+
     def encrypt(self, file_to_encrypt: IO, cover_video_path: str, out_vid_path: str):
         """"
         :param out_vid_path: string path
@@ -67,6 +96,7 @@ class Encryptor:
         bytes_chunk = file_to_encrypt.read(self.chunk_size)
         self.strategy.frames_amount = np.ceil(self.file_size / self.chunk_size)
         chunk_number = 0
+
         while bytes_chunk:
             # use encrypt without ThreadPool
             if self.workers:
@@ -81,12 +111,14 @@ class Encryptor:
             bytes_chunk = file_to_encrypt.read(self.chunk_size)
 
         self.enc_logger.debug(f"total of {chunk_number} chunks were submitted to workers")
-        if self.workers:
-            wait(futures)
-        self.enc_logger.debug("waiting for workers to finish processing chunks...")
         output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
+        if self.workers:
+            self.__write_frames_concurrently_to_video(encrypted_frames, output_video,
+                                                      futures)  # wait for file worker to finish
+        else:
+            list(map(output_video.write, encrypted_frames))
 
-        list(map(output_video.write, encrypted_frames))
+        self.enc_logger.debug("waiting for workers to finish processing chunks...")
 
         # Closes all the video sources
         cover_video.release()
@@ -105,9 +137,9 @@ class Encryptor:
         self.get_cover_video_metadata(enc_file_videocap)
 
         bytes_left_to_read = file_size
-
         decrypted_bytes = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=object)
         futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
+
         if self.chunk_size is None:
             self.dec_logger.debug("calculating chunk size...")
             self.strategy.calculate_chunk_size()
@@ -134,14 +166,12 @@ class Encryptor:
             self.dec_logger.debug(
                 f"encryptor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for decryption")
 
-
         self.enc_logger.debug(f"total of {frame_number} frames were submitted to workers")
 
         if self.workers:
-            wait(futures)
-
-        list(map(lambda _bytes: decrypted_file.write(bytes(_bytes.tolist())), decrypted_bytes))
-
+            self.__write_bytes_concurrently_to_file(decrypted_bytes, decrypted_file, futures)
+        else:
+            list(map(lambda _bytes: decrypted_file.write(bytes(_bytes.tolist())), decrypted_bytes))
         enc_file_videocap.release()
         cv2.destroyAllWindows()
 

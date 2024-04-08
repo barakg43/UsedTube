@@ -16,7 +16,7 @@ formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s ### %(message)
 
 
 def init_logger(log_path, logger_name):
-    f_handler = logging.FileHandler(log_path)
+    f_handler = logging.FileHandler(log_path, mode='w')
 
     f_handler.setFormatter(formatter)
 
