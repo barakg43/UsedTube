@@ -130,10 +130,11 @@ class Encryptor:
             else:
                 futures[frame_number] = self.strategy.decrypt(bytes_amount_to_read, encrypted_frame,
                                                               decrypted_bytes, frame_number)
+            frame_number += 1
             self.dec_logger.debug(
                 f"encryptor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for decryption")
 
-            frame_number += 1
+
         self.enc_logger.debug(f"total of {frame_number} frames were submitted to workers")
 
         if self.workers:

@@ -1,9 +1,10 @@
+import logging
 import time
 import matplotlib.pyplot as plt
 import numpy as np
 from encryption.constants import BYTES_PER_PIXEL, BITS_PER_BYTE
 from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
-
+from encryption.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
 
 def show(frame):
     plt.imshow(frame)
@@ -15,6 +16,8 @@ class BitToBlock(EncryptionStrategy):
         super().__init__(fourcc, out_format)
         self.block_size = block_size
         self.bytes_2_pixels_ratio = BITS_PER_BYTE * (block_size ** 2)
+        self.enc_logger = logging.getLogger(ENCRYPT_LOGGER)
+        self.dec_logger = logging.getLogger(DECRYPT_LOGGER)
 
     def __create_blocks_from_bytes(self, bytes_row):
         block_size = self.block_size
@@ -55,7 +58,7 @@ class BitToBlock(EncryptionStrategy):
         return np.repeat(bytes_as_rows[:, :, np.newaxis], BYTES_PER_PIXEL, axis=2)
 
     def encrypt(self, bytes_chunk, frames_collection, i):
-        # begin_time = time.time()
+        begin_time = time.time()
         width, height = self.dims
         block_size = self.block_size
         # split the chuck to rows(row_size = width / block_size)
@@ -66,8 +69,9 @@ class BitToBlock(EncryptionStrategy):
         # fill the frame with
         filled_frame[:frame_of_blocks.shape[0], : frame_of_blocks.shape[1]] = frame_of_blocks
         frames_collection[i] = filled_frame
-        # end_time = time.time()
-        # print(f"## Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec ##")
+        end_time = time.time()
+        self.enc_logger.debug(f"Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec")
+
 
     def __save_frame_to_csv(self, is_print_in_binary, is_encrypted, i, array):
         if (i == 0):
@@ -83,7 +87,7 @@ class BitToBlock(EncryptionStrategy):
                 np.array(str_array).reshape(self.dims[1], self.dims[0]), delimiter=",", fmt="%s")
 
     def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
-        # begin_time = time.time()
+        begin_time = time.time()
         block_size = self.block_size
         width, height = self.dims
         block_amount_over_width = width // block_size
@@ -92,5 +96,5 @@ class BitToBlock(EncryptionStrategy):
         blocks_means = np.mean(blocks, axis=(1, 3, 4)).flatten().astype(np.uint8)[:bytes_amount_to_read * BITS_PER_BYTE]
         decoded_bits = np.where(blocks_means > 127, 1, 0)
         bytes_collection[i] = np.packbits(decoded_bits)
-        # end_time = time.time()
-        # print(f"## Decrypt frame {i + 1}/{self.frames_amount:.0f} end {end_time - begin_time:.2f} sec##")
+        end_time = time.time()
+        self.dec_logger.debug(f"Decrypt frame {i + 1}/{self.frames_amount:.0f} end {end_time - begin_time:.2f} sec")
