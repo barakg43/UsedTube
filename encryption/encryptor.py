@@ -53,7 +53,6 @@ class Encryptor:
         :param cover_video_path:
         :parameter file_to_encrypt an open file descriptor in 'rb' to the file
         """
-
         cover_video = cv2.VideoCapture(cover_video_path)
         self.collect_metadata(file_to_encrypt, cover_video)
 
@@ -78,18 +77,16 @@ class Encryptor:
                                                               chunk_number)
             # read next chunk
             chunk_number += 1
-            self.enc_logger.debug(f"encryptor submitted chunk {bytes_chunk} number #{chunk_number} for encryption")
+            self.enc_logger.debug(f"encryptor submitted chunk number #{chunk_number} for encryption")
             bytes_chunk = file_to_encrypt.read(self.chunk_size)
 
         self.enc_logger.debug(f"total of {chunk_number} chunks were submitted to workers")
         if self.workers:
             wait(futures)
         self.enc_logger.debug("waiting for workers to finish processing chunks...")
-        output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)  # TODO: fix encoding
+        output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
 
         list(map(output_video.write, encrypted_frames))
-        # for frame in encrypted_frames:
-        #     output_video.write(frame)
 
         # Closes all the video sources
         cover_video.release()
@@ -103,8 +100,6 @@ class Encryptor:
         return sha256Hashed
 
     def decrypt(self, encrypted_file_as_video_path, file_size, decrypted_file):
-        # CHANGE THE IO OPERATIONS TO BE SEQUENTIAL
-        # IMPLEMENT CONCURRENCY HERE ASWELL
 
         enc_file_videocap = cv2.VideoCapture(encrypted_file_as_video_path)
         self.get_cover_video_metadata(enc_file_videocap)
@@ -127,7 +122,7 @@ class Encryptor:
 
             bytes_amount_to_read = self.calculate_total_bytes(bytes_left_to_read)
             bytes_left_to_read -= bytes_amount_to_read
-            #  use decrypt without ThreadPool
+
             if self.workers:
                 futures[frame_number] = self.workers.submit(self.strategy.decrypt, bytes_amount_to_read,
                                                             encrypted_frame,
@@ -135,10 +130,11 @@ class Encryptor:
             else:
                 futures[frame_number] = self.strategy.decrypt(bytes_amount_to_read, encrypted_frame,
                                                               decrypted_bytes, frame_number)
+            frame_number += 1
             self.dec_logger.debug(
                 f"encryptor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for decryption")
 
-            frame_number += 1
+
         self.enc_logger.debug(f"total of {frame_number} frames were submitted to workers")
 
         if self.workers:
