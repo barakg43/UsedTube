@@ -1,8 +1,6 @@
 import time
-
 import matplotlib.pyplot as plt
 import numpy as np
-
 from encryption.constants import BYTES_PER_PIXEL, BITS_PER_BYTE
 from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
 
@@ -43,22 +41,21 @@ class BitToBlock(EncryptionStrategy):
             block_size=4
             width=16 bytes
 
-            result will be : [[1 2 3 4]
-                            [5 6 7 8]
-                            [9 10 0 0]] as binary representation
+            result will be : [[0b1 0b2 0b3 0b4]
+                            [0b5 0b6 0b7 0b8]
+                            [0b9 0b10 0b0 0b0]] as binary representation
         """
         bits = np.unpackbits(np.frombuffer(bytes_chunk, dtype=np.uint8))
         width, height = self.dims
-        bytes_list = list(bytes_chunk)
-        bytes_amount = len(bytes_list)
-        row_amount = int(np.ceil(bytes_amount * self.block_size / width))
+        bits_amount = bits.shape[0]
+        row_amount = int(np.ceil(bits_amount * self.block_size / width))
         bytes_array = np.zeros(row_amount * width // self.block_size, dtype=np.uint8)
-        bytes_array[:bytes_amount] = bytes_list
+        bytes_array[:bits_amount] = bits * 255
         bytes_as_rows = bytes_array.reshape(row_amount, -1)
         return np.repeat(bytes_as_rows[:, :, np.newaxis], BYTES_PER_PIXEL, axis=2)
 
     def encrypt(self, bytes_chunk, frames_collection, i):
-        begin_time = time.time()
+        # begin_time = time.time()
         width, height = self.dims
         block_size = self.block_size
         # split the chuck to rows(row_size = width / block_size)
@@ -69,13 +66,10 @@ class BitToBlock(EncryptionStrategy):
         # fill the frame with
         filled_frame[:frame_of_blocks.shape[0], : frame_of_blocks.shape[1]] = frame_of_blocks
         frames_collection[i] = filled_frame
-        end_time = time.time()
-        if i == 0:
-            show(filled_frame)
-        print(f"## Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec ##")
+        # end_time = time.time()
+        # print(f"## Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec ##")
 
     def __save_frame_to_csv(self, is_print_in_binary, is_encrypted, i, array):
-
         if (i == 0):
             print(f"saving frame {i} to file...")
             str_array = []
@@ -84,41 +78,19 @@ class BitToBlock(EncryptionStrategy):
             for row in range(self.dims[1]):
                 for col in range(self.dims[0]):
                     str_array.append(str(array[row, col]))
-
             np.savetxt(
                 f"../output_files/frames_collection[0]_{'encrypted' if is_encrypted else 'decrypted'}_{self.fourcc}.csv",
                 np.array(str_array).reshape(self.dims[1], self.dims[0]), delimiter=",", fmt="%s")
 
     def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
-        begin_time = time.time()
+        # begin_time = time.time()
         block_size = self.block_size
         width, height = self.dims
         block_amount_over_width = width // block_size
         block_amount_over_height = height // block_size
-        blocks = encrypted_frame.reshape((block_amount_over_height, block_size, block_amount_over_width, block_size, 3))
+        blocks = encrypted_frame.reshape((block_amount_over_height, block_size, block_amount_over_width,  block_size, 3))
         blocks_means = np.mean(blocks, axis=(1, 3, 4)).flatten().astype(np.uint8)[:bytes_amount_to_read * BITS_PER_BYTE]
         decoded_bits = np.where(blocks_means > 127, 1, 0)
         bytes_collection[i] = np.packbits(decoded_bits)
-
-        # convert the pixel color to bits
-        # Calculate mean for each block
-
-        # block_view = np.lib.stride_tricks.as_strided(encrypted_frame, shape=shape, strides=strides)
-        # Create a sliding window view
-
-        # strides = (block_size, block_size)
-        # shape = (num_blocks, 1)
-        # if i == 0 :
-        #     show(encrypted_frame)
-        # # Calculate the shape and strides for the sliding window view
-        #
-        # # blocks_means = blocks_means.reshape(num_blocks, -1)
-        # # blocks_means = np.lib.stride_tricks.as_strided()
-        # #                         in self.position_generator(num_blocks, width)])
-        # # blocks_mean = np.array([np.mean(encrypted_frame[row: row + block_size, col:col + block_size]) for row, col, _
-        # #
-        # num_blocks = bytes_amount_to_read * 8
-        # width, height = self.dims
-        end_time = time.time()
-
-        print(f"## Decrypt frame {i + 1}/{self.frames_amount:.0f} end {end_time - begin_time:.2f} sec##")
+        # end_time = time.time()
+        # print(f"## Decrypt frame {i + 1}/{self.frames_amount:.0f} end {end_time - begin_time:.2f} sec##")
