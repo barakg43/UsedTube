@@ -6,7 +6,7 @@ codec_arry = [
 
     # ['RGBA', 'avi'],  # too big
     # ['av01', 'mp4'], not working
-    # ['vp09', 'mp4'],
+    ['vp09', 'mp4'],
     ['mp4v', 'mp4'],
     ['avc1', 'mp4'],
     ['avc3', 'mp4'],
