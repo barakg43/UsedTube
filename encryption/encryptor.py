@@ -1,4 +1,5 @@
 import concurrent.futures
+import gc
 import hashlib
 import logging
 import os
@@ -55,12 +56,15 @@ class Encryptor:
 
         def process_frame(frame):
             output_video.write(frame)
+            del frame
             return None  # to remove the frame form memory
 
         for start_index in np.arange(0, len(encrypted_frames), frame_amount_in_block):
             end_index = start_index + frame_amount_in_block
             wait(futures[start_index:end_index])
             encrypted_frames[start_index:end_index] = list(map(process_frame, encrypted_frames[start_index:end_index]))
+            gc.collect()  # collect garbage after writing frame
+            self.enc_logger.debug(f"finished writing encrypted frame {start_index + 1} to {end_index} to file")
 
     def __write_bytes_concurrently_to_file(self, decrypted_bytes, decrypted_file,
                                            futures: np.ndarray[concurrent.futures.Future]):
