@@ -5,6 +5,7 @@ import queue
 import threading
 
 import encryption.constants as c
+from encryption.encryptor import write_log_to_console
 
 LOG_DIR = c.PROJECT_ROOT / "logs"
 if not os.path.exists(LOG_DIR):
@@ -23,7 +24,10 @@ def init_logger(log_path, logger_name):
     logger = logging.getLogger(logger_name)
 
     logger.addHandler(f_handler)
-    logger.addHandler(logging.StreamHandler())  # print to console
+    if write_log_to_console:
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)  # print to console
     logger.setLevel(logging.DEBUG)
 
 
@@ -56,7 +60,10 @@ def init_logger_async(log_path, logger_name):
     listener_thread.start()
 
     logger.addHandler(queue_handler)
-    logger.addHandler(logging.StreamHandler())  # print to console
+    if write_log_to_console:
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)
 
 
 init_logger_async(ENCRYPTION_LOGS, c.ENCRYPT_LOGGER)
