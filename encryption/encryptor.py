@@ -89,10 +89,7 @@ class Encryptor:
         """
         cover_video = cv2.VideoCapture(cover_video_path)
         self.collect_metadata(file_to_encrypt, cover_video)
-
-        if self.chunk_size == 0:
-            self.enc_logger.debug("calculating chunk size")
-            self.chunk_size = self.strategy.calculate_chunk_size()
+        self.chunk_size = self.strategy.calculate_chunk_size()
 
         encrypted_frames = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=object)
         futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
@@ -136,18 +133,16 @@ class Encryptor:
         file_bytes.seek(0)
         return sha256Hashed
 
-    def decrypt(self, encrypted_file_as_video_path, file_size, decrypted_file):
+    def decrypt(self, encrypted_file_as_video_path: str, file_size: int, decrypted_file: IO):
 
         enc_file_videocap = cv2.VideoCapture(encrypted_file_as_video_path)
         self.get_cover_video_metadata(enc_file_videocap)
-
+        self.chunk_size = self.strategy.calculate_chunk_size()
         bytes_left_to_read = file_size
-        decrypted_bytes = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=object)
-        futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
 
-        if self.chunk_size is None:
-            self.dec_logger.debug("calculating chunk size...")
-            self.strategy.calculate_chunk_size()
+        decrypted_bytes = np.empty(int(np.ceil(file_size / self.chunk_size)), dtype=object)
+        futures = np.empty(int(np.ceil(file_size / self.chunk_size)), dtype=concurrent.futures.Future)
+
         self.dec_logger.debug(f"about to process {len(futures)} frames")
         frame_number = 0
         self.strategy.frames_amount = np.ceil(file_size / self.chunk_size)
