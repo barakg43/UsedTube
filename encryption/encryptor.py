@@ -11,6 +11,7 @@ import numpy as np
 from encryption.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
 from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
 
+write_log_to_console = True
 encrypt_logger = logging.getLogger(ENCRYPT_LOGGER)
 decrypt_logger = logging.getLogger(DECRYPT_LOGGER)
 
