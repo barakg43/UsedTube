@@ -8,6 +8,7 @@ from typing import IO
 
 import cv2
 import numpy as np
+from more_itertools import consume
 
 from encryption.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
 from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
@@ -56,13 +57,14 @@ class Encryptor:
 
         def process_frame(frame):
             output_video.write(frame)
-            del frame
-            return None  # to remove the frame form memory
+            # return None  # to remove the frame form memory
 
         for start_index in np.arange(0, len(encrypted_frames), frame_amount_in_block):
             end_index = start_index + frame_amount_in_block
             wait(futures[start_index:end_index])
-            encrypted_frames[start_index:end_index] = list(map(process_frame, encrypted_frames[start_index:end_index]))
+
+            consume(map(process_frame, encrypted_frames[start_index:end_index]))
+            encrypted_frames[start_index:end_index] = None
             gc.collect()  # collect garbage after writing frame
             self.enc_logger.debug(f"finished writing encrypted frame {start_index + 1} to {end_index} to file")
 
@@ -87,6 +89,7 @@ class Encryptor:
         :param cover_video_path:
         :parameter file_to_encrypt an open file descriptor in 'rb' to the file
         """
+
         cover_video = cv2.VideoCapture(cover_video_path)
         self.collect_metadata(file_to_encrypt, cover_video)
         self.chunk_size = self.strategy.calculate_chunk_size()
@@ -118,7 +121,7 @@ class Encryptor:
             self.__write_frames_concurrently_to_video(encrypted_frames, output_video,
                                                       futures)  # wait for file worker to finish
         else:
-            list(map(output_video.write, encrypted_frames))
+            consume(map(output_video.write, encrypted_frames))
 
         self.enc_logger.debug("waiting for workers to finish processing chunks...")
 
@@ -171,7 +174,7 @@ class Encryptor:
         if self.workers:
             self.__write_bytes_concurrently_to_file(decrypted_bytes, decrypted_file, futures)
         else:
-            list(map(lambda _bytes: decrypted_file.write(bytes(_bytes.tolist())), decrypted_bytes))
+            consume(map(lambda _bytes: decrypted_file.write(bytes(_bytes.tolist())), decrypted_bytes))
         enc_file_videocap.release()
         cv2.destroyAllWindows()
 
