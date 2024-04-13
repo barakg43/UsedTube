@@ -3,21 +3,21 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 from server.engine.serialization.constants import BYTES_PER_PIXEL, BITS_PER_BYTE
-from server.engine.serialization.strategy.definition.serialization_strategy import EncryptionStrategy
-from server.engine.serialization.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
+from server.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
+from server.engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
 
 def show(frame):
     plt.imshow(frame)
     plt.show()
 
 
-class BitToBlock(EncryptionStrategy):
+class BitToBlock(SerializationStrategy):
     def __init__(self, block_size=4, fourcc: str = "RBGA", out_format: str = "avi"):
         super().__init__(fourcc, out_format)
         self.block_size = block_size
         self.bytes_2_pixels_ratio = BITS_PER_BYTE * (block_size ** 2)
-        self.enc_logger = logging.getLogger(ENCRYPT_LOGGER)
-        self.dec_logger = logging.getLogger(DECRYPT_LOGGER)
+        self.enc_logger = logging.getLogger(SERIALIZE_LOGGER)
+        self.dec_logger = logging.getLogger(DESERIALIZE_LOGGER)
 
     def __create_blocks_from_bytes(self, bytes_row):
         block_size = self.block_size
@@ -57,7 +57,7 @@ class BitToBlock(EncryptionStrategy):
         bytes_as_rows = bytes_array.reshape(row_amount, -1)
         return np.repeat(bytes_as_rows[:, :, np.newaxis], BYTES_PER_PIXEL, axis=2)
 
-    def encrypt(self, bytes_chunk, frames_collection, i):
+    def serialize(self, bytes_chunk, frames_collection, i):
         begin_time = time.time()
         width, height = self.dims
         block_size = self.block_size
@@ -86,7 +86,7 @@ class BitToBlock(EncryptionStrategy):
                 f"../output_files/frames_collection[0]_{'encrypted' if is_encrypted else 'decrypted'}_{self.fourcc}.csv",
                 np.array(str_array).reshape(self.dims[1], self.dims[0]), delimiter=",", fmt="%s")
 
-    def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
+    def deserialize(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
         begin_time = time.time()
         block_size = self.block_size
         width, height = self.dims
