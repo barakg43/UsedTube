@@ -2,7 +2,7 @@ from typing import override
 
 import numpy as np
 
-from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
+from server.engine.serialization.strategy.definition.serialization_strategy import EncryptionStrategy
 
 
 class OneByteToOnePixel(EncryptionStrategy):

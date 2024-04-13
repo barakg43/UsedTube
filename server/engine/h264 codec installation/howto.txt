@@ -1,0 +1,4 @@
+place the dll under venv Scripts
+or if that does not work and codec is not found
+by the interpreter:
+place the dll in C:\Windows\System32

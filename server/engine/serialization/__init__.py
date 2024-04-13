@@ -4,8 +4,6 @@ import os
 import queue
 import threading
 
-import encryption.constants as c
-
 LOG_DIR = c.PROJECT_ROOT / "logs"
 if not os.path.exists(LOG_DIR):
     os.mkdir(LOG_DIR)

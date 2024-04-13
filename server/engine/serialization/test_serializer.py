@@ -5,9 +5,9 @@ from pathlib import Path
 
 import numpy as np
 
-from encryption.encryptor import Encryptor
-from encryption.strategy.impl.bit_to_block import BitToBlock
-from encryption.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
+from server.engine.serialization.serializer import Encryptor
+from server.engine.serialization.strategy.impl.bit_to_block import BitToBlock
+from server.engine.serialization.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
 
 RESOURCES_DIR = Path('../resources/')
 OUTPUT_DIR = Path('../output_files/')

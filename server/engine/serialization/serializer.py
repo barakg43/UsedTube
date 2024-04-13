@@ -8,8 +8,8 @@ from typing import IO
 import cv2
 import numpy as np
 
-from encryption.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
-from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
+from server.engine.serialization.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
+from server.engine.serialization.strategy.definition.serialization_strategy import EncryptionStrategy
 
 encrypt_logger = logging.getLogger(ENCRYPT_LOGGER)
 decrypt_logger = logging.getLogger(DECRYPT_LOGGER)
@@ -77,7 +77,7 @@ class Encryptor:
                                                               chunk_number)
             # read next chunk
             chunk_number += 1
-            self.enc_logger.debug(f"encryptor submitted chunk number #{chunk_number} for encryption")
+            self.enc_logger.debug(f"encryptor submitted chunk number #{chunk_number} for serialization")
             bytes_chunk = file_to_encrypt.read(self.chunk_size)
 
         self.enc_logger.debug(f"total of {chunk_number} chunks were submitted to workers")

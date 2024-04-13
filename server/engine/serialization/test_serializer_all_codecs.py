@@ -1,6 +1,6 @@
 import unittest
 
-from encryption.test_encryptor import EncryptorTest
+from server.engine.serialization.test_serializer import EncryptorTest
 
 codec_arry = [
     ['davc', 'mp4'],
