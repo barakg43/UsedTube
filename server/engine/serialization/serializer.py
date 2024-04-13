@@ -1,5 +1,4 @@
 import concurrent.futures
-import gc
 import hashlib
 import logging
 import os
@@ -8,15 +7,12 @@ from typing import IO
 
 import cv2
 import numpy as np
-from more_itertools import consume
 
-from encryption.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
-from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
+from server.engine.serialization.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
+from server.engine.serialization.strategy.definition.serialization_strategy import EncryptionStrategy
 
-write_log_to_console = True
 encrypt_logger = logging.getLogger(ENCRYPT_LOGGER)
 decrypt_logger = logging.getLogger(DECRYPT_LOGGER)
-
 """
 CHUNK_SIZE SHOULD BE CALCULATED ONCE, BASED ON ENCRYPTION METHOD WE WILL CHOOSE
 IF ONLY ONE COVER VIDEO IS USED, METADATA SHOULD ALSO BE RETRIEVED ONCE
@@ -51,48 +47,18 @@ class Encryptor:
         fd = file_br.fileno()
         self.file_size = os.fstat(fd).st_size
 
-    def __write_frames_concurrently_to_video(self, encrypted_frames, output_video,
-                                             futures: np.ndarray[concurrent.futures.Future]):
-        frame_amount_in_block = 10
-
-        def process_frame(frame):
-            output_video.write(frame)
-            # return None  # to remove the frame form memory
-
-        for start_index in np.arange(0, len(encrypted_frames), frame_amount_in_block):
-            end_index = start_index + frame_amount_in_block
-            wait(futures[start_index:end_index])
-
-            consume(map(process_frame, encrypted_frames[start_index:end_index]))
-            encrypted_frames[start_index:end_index] = None
-            gc.collect()  # collect garbage after writing frame
-            self.enc_logger.debug(f"finished writing encrypted frame {start_index + 1} to {end_index} to file")
-
-    def __write_bytes_concurrently_to_file(self, decrypted_bytes, decrypted_file,
-                                           futures: np.ndarray[concurrent.futures.Future]):
-        bytes_amount_in_block = 1000
-
-        def process_byte(byte):
-            decrypted_file.write(bytes(byte.tolist()))
-            return None  # to remove the byte form memory
-
-        for start_index in np.arange(0, len(decrypted_bytes), bytes_amount_in_block):
-            end_index = start_index + bytes_amount_in_block
-            wait(futures[start_index:end_index])
-            decrypted_bytes[start_index:end_index] = list(
-                map(process_byte,
-                    decrypted_bytes[start_index:end_index]))
-
     def encrypt(self, file_to_encrypt: IO, cover_video_path: str, out_vid_path: str):
         """"
         :param out_vid_path: string path
         :param cover_video_path:
         :parameter file_to_encrypt an open file descriptor in 'rb' to the file
         """
-
         cover_video = cv2.VideoCapture(cover_video_path)
         self.collect_metadata(file_to_encrypt, cover_video)
-        self.chunk_size = self.strategy.calculate_chunk_size()
+
+        if self.chunk_size == 0:
+            self.enc_logger.debug("calculating chunk size")
+            self.chunk_size = self.strategy.calculate_chunk_size()
 
         encrypted_frames = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=object)
         futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
@@ -101,7 +67,6 @@ class Encryptor:
         bytes_chunk = file_to_encrypt.read(self.chunk_size)
         self.strategy.frames_amount = np.ceil(self.file_size / self.chunk_size)
         chunk_number = 0
-
         while bytes_chunk:
             # use encrypt without ThreadPool
             if self.workers:
@@ -112,18 +77,16 @@ class Encryptor:
                                                               chunk_number)
             # read next chunk
             chunk_number += 1
-            # self.enc_logger.debug(f"encryptor submitted chunk number #{chunk_number} for encryption")
+            self.enc_logger.debug(f"encryptor submitted chunk number #{chunk_number} for serialization")
             bytes_chunk = file_to_encrypt.read(self.chunk_size)
 
         self.enc_logger.debug(f"total of {chunk_number} chunks were submitted to workers")
-        output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
         if self.workers:
-            self.__write_frames_concurrently_to_video(encrypted_frames, output_video,
-                                                      futures)  # wait for file worker to finish
-        else:
-            consume(map(output_video.write, encrypted_frames))
-
+            wait(futures)
         self.enc_logger.debug("waiting for workers to finish processing chunks...")
+        output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
+
+        list(map(output_video.write, encrypted_frames))
 
         # Closes all the video sources
         cover_video.release()
@@ -136,16 +99,18 @@ class Encryptor:
         file_bytes.seek(0)
         return sha256Hashed
 
-    def decrypt(self, encrypted_file_as_video_path: str, file_size: int, decrypted_file: IO):
+    def decrypt(self, encrypted_file_as_video_path, file_size, decrypted_file):
 
         enc_file_videocap = cv2.VideoCapture(encrypted_file_as_video_path)
         self.get_cover_video_metadata(enc_file_videocap)
-        self.chunk_size = self.strategy.calculate_chunk_size()
+
         bytes_left_to_read = file_size
 
-        decrypted_bytes = np.empty(int(np.ceil(file_size / self.chunk_size)), dtype=object)
-        futures = np.empty(int(np.ceil(file_size / self.chunk_size)), dtype=concurrent.futures.Future)
-
+        decrypted_bytes = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=object)
+        futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
+        if self.chunk_size is None:
+            self.dec_logger.debug("calculating chunk size...")
+            self.strategy.calculate_chunk_size()
         self.dec_logger.debug(f"about to process {len(futures)} frames")
         frame_number = 0
         self.strategy.frames_amount = np.ceil(file_size / self.chunk_size)
@@ -166,15 +131,17 @@ class Encryptor:
                 futures[frame_number] = self.strategy.decrypt(bytes_amount_to_read, encrypted_frame,
                                                               decrypted_bytes, frame_number)
             frame_number += 1
-            # self.dec_logger.debug(
-            #     f"encryptor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for decryption")
+            self.dec_logger.debug(
+                f"encryptor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for decryption")
+
 
         self.enc_logger.debug(f"total of {frame_number} frames were submitted to workers")
 
         if self.workers:
-            self.__write_bytes_concurrently_to_file(decrypted_bytes, decrypted_file, futures)
-        else:
-            consume(map(lambda _bytes: decrypted_file.write(bytes(_bytes.tolist())), decrypted_bytes))
+            wait(futures)
+
+        list(map(lambda _bytes: decrypted_file.write(bytes(_bytes.tolist())), decrypted_bytes))
+
         enc_file_videocap.release()
         cv2.destroyAllWindows()
 

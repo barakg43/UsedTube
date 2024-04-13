@@ -2,9 +2,9 @@ import logging
 import time
 import matplotlib.pyplot as plt
 import numpy as np
-from encryption.constants import BYTES_PER_PIXEL, BITS_PER_BYTE
-from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
-from encryption.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
+from server.engine.serialization.constants import BYTES_PER_PIXEL, BITS_PER_BYTE
+from server.engine.serialization.strategy.definition.serialization_strategy import EncryptionStrategy
+from server.engine.serialization.constants import ENCRYPT_LOGGER, DECRYPT_LOGGER
 
 def show(frame):
     plt.imshow(frame)

@@ -1,13 +1,11 @@
-/output_files/
+/server/engine/output_files/
 .idea
 .vscode
 usedTube
 *__pycache__*
-*output_files*
-resources/output.mp4
+server/engine/output_files
+server/engine/resources/output.mp4
 
-resources/sample-file2.zip
+server/engine/resources/sample-file2.zip
 
-logs/
-
-resources/cover_video_4k.mkv
+server/engine/logs/
