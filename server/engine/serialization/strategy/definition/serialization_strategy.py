@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-
 import numpy as np
 
 
-class EncryptionStrategy(ABC):
+class SerializationStrategy(ABC):
     def __init__(self, fourcc: str = "RGBA", out_format: str = "avi"):
         # W, H
         self.dims: tuple[int, int] = None
@@ -15,11 +14,11 @@ class EncryptionStrategy(ABC):
         self.out_format: str = out_format
 
     @abstractmethod
-    def encrypt(self, bytes_chunk, frames_collection, i):
+    def serialize(self, bytes_chunk, frames_collection, i):
         pass
 
     @abstractmethod
-    def decrypt(self, bytes_amount_to_read, encrypted_frame: np.ndarray, bytes_collection, i):
+    def deserialize(self, bytes_amount_to_read, encrypted_frame: np.ndarray, bytes_collection, i):
         pass
 
     def calculate_chunk_size(self):
