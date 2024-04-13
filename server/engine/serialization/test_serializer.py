@@ -68,6 +68,37 @@ class EncryptorTest(unittest.TestCase):
 
         return original_sha256, decrypted_sha256
 
+    def check_video_decryption_after_downloading(self, proto, original_file_path, encrypted_video_path):
+        self.enc = Encryptor(proto, concurrent_execution=True)
+        paths = self.paths_dict()
+        pdf_file = open(original_file_path, 'rb')
+        decrypted_pdf_file = open(paths[DEC_PDF_PATH], "wb+")
+
+        begin_time = time.time()
+        file_size = os.stat(original_file_path).st_size
+        self.enc.decrypt(encrypted_video_path, file_size, decrypted_pdf_file)
+        end_time = time.time()
+        print(f"Decoded In {end_time - begin_time}")
+        original_sha256 = self.enc.generateSha256ForFile(pdf_file)
+        decrypted_sha256 = self.enc.generateSha256ForFile(decrypted_pdf_file)
+        input_content = pdf_file.read()
+        output_content = decrypted_pdf_file.read()
+        res = True
+        bytes_asserted = 0
+        for (byte1, byte2) in zip(input_content, output_content):
+            if byte1 != byte2:
+                bytes_asserted += 1
+                if (bytes_asserted < 9):
+                    print(f"input: {np.binary_repr(byte1, width=8)}, output: {np.binary_repr(byte2, width=8)}")
+                    # break
+        if bytes_asserted > 0:
+            print(f"bytes asserted: {bytes_asserted}")
+
+        pdf_file.close()
+        decrypted_pdf_file.close()
+
+        return original_sha256, decrypted_sha256
+
     def __perform_test_3P_2B(self, codec, file_ext):
         # Replace this with your actual test implementation
         print(f"#### 3P_2B: Testing codec '{codec}' with file extension '.{file_ext}' ###")
@@ -77,7 +108,14 @@ class EncryptorTest(unittest.TestCase):
     def perform_test_1Bit_Block(self, codec, file_ext):
         # Replace this with your actual test implementation
         print(f"#### Bit to Block: Testing codec '{codec}' with file extension '.{file_ext}' ###")
-        sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(fourcc=codec, out_format=file_ext))
+        sha256_1, sha256_2 = self.check_pdf_encryption(BitToBlock(fourcc=codec, out_format=file_ext, block_size=4))
+        self.assertEqual(sha256_1, sha256_2)
+
+    def perform_test_youtube_1B_1Block_decryption(self, codec, file_ext, encrypted_video_path, original_file_path):
+        # Replace this with your actual test implementation
+        print(f"#### Youtube: Testing codec '{codec}' with file extension '.{file_ext}' ###")
+        sha256_1, sha256_2 = self.check_video_decryption_after_downloading(
+            BitToBlock(fourcc=codec, out_format=file_ext, block_size=4), original_file_path, encrypted_video_path)
         self.assertEqual(sha256_1, sha256_2)
 
     # def test_encryptor_pdf_1B_1P(self):

@@ -3,22 +3,22 @@ import unittest
 from server.engine.serialization.test_serializer import EncryptorTest
 
 codec_arry = [
-    ['davc', 'mp4'],
+
     # ['RGBA', 'avi'],  # too big
-    # ['av01', 'mp4'], bad codec
+    # ['av01', 'mp4'], not working
     ['vp09', 'mp4'],
     ['mp4v', 'mp4'],
     ['avc1', 'mp4'],
     ['avc3', 'mp4'],
-    ['drac', 'mp4'],
+    # ['drac', 'mp4'], # not working
     ['hev1', 'mp4'],
-    ['hvc1', 'mp4'],
-    ['mhm1', 'mp4'],
-    ['mlpa', 'mp4'],
-    ['mp4s', 'mp4'],
+    # ['hvc1', 'mp4'], # not working
+    # ['mhm1', 'mp4'], # not working
+    # ['mlpa', 'mp4'], # not working
+    # ['mp4s', 'mp4'], # not working
     ['mp4v', 'mp4'],
     ['vc-1', 'mp4'],
-
+    ['davc', 'mp4'],
     ['xvid', 'mp4']
 ]
 
@@ -41,6 +41,6 @@ for codec_pair in codec_arry:
 
     # setattr(EncryptorTest, test_method_name_3P_2B, test_3p_2B)
     setattr(EncryptorTest, test_method_name_Bit_Block, test_bit_block)
-    break
+    # break
 if __name__ == '__main__':
     unittest.main()
