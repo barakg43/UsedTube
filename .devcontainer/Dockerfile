@@ -8,13 +8,16 @@ WORKDIR /app
 COPY . /app
 
 # Install any needed dependencies specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+
+RUN pip3.12 install --no-cache-dir -r requirements.txt
+
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
 
 # Define environment variable
 ENV KING="Omri"
+ENV 
 
 # Run app.py when the container launches
 # CMD ["python", "app.py"]
