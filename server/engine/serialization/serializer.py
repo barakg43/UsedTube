@@ -1,3 +1,4 @@
+        consume(map(lambda _bytes: deserialized_file.write(bytes(_bytes.tolist())), deserialized_bytes))
 import concurrent.futures
 import hashlib
 import logging

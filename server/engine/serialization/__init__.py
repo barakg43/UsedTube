@@ -5,6 +5,11 @@ import queue
 import threading
 import constants as c
 
+import encryption.constants as c
+from encryption.encryptor import write_log_to_console
+
+import constants as c
+
 LOG_DIR = c.ENGINE_ROOT / "logs"
 if not os.path.exists(LOG_DIR):
     os.mkdir(LOG_DIR)
