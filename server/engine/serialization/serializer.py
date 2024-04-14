@@ -1,4 +1,3 @@
-        consume(map(lambda _bytes: deserialized_file.write(bytes(_bytes.tolist())), deserialized_bytes))
 import concurrent.futures
 import hashlib
 import logging
@@ -8,6 +7,7 @@ from typing import IO
 
 import cv2
 import numpy as np
+from more_itertools import consume
 
 from server.engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
 from server.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
@@ -75,7 +75,7 @@ class Serializer:
                                                             chunk_number)
             else:
                 futures[chunk_number] = self.strategy.serializ(bytes_chunk, serialized_frames,
-                                                              chunk_number)
+                                                               chunk_number)
             # read next chunk
             chunk_number += 1
             self.ser_logger.debug(f"serializor submitted chunk number #{chunk_number} for serialization")
@@ -87,7 +87,7 @@ class Serializer:
         self.ser_logger.debug("waiting for workers to finish processing chunks...")
         output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
 
-        list(map(output_video.write, serialized_frames))
+        consume(map(output_video.write, serialized_frames))
 
         # Closes all the video sources
         cover_video.release()
@@ -135,13 +135,12 @@ class Serializer:
             self.deser_logger.debug(
                 f"serializor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for deserialization")
 
-
         self.ser_logger.debug(f"total of {frame_number} frames were submitted to workers")
 
         if self.workers:
             wait(futures)
 
-        list(map(lambda _bytes: deserialized_file.write(bytes(_bytes.tolist())), deserialized_bytes))
+        consume(map(lambda _bytes: deserialized_file.write(bytes(_bytes.tolist())), deserialized_bytes))
 
         enc_file_videocap.release()
         cv2.destroyAllWindows()
