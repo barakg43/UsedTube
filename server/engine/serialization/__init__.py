@@ -7,7 +7,9 @@ import threading
 import encryption.constants as c
 from encryption.encryptor import write_log_to_console
 
-LOG_DIR = c.PROJECT_ROOT / "logs"
+import constants as c
+
+LOG_DIR = c.ENGINE_ROOT / "logs"
 if not os.path.exists(LOG_DIR):
     os.mkdir(LOG_DIR)
 ENCRYPTION_LOGS = f"{LOG_DIR}/encrypt.log"
@@ -66,5 +68,5 @@ def init_logger_async(log_path, logger_name):
         logger.addHandler(console_handler)
 
 
-init_logger_async(ENCRYPTION_LOGS, c.ENCRYPT_LOGGER)
-init_logger_async(DECRYPTION_LOGS, c.DECRYPT_LOGGER)
+init_logger_async(ENCRYPTION_LOGS, c.SERIALIZE_LOGGER)
+init_logger_async(DECRYPTION_LOGS, c.DESERIALIZE_LOGGER)

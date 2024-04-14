@@ -1,6 +1,6 @@
 import unittest
 
-from encryption.test_encryptor import EncryptorTest, OUTPUT_DIR, RESOURCES_DIR
+from server.engine.serialization.test_serializer import SerializerTest, OUTPUT_DIR, RESOURCES_DIR
 
 file_arry = [
 
@@ -36,11 +36,11 @@ for file in file_arry:
     # Function to perform the test for a specific codec
     def test_youtube_1b_1block_decryption(self, codec_arg=codec, file_ext_arg=file_ext,
                                           encrypted_video_path=video_path, original_file_path=file_path):
-        EncryptorTest.perform_test_youtube_1B_1Block_decryption(self, codec_arg, file_ext_arg, encrypted_video_path,
-                                                                original_file_path)
+        SerializerTest.perform_test_youtube_1B_1Block_decryption(self, codec_arg, file_ext_arg, encrypted_video_path,
+                                                                 original_file_path)
 
 
-    setattr(EncryptorTest, test_method_name_Bit_Block, test_youtube_1b_1block_decryption)
+    setattr(SerializerTest, test_method_name_Bit_Block, test_youtube_1b_1block_decryption)
     # break
 if __name__ == '__main__':
     unittest.main()

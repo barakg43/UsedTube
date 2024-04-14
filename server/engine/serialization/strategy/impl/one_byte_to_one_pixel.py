@@ -2,10 +2,10 @@ from typing import override
 
 import numpy as np
 
-from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
+from server.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 
 
-class OneByteToOnePixel(EncryptionStrategy):
+class OneByteToOnePixel(SerializationStrategy):
 
     def __init__(self):
         super().__init__()
@@ -14,12 +14,12 @@ class OneByteToOnePixel(EncryptionStrategy):
         self.out_format = "OtO.avi"
 
     @override
-    def encrypt(self, bytes_chunk, frames_collection, i):
+    def serialize(self, bytes_chunk, frames_collection, i):
         chunk_as_grayscale_frame = self.create_2d_image_frame_grayscale(bytes_chunk)
         frames_collection[i] = self.create_3d_frame_from_gray_frame(chunk_as_grayscale_frame)
 
     @override
-    def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
+    def deserialize(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
         bytes_as_pixels2d_list3 = np.split(encrypted_frame, 3, axis=2)
         bytes_collection[i] = bytes_as_pixels2d_list3[0].reshape(-1)[:bytes_amount_to_read]
 
