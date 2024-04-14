@@ -7,6 +7,7 @@ codec_arry = [
     # ['RGBA', 'avi'],  # too big
     # ['av01', 'mp4'], not working
     ['vp09', 'mp4'],
+
     ['mp4v', 'mp4'],
     ['avc1', 'mp4'],
     ['avc3', 'mp4'],
@@ -21,7 +22,6 @@ codec_arry = [
     ['davc', 'mp4'],
     ['xvid', 'mp4']
 ]
-
 # Test class for running tests for each codec
 for codec_pair in codec_arry:
     codec = codec_pair[0]

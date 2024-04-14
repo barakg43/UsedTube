@@ -9,8 +9,8 @@ from server.engine.serialization.serializer import Serializer
 from server.engine.serialization.strategy.impl.bit_to_block import BitToBlock
 from server.engine.serialization.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
 
-RESOURCES_DIR = Path('../resources/')
-OUTPUT_DIR = Path('../output_files/')
+RESOURCES_DIR = Path('../server/engine/resources/')
+OUTPUT_DIR = Path('../server/engine/output_files')
 if not os.path.exists(OUTPUT_DIR):
     os.mkdir(OUTPUT_DIR)
 PDF_PATH = 0
