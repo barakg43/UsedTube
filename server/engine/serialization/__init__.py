@@ -3,10 +3,9 @@ import logging.handlers
 import os
 import queue
 import threading
+import constants as c
 
-import encryption.constants as c
-
-LOG_DIR = c.PROJECT_ROOT / "logs"
+LOG_DIR = c.ENGINE_ROOT / "logs"
 if not os.path.exists(LOG_DIR):
     os.mkdir(LOG_DIR)
 ENCRYPTION_LOGS = f"{LOG_DIR}/encrypt.log"
@@ -58,5 +57,5 @@ def init_logger_async(log_path, logger_name):
     logger.addHandler(queue_handler)
 
 
-init_logger_async(ENCRYPTION_LOGS, c.ENCRYPT_LOGGER)
-init_logger_async(DECRYPTION_LOGS, c.DECRYPT_LOGGER)
+init_logger_async(ENCRYPTION_LOGS, c.SERIALIZE_LOGGER)
+init_logger_async(DECRYPTION_LOGS, c.DESERIALIZE_LOGGER)

@@ -3,10 +3,10 @@ from typing import override
 
 import numpy as np
 
-from encryption.strategy.definition.encryption_strategy import EncryptionStrategy
+from server.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 
 
-class ThreeBytesToTwoPixels(EncryptionStrategy):
+class ThreeBytesToTwoPixels(SerializationStrategy):
     def __init__(self, fourcc: str, out_format: str):
         super().__init__(fourcc, out_format)
         self.bytes_2_pixels_ratio = 2 / 3
@@ -15,7 +15,7 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
         # self.out_format = ".avi"
 
     @override
-    def encrypt(self, bytes_chunk, frames_collection, i):
+    def serialize(self, bytes_chunk, frames_collection, i):
         """
         given 3 Bytes A,B,C they will be encoded into 2 adjacent pixels P1, P2
         in the following manner:
@@ -51,7 +51,7 @@ class ThreeBytesToTwoPixels(EncryptionStrategy):
             print("finish save frame to file...")
 
     @override
-    def decrypt(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
+    def deserialize(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
         # frame_2chucks_group = encrypted_frame.reshape((-1, 2, 3))
         # reconstruct_frame_bytes = np.array(
         #     [self.construct_byte_from_2_pixels(two_pixels_of_3bytes) for two_pixels_of_3bytes in
