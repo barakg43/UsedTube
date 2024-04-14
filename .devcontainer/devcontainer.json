@@ -3,7 +3,7 @@
 {
 	"name": "Python 3",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/python:0-3.11",
+	"image": "mcr.microsoft.com/devcontainers/python:3.12",
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -31,8 +31,8 @@
 		}
 	},
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip3 install -r server/requirements.txt"
+	// Use 'postCreateCommand' to run commands after the container is created. && create terminal command shortcut
+	"postCreateCommand": "pip3 install -r server/requirements.txt; git config --global alias.co checkout"
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
