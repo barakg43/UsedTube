@@ -1,6 +1,6 @@
 import unittest
 
-from server.engine.serialization.test_serializer import SerializerTest, OUTPUT_DIR, RESOURCES_DIR
+from Backend.engine.serialization.test_serializer import SerializerTest, OUTPUT_DIR, RESOURCES_DIR
 
 file_arry = [
 

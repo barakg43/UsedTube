@@ -9,8 +9,8 @@ import cv2
 import numpy as np
 from more_itertools import consume
 
-from server.engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
-from server.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
+from Backend.engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
+from Backend.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 
 serialize_logger = logging.getLogger(SERIALIZE_LOGGER)
 deserialize_logger = logging.getLogger(DESERIALIZE_LOGGER)
