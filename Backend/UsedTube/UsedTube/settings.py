@@ -73,14 +73,25 @@ WSGI_APPLICATION = 'UsedTube.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'UsedTubeEDB',
+#         'CLIENT': {
+#             'host': 'mongodb://localhost:27017'
+#         }
+#     }
+# }
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'UsedTubeEDB',
-        'CLIENT': {
-            'host': 'mongodb://localhost:27017'
-        }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
