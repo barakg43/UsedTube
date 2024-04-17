@@ -3,7 +3,7 @@ from typing import override
 
 import numpy as np
 
-from Backend.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
+from backend.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 
 
 class ThreeBytesToTwoPixels(SerializationStrategy):

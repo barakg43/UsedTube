@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import override
-from backend.engine.downloader.definition import Downloader
+from engine.downloader.definition import Downloader
 from pytube import YouTube
 import uuid
 

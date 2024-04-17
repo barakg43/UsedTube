@@ -5,9 +5,9 @@ from pathlib import Path
 
 import numpy as np
 
-from Backend.engine.serialization.serializer import Serializer
-from Backend.engine.serialization.strategy.impl.bit_to_block import BitToBlock
-from Backend.engine.serialization.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
+from backend.engine.serialization.serializer import Serializer
+from backend.engine.serialization.strategy.impl.bit_to_block import BitToBlock
+from backend.engine.serialization.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
 
 RESOURCES_DIR = Path('../UsedTube/engine/resources/')
 OUTPUT_DIR = Path('../UsedTube/engine/output_files')
