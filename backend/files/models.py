@@ -1,7 +1,4 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.contrib.auth.models import User
 
 class Folder(models.Model):
@@ -20,6 +17,7 @@ class File(models.Model):
     size = models.IntegerField()  # in bytes
     folder = models.ForeignKey(Folder, on_delete=models.CASCADE, related_name='files')
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='files')
+    url = models.URLField(null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

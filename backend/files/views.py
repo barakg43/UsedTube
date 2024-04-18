@@ -1,11 +1,19 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render
 
 # Create your views here.
 from django.http import HttpRequest, HttpResponse
+from django.template.context_processors import request
+from django.views import View
+
+from files.query import get_items_in_folder
 
 
-def handle_file_download(request: HttpRequest):
-    return HttpResponse('hello world!')
+class download(View):
+    def get(self, request: HttpRequest):
+        pass
 
-def handle_file_upload(request: HttpRequest):
-    return HttpResponse('hello world!')
+class upload(View):
+    def get(self, request: HttpRequest):
+        return HttpResponse('hello world!')
+

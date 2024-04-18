@@ -1,8 +1,8 @@
 from django.urls import path
 
-from .views import handle_file_upload, handle_file_download
+from .views import upload, download
 
 urlpatterns =[
-    path('download/', handle_file_download),
-    path('upload', handle_file_upload)
+    path('download/', download.as_view()),
+    path('upload', upload.as_view())
 ]
