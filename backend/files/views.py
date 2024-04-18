@@ -8,11 +8,11 @@ from django.views import View
 from files.query import get_items_in_folder
 
 
-class download(View):
+class Download(View):
     def get(self, request: HttpRequest):
         pass
 
-class upload(View):
+class Upload(View):
     def get(self, request: HttpRequest):
         return HttpResponse('hello world!')
 
