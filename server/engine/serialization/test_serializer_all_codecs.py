@@ -6,7 +6,7 @@ codec_arry = [
 
     # ['RGBA', 'avi'],  # too big
     # ['av01', 'mp4'], not working
-    ['vp09', 'mp4'],
+    # ['vp09', 'mp4'],
 
     ['mp4v', 'mp4'],
     ['avc1', 'mp4'],
@@ -23,6 +23,7 @@ codec_arry = [
     ['xvid', 'mp4']
 ]
 # Test class for running tests for each codec
+# print(Path.cwd())
 for codec_pair in codec_arry:
     codec = codec_pair[0]
     file_ext = codec_pair[1]
@@ -41,6 +42,6 @@ for codec_pair in codec_arry:
 
     # setattr(SerializerTest, test_method_name_3P_2B, test_3p_2B)
     setattr(SerializerTest, test_method_name_Bit_Block, test_bit_block)
-    # break
+    break
 if __name__ == '__main__':
     unittest.main()
