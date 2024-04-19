@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.12
+FROM barakg43/used_tube-dev:1.1
 
 # Set the working directory in the container
 WORKDIR /app
@@ -9,7 +9,7 @@ COPY . /app
 
 # Install any needed dependencies specified in requirements.txt
 
-RUN pip3.12 install --no-cache-dir -r requirements.txt
+# RUN pip3.12 install --no-cache-dir -r requirements.txt
 
 
 # Make port 80 available to the world outside this container
@@ -17,7 +17,6 @@ EXPOSE 80
 
 # Define environment variable
 ENV KING="Omri"
-ENV 
 
 # Run app.py when the container launches
 # CMD ["python", "app.py"]

@@ -1,0 +1,10 @@
+Django==5.0.4
+numpy==1.26.3
+opencv-python==4.9.0.80
+more-itertools==10.2.0
+gitdb==4.0.11
+GitPython==3.1.41
+smmap==5.0.1
+vidgear[asyncio]==0.3.2
+psycopg2==2.9.9
+matplotlib==3.8.4
