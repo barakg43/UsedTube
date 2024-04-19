@@ -4,7 +4,7 @@ import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, wait
 from typing import IO
-
+import vidgear.gears as vid
 import cv2
 import numpy as np
 from more_itertools import consume
@@ -85,13 +85,14 @@ class Serializer:
         if self.workers:
             wait(futures)
         self.ser_logger.debug("waiting for workers to finish processing chunks...")
-        output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
-
+        #  "-vcodec":"libx264","-vtag":self.strategy.fourcc
+        output_params_dic={"-output_dimensions": self.strategy.dims,} 
+        output_video = vid.WriteGear(out_vid_path,compression_mode=True,**output_params_dic)
         consume(map(output_video.write, serialized_frames))
 
         # Closes all the video sources
         cover_video.release()
-        output_video.release()
+        output_video.close()
         cv2.destroyAllWindows()
 
     def generateSha256ForFile(self, file_bytes: IO):
