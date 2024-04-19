@@ -5,12 +5,12 @@ from pathlib import Path
 
 import numpy as np
 
-from backend.engine.serialization.serializer import Serializer
-from backend.engine.serialization.strategy.impl.bit_to_block import BitToBlock
-from backend.engine.serialization.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
-
-RESOURCES_DIR = Path('../UsedTube/engine/resources/')
-OUTPUT_DIR = Path('../UsedTube/engine/output_files')
+from engine.serialization.serializer import Serializer
+from engine.serialization.strategy.impl.bit_to_block import BitToBlock
+from engine.serialization.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
+ENGINE_DIR = os.path.dirname(__file__)[:-13]
+RESOURCES_DIR = Path(os.path.join(ENGINE_DIR, 'resources'))
+OUTPUT_DIR = Path(os.path.join(ENGINE_DIR, 'output_files'))
 if not os.path.exists(OUTPUT_DIR):
     os.mkdir(OUTPUT_DIR)
 PDF_PATH = 0
