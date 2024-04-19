@@ -1,5 +1,6 @@
 import cv2 
 import logging
+import uuid
 
 class ObfuscationManager:
 
@@ -39,13 +40,10 @@ class ObfuscationManager:
         width = int(ff.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(ff.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        out_path = "output_video.mp4" 
+        out_path =  str(uuid.uuid4()) + ".mp4"
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
 
-        frame_count = 0
-
-        
         while True:
             ret_ff, frame_ff = ff.read()
             if not ret_ff:
@@ -53,12 +51,11 @@ class ObfuscationManager:
                 break  
 
             out.write(frame_ff)  
-            frame_count += 1
 
             for _ in range(self.cycle):
                 ret_cov, frame_cov = cov.read()
                 if not ret_cov:
-                    self.logger.info("loop ended. No more frames in cover_video")
+                    self.logger.info("No more frames in cover_video")
                     break  
 
                 out.write(frame_cov)  
@@ -81,4 +78,35 @@ class ObfuscationManager:
         #   while obsv got frames
         # save out to a generated path, using UUID to avoid collisions?
         # return the path
-        pass
+
+        obsv = cv2.VideoCapture(obfuscated_video_path)
+        assert obsv.isOpened(), "Could not open obfuscated_video_path"
+
+        fps = obsv.get(cv2.CAP_PROP_FPS)
+        width = int(obsv.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(obsv.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+        out_path = str(uuid.uuid4()) + ".mp4"  # Generate unique filename using UUID
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
+
+        while True:
+            ret, frame = obsv.read()
+            if not ret:
+                self.logger.info("loop ended. No more frames to read")  
+                break
+
+            out.write(frame)  
+
+            # Skip {cycle} frames
+            for _ in range(self.cycle):
+                ret, _ = obsv.read()
+                if not ret:
+                    self.logger.info("No more frames to skip")  
+                    break
+
+        # Release video capture and writer
+        obsv.release()
+        out.release()
+
+        return out_path
