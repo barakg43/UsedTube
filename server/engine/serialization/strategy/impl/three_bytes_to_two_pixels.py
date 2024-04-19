@@ -1,5 +1,4 @@
 import time
-from typing import override
 
 import numpy as np
 
@@ -14,7 +13,6 @@ class ThreeBytesToTwoPixels(SerializationStrategy):
         # self.fourcc = "RGBA"
         # self.out_format = ".avi"
 
-    @override
     def serialize(self, bytes_chunk, frames_collection, i):
         """
         given 3 Bytes A,B,C they will be encoded into 2 adjacent pixels P1, P2
@@ -50,7 +48,6 @@ class ThreeBytesToTwoPixels(SerializationStrategy):
                 np.vectorize(np.binary_repr)(frames_collection[i], width=8), delimiter=",")
             print("finish save frame to file...")
 
-    @override
     def deserialize(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i):
         # frame_2chucks_group = encrypted_frame.reshape((-1, 2, 3))
         # reconstruct_frame_bytes = np.array(
