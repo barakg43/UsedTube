@@ -3,14 +3,15 @@ import hashlib
 import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, wait
-from typing import IO
+from typing import IO, overload
 
 import cv2
 import numpy as np
 from more_itertools import consume
 
-from backend.engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
-from backend.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
+from engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
+from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
+from engine.serialization.strategy.impl.bit_to_block import BitToBlock
 
 serialize_logger = logging.getLogger(SERIALIZE_LOGGER)
 deserialize_logger = logging.getLogger(DESERIALIZE_LOGGER)
@@ -21,7 +22,7 @@ IF ONLY ONE COVER VIDEO IS USED, METADATA SHOULD ALSO BE RETRIEVED ONCE
 
 
 class Serializer:
-    def __init__(self, strategy: SerializationStrategy, concurrent_execution=True):
+    def __init__(self, strategy: SerializationStrategy = BitToBlock(2, "avc3", "mp4"), concurrent_execution=True):
         self.file_size: int = 0
         self.encoding: int = 0
         self.fps: int = 0
@@ -56,6 +57,7 @@ class Serializer:
         """
         cover_video = cv2.VideoCapture(cover_video_path)
         self.collect_metadata(file_to_serialize, cover_video)
+        cover_video.release()
 
         if self.chunk_size == 0:
             self.ser_logger.debug("calculating chunk size")
@@ -74,8 +76,8 @@ class Serializer:
                 futures[chunk_number] = self.workers.submit(self.strategy.serialize, bytes_chunk, serialized_frames,
                                                             chunk_number)
             else:
-                futures[chunk_number] = self.strategy.serializ(bytes_chunk, serialized_frames,
-                                                               chunk_number)
+                futures[chunk_number] = self.strategy.serialize(bytes_chunk, serialized_frames,
+                                                                chunk_number)
             # read next chunk
             chunk_number += 1
             self.ser_logger.debug(f"serializor submitted chunk number #{chunk_number} for serialization")
@@ -90,7 +92,6 @@ class Serializer:
         consume(map(output_video.write, serialized_frames))
 
         # Closes all the video sources
-        cover_video.release()
         output_video.release()
         cv2.destroyAllWindows()
 
@@ -100,7 +101,15 @@ class Serializer:
         file_bytes.seek(0)
         return sha256Hashed
 
-    def deserialize(self, serialized_file_as_video_path, file_size, deserialized_file):
+
+    def deserialize(self, serialized_file_as_video_path):
+        deserialized_file_out_path = f"des-{serialized_file_as_video_path}"
+        self._deserialize(serialized_file_as_video_path,
+                          os.path.getsize(serialized_file_as_video_path),
+                          open(deserialized_file_out_path, 'w'))
+        return deserialized_file_out_path
+
+    def _deserialize(self, serialized_file_as_video_path, file_size, deserialized_file_out_path):
 
         enc_file_videocap = cv2.VideoCapture(serialized_file_as_video_path)
         self.get_cover_video_metadata(enc_file_videocap)
@@ -140,7 +149,7 @@ class Serializer:
         if self.workers:
             wait(futures)
 
-        consume(map(lambda _bytes: deserialized_file.write(bytes(_bytes.tolist())), deserialized_bytes))
+        consume(map(lambda _bytes: deserialized_file_out_path.write(bytes(_bytes.tolist())), deserialized_bytes))
 
         enc_file_videocap.release()
         cv2.destroyAllWindows()

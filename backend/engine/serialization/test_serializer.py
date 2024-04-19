@@ -45,7 +45,7 @@ class SerializerTest(unittest.TestCase):
         print(f"Encoded In {end_time - begin_time}")
         begin_time = time.time()
         file_size = os.stat(paths[PDF_PATH]).st_size
-        self.enc.deserialize(paths[ENC_OUT_VID_PATH], file_size, deserialized_pdf_file)
+        self.enc._deserialize(paths[ENC_OUT_VID_PATH], file_size, deserialized_pdf_file)
         end_time = time.time()
         print(f"Decoded In {end_time - begin_time}")
         original_sha256 = self.enc.generateSha256ForFile(pdf_file)
@@ -76,7 +76,7 @@ class SerializerTest(unittest.TestCase):
 
         begin_time = time.time()
         file_size = os.stat(original_file_path).st_size
-        self.enc.deserialize(serialized_video_path, file_size, decrypted_pdf_file)
+        self.enc._deserialize(serialized_video_path, file_size, decrypted_pdf_file)
         end_time = time.time()
         print(f"Decoded In {end_time - begin_time}")
         original_sha256 = self.enc.generateSha256ForFile(pdf_file)

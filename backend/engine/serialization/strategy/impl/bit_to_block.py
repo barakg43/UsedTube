@@ -2,9 +2,9 @@ import logging
 import time
 import matplotlib.pyplot as plt
 import numpy as np
-from backend.engine.serialization.constants import BYTES_PER_PIXEL, BITS_PER_BYTE
-from backend.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
-from backend.engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
+from engine.serialization.constants import BYTES_PER_PIXEL, BITS_PER_BYTE
+from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
+from engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
 
 def show(frame):
     plt.imshow(frame)
