@@ -1,8 +1,7 @@
 from django.urls import path
-
-from .views import upload, download
+from .views import *
 
 urlpatterns =[
-    path('download/', download.as_view()),
-    path('upload', upload.as_view())
+    path('download/', Download.as_view()),
+    path('upload', Upload.as_view())
 ]
