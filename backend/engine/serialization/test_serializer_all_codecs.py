@@ -1,6 +1,6 @@
 import unittest
 
-from backend.engine.serialization.test_serializer import SerializerTest
+from engine.serialization.test_serializer import SerializerTest
 
 codec_arry = [
 

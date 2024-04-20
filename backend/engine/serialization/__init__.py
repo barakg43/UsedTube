@@ -10,9 +10,9 @@ import constants as c
 LOG_DIR = c.ENGINE_ROOT / "logs"
 if not os.path.exists(LOG_DIR):
     os.mkdir(LOG_DIR)
-ENCRYPTION_LOGS = f"{LOG_DIR}/encrypt.log"
-DECRYPTION_LOGS = f"{LOG_DIR}/decrypt.log"
-GENERAL_LOGS = f"{LOG_DIR}/general.log"
+ENCRYPTION_LOGS = os.path.join(LOG_DIR, 'serialize.log')
+DECRYPTION_LOGS = os.path.join(LOG_DIR, 'deserialize.log')
+GENERAL_LOGS =  os.path.join(LOG_DIR, 'general.log')
 formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s ### %(message)s', datefmt="%Y-%m-%d %H:%M:%S")
 
 
