@@ -22,7 +22,7 @@ IF ONLY ONE COVER VIDEO IS USED, METADATA SHOULD ALSO BE RETRIEVED ONCE
 
 
 class StatelessSerializer:
-    strategy: SerializationStrategy = BitToBlock(2, "avc3", "mp4")
+    strategy: SerializationStrategy = BitToBlock(2, "mp4v", "mp4")
     concurrent_execution = True
     workers: ThreadPoolExecutor = ThreadPoolExecutor(50) if concurrent_execution else None
     ser_logger = logging.getLogger(SERIALIZE_LOGGER)
@@ -36,10 +36,10 @@ class StatelessSerializer:
             self.dims_multiplied = None
             self.file_size = None
             self.chunk_size = None
-            self.fragments_count = None
+            self.frames_count = None
 
-        def get_fragments_count(self):
-            return self.fragments_count
+        def get_frames_count(self):
+            return self.frames_count
 
     @staticmethod
     def get_video_metadata(cover_video) -> Context:
@@ -54,11 +54,21 @@ class StatelessSerializer:
         return context
 
     @staticmethod
+    @dispatch(str, str)
     def collect_metadata(file_to_serialize, cover_video) -> Context:
         context = StatelessSerializer.get_video_metadata(cover_video)
         context.file_size = os.path.getsize(file_to_serialize)
         context.chunk_size = StatelessSerializer.strategy.calculate_chunk_size(context.file_size)
-        context.fragments_count = int(np.ceil(context.file_size / context.chunk_size))
+        context.frames_count = int(np.ceil(context.file_size / context.chunk_size))
+        return context
+
+    @staticmethod
+    @dispatch(int, cv2.VideoCapture)
+    def collect_metadata(file_size, serialized_file_as_video):
+        context = StatelessSerializer.get_video_metadata(serialized_file_as_video)
+        context.file_size = file_size
+        context.chunk_size = StatelessSerializer.strategy.calculate_chunk_size(file_size)
+        context.frames_count =int(np.ceil(context.file_size / context.chunk_size))
         return context
 
     @staticmethod
@@ -75,23 +85,23 @@ class StatelessSerializer:
 
         StatelessSerializer.ser_logger.debug("context initialized.")
 
-        num_of_fragments = context.get_fragments_count()
-        serialized_frames = np.empty(num_of_fragments, dtype=object)
-        futures = np.empty(num_of_fragments, dtype=concurrent.futures.Future)
+        num_of_frames = context.get_frames_count()
+        serialized_frames = np.empty(num_of_frames, dtype=object)
+        futures = np.empty(num_of_frames, dtype=concurrent.futures.Future)
         StatelessSerializer.ser_logger.debug(f"about to process {len(futures)} chunks")
         # read chunks sequentially and start strategy.serialize
         bytes_chunk = file_to_serialize.read(context.chunk_size)
-        # StatelessSerializer.strategy.frames_amount = np.ceil(self.file_size / self.chunk_size)
+        StatelessSerializer.strategy.frames_amount = num_of_frames
         chunk_number = 0
         while bytes_chunk:
             # use serialize without ThreadPool
             if StatelessSerializer.workers:
                 futures[chunk_number] = StatelessSerializer.workers.submit(StatelessSerializer.strategy.serialize,
                                                                            bytes_chunk, serialized_frames,
-                                                                           chunk_number)
+                                                                           chunk_number, context)
             else:
                 futures[chunk_number] = StatelessSerializer.strategy.serialize(bytes_chunk, serialized_frames,
-                                                                               chunk_number)
+                                                                               chunk_number, context)
             # read next chunk
             chunk_number += 1
             StatelessSerializer.ser_logger.debug(f"serializor submitted chunk number #{chunk_number} for serialization")
@@ -118,55 +128,56 @@ class StatelessSerializer:
         file_bytes.seek(0)
         return sha256Hashed
 
-    @dispatch(str)
+
+    @dispatch(str, int)
     @staticmethod
-    def deserialize(serialized_file_as_video_path: str):
+    def deserialize(serialized_file_as_video_path: str, files_size: int):
         deserialized_file_out_path = (FILES_READY_FOR_RETRIEVAL_DIR / f"des-{serialized_file_as_video_path}").as_posix()
         StatelessSerializer.deserialize(serialized_file_as_video_path,
-                         os.path.getsize(serialized_file_as_video_path),
-                         deserialized_file_out_path)
+                                        files_size,
+                                        deserialized_file_out_path)
         return deserialized_file_out_path
 
     @dispatch(str, int, str)
     @staticmethod
-    def deserialize(self, serialized_file_as_video_path: str, file_size: int, deserialized_file_out_path: str):
-
+    def deserialize(serialized_file_as_video_path: str, file_size: int, deserialized_file_out_path: str):
         serialized_file_videocap = cv2.VideoCapture(serialized_file_as_video_path)
-        self.get_video_metadata(serialized_file_videocap)
+        context = StatelessSerializer.collect_metadata(file_size, serialized_file_videocap)
 
         bytes_left_to_read = file_size
+        StatelessSerializer.deser_logger.debug("context initialized...")
 
-        deserialized_bytes = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=object)
-        futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
-        if self.chunk_size is None:
-            self.deser_logger.debug("calculating chunk size...")
-            self.strategy.calculate_chunk_size()
-        self.deser_logger.debug(f"about to process {len(futures)} frames")
+        deserialized_bytes = np.empty(context.get_frames_count(), dtype=object)
+        futures = np.empty(context.get_frames_count(), dtype=concurrent.futures.Future)
+
+        StatelessSerializer.deser_logger.debug(f"about to process {len(futures)} frames")
         frame_number = 0
-        self.strategy.frames_amount = np.ceil(file_size / self.chunk_size)
+        StatelessSerializer.strategy.frames_amount = context.frames_count
 
         while bytes_left_to_read > 0:
             ret, serialized_frame = serialized_file_videocap.read()
             if not ret:
                 break
 
-            bytes_amount_to_read = self.calculate_total_bytes(bytes_left_to_read)
+            bytes_amount_to_read = StatelessSerializer.calculate_total_bytes(bytes_left_to_read,
+                                                                             context,
+                                                                             StatelessSerializer.strategy.bytes_2_pixels_ratio)
             bytes_left_to_read -= bytes_amount_to_read
 
-            if self.workers:
-                futures[frame_number] = self.workers.submit(self.strategy.deserialize, bytes_amount_to_read,
+            if StatelessSerializer.workers:
+                futures[frame_number] = StatelessSerializer.workers.submit(StatelessSerializer.strategy.deserialize, bytes_amount_to_read,
                                                             serialized_frame,
-                                                            deserialized_bytes, frame_number)
+                                                            deserialized_bytes, frame_number, context)
             else:
-                futures[frame_number] = self.strategy.deserialize(bytes_amount_to_read, serialized_frame,
-                                                                  deserialized_bytes, frame_number)
+                futures[frame_number] = StatelessSerializer.strategy.deserialize(bytes_amount_to_read, serialized_frame,
+                                                                  deserialized_bytes, frame_number, context)
             frame_number += 1
-            self.deser_logger.debug(
+            StatelessSerializer.deser_logger.debug(
                 f"serializor submitted chunk {bytes_amount_to_read} bytes #{frame_number} for deserialization")
 
-        self.ser_logger.debug(f"total of {frame_number} frames were submitted to workers")
+        StatelessSerializer.deser_logger.debug(f"total of {frame_number} frames were submitted to workers")
 
-        if self.workers:
+        if StatelessSerializer.workers:
             wait(futures)
         deserialized_out_file = open(deserialized_file_out_path, 'w')
         consume(map(lambda _bytes: deserialized_out_file.write(bytes(_bytes.tolist())), deserialized_bytes))
@@ -175,6 +186,6 @@ class StatelessSerializer:
         cv2.destroyAllWindows()
 
     @staticmethod
-    def calculate_total_bytes(self, bytes_left_to_read):
-        bytes_amount_to_read = self.chunk_size if bytes_left_to_read > self.strategy.dims_multiplied / self.strategy.bytes_2_pixels_ratio else bytes_left_to_read
+    def calculate_total_bytes(bytes_left_to_read, context, bytes_2_pixels_ratio):
+        bytes_amount_to_read = context.chunk_size if bytes_left_to_read > context.dims_multiplied / bytes_2_pixels_ratio else bytes_left_to_read
         return bytes_amount_to_read

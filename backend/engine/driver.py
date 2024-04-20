@@ -11,7 +11,7 @@ from obfuscation.obfuscation_manager import ObfuscationManager
 class Driver:
 
     def __init__(self):
-        self.__serializer = Serializer()
+        self.__serializer = StatelessSerializer()
         self.__obfuscator = ObfuscationManager()
 
     def process_file_to_video(self, file_path: str) -> str:
@@ -25,11 +25,11 @@ class Driver:
         out_vid_path = self.__obfuscator.obfuscate(out_vid_path, cover_vid_path)
         return out_vid_path
 
-    def process_video_to_file(self, video_path: str) -> str:
+    def process_video_to_file(self, video_path: str, original_file_size: int) -> str:
         # untangle
         serialized_file_as_video_path = self.__obfuscator.untangle(video_path)
         # deserialize
-        zipped_file_path = self.__serializer.deserialize(serialized_file_as_video_path)
+        zipped_file_path = self.__serializer.deserialize(serialized_file_as_video_path, original_file_size)
         # unzip
         unzipped_file_path = self.__unzip_it(zipped_file_path)
         return unzipped_file_path

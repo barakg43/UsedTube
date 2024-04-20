@@ -10,8 +10,8 @@ FILES_READY_FOR_STORAGE_DIR = Path(os.path.join(ARTIFACTS_DIR, 'awaiting_storage
 FILES_READY_FOR_RETRIEVAL_DIR = Path(os.path.join(ARTIFACTS_DIR, 'awaiting_retrieval'))
 if not os.path.exists(TEST_OUTPUT_DIR):
     os.mkdir(TEST_OUTPUT_DIR)
-SERIALIZE_LOGGER = "EncryptionLogger"
-DESERIALIZE_LOGGER = "DecryptionLogger"
+SERIALIZE_LOGGER = "Serialization-Logger"
+DESERIALIZE_LOGGER = "DeSerialization-Logger"
 GENERAL_LOGGER = "GeneralLogger"
 BITS_PER_BYTE = 8
 BYTES_PER_PIXEL = 3
