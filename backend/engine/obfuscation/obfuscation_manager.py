@@ -2,9 +2,12 @@ import cv2
 import logging
 import uuid
 
+from engine.constants import FILES_READY_FOR_STORAGE_DIR
+
+
 class ObfuscationManager:
 
-    def __init__(self, intermeshing_cycle: int=1):
+    def __init__(self, intermeshing_cycle: int=5):
         """
         Mix serialized frames with frames of a real video inorder to make
         the serialized videos hard to notice.
@@ -40,7 +43,7 @@ class ObfuscationManager:
         width = int(ff.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(ff.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        out_path =  str(uuid.uuid4()) + ".mp4"
+        out_path = (FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}.mp4").as_posix()
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
 

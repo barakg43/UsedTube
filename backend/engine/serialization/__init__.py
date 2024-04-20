@@ -4,8 +4,7 @@ import os
 import queue
 import threading
 
-import constants as c
-import constants as c
+import engine.constants as c
 
 LOG_DIR = c.ENGINE_ROOT / "logs"
 if not os.path.exists(LOG_DIR):
