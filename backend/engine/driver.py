@@ -3,6 +3,7 @@ from os.path import basename
 import zipfile
 
 from engine.constants import BIG_FILE, _4_MiB, SMALL_FILE, COVER_VIDEOS_DIR, FILES_READY_FOR_STORAGE_DIR
+from engine.serialization.stateless_serializer import StatelessSerializer
 from serialization.serializer import Serializer
 from obfuscation.obfuscation_manager import ObfuscationManager
 

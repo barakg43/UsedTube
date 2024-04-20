@@ -15,7 +15,7 @@ class DriverTest(unittest.TestCase):
 
         return paths_dict
 
-    def convert_file_to_video(self):
+    def test_file_to_video(self):
         paths_dict = self.paths_dict()
         driver = Driver()
         return driver.process_file_to_video(paths_dict[FILE_TO_SERIALIZE_PATH])
