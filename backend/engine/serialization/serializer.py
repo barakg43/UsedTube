@@ -4,12 +4,12 @@ import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, wait
 from typing import IO, overload
-
+from multipledispatch import dispatch
 import cv2
 import numpy as np
 from more_itertools import consume
 
-from engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
+from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, FILES_READY_FOR_RETRIEVAL_DIR
 from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 from engine.serialization.strategy.impl.bit_to_block import BitToBlock
 
@@ -29,14 +29,14 @@ class Serializer:
         self.chunk_size: int = 0
         self.strategy: SerializationStrategy = strategy
         if concurrent_execution:
-            self.workers: ThreadPoolExecutor = ThreadPoolExecutor(25)  # Arbitrary; Inspired by FPS
+            self.workers: ThreadPoolExecutor = ThreadPoolExecutor(50)
         else:
             self.workers = None
         self.ser_logger = logging.getLogger(SERIALIZE_LOGGER)
         self.deser_logger = logging.getLogger(DESERIALIZE_LOGGER)
         self.original_sha256 = ""
 
-    def get_cover_video_metadata(self, cover_video):
+    def get_video_metadata(self, cover_video):
         self.strategy.dims = (
             int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         )
@@ -45,16 +45,17 @@ class Serializer:
         self.strategy.dims_multiplied = np.multiply(*self.strategy.dims)
 
     def collect_metadata(self, file_br, cover_video):
-        self.get_cover_video_metadata(cover_video)
+        self.get_video_metadata(cover_video)
         fd = file_br.fileno()
         self.file_size = os.fstat(fd).st_size
 
-    def serialize(self, file_to_serialize: IO, cover_video_path: str, out_vid_path: str):
+    def serialize(self, file_to_serialize_path: str, cover_video_path: str, out_vid_path: str):
         """"
-        :param out_vid_path: string path
-        :param cover_video_path:
-        :parameter file_to_serialize an open file descriptor in 'rb' to the file
+        :param out_vid_path: points to output save location
+        :param cover_video_path: points to cover video
+        :parameter file_to_serialize_path: points to file to serialize
         """
+        file_to_serialize = open(file_to_serialize_path, 'rb')
         cover_video = cv2.VideoCapture(cover_video_path)
         self.collect_metadata(file_to_serialize, cover_video)
         cover_video.release()
@@ -87,13 +88,16 @@ class Serializer:
         if self.workers:
             wait(futures)
         self.ser_logger.debug("waiting for workers to finish processing chunks...")
+
         output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
 
-        consume(map(output_video.write, serialized_frames))
+        file_to_serialize.close()
 
+        consume(map(output_video.write, serialized_frames))
         # Closes all the video sources
         output_video.release()
         cv2.destroyAllWindows()
+
 
     def generateSha256ForFile(self, file_bytes: IO):
         file_bytes.seek(0)
@@ -101,18 +105,20 @@ class Serializer:
         file_bytes.seek(0)
         return sha256Hashed
 
-
-    def deserialize(self, serialized_file_as_video_path):
-        deserialized_file_out_path = f"des-{serialized_file_as_video_path}"
-        self._deserialize(serialized_file_as_video_path,
+    @dispatch(str)
+    @overload
+    def deserialize(self, serialized_file_as_video_path: str):
+        deserialized_file_out_path = (FILES_READY_FOR_RETRIEVAL_DIR / f"des-{serialized_file_as_video_path}").as_posix()
+        self.deserialize(serialized_file_as_video_path,
                           os.path.getsize(serialized_file_as_video_path),
-                          open(deserialized_file_out_path, 'w'))
+                          deserialized_file_out_path)
         return deserialized_file_out_path
 
-    def _deserialize(self, serialized_file_as_video_path, file_size, deserialized_file_out_path):
+    @dispatch(str, int, str)
+    def deserialize(self, serialized_file_as_video_path: str, file_size: int, deserialized_file_out_path: str):
 
-        enc_file_videocap = cv2.VideoCapture(serialized_file_as_video_path)
-        self.get_cover_video_metadata(enc_file_videocap)
+        serialized_file_videocap = cv2.VideoCapture(serialized_file_as_video_path)
+        self.get_video_metadata(serialized_file_videocap)
 
         bytes_left_to_read = file_size
 
@@ -126,7 +132,7 @@ class Serializer:
         self.strategy.frames_amount = np.ceil(file_size / self.chunk_size)
 
         while bytes_left_to_read > 0:
-            ret, serialized_frame = enc_file_videocap.read()
+            ret, serialized_frame = serialized_file_videocap.read()
             if not ret:
                 break
 
@@ -148,10 +154,10 @@ class Serializer:
 
         if self.workers:
             wait(futures)
-
-        consume(map(lambda _bytes: deserialized_file_out_path.write(bytes(_bytes.tolist())), deserialized_bytes))
-
-        enc_file_videocap.release()
+        deserialized_out_file = open(deserialized_file_out_path, 'w')
+        consume(map(lambda _bytes: deserialized_out_file.write(bytes(_bytes.tolist())), deserialized_bytes))
+        deserialized_out_file.close()
+        serialized_file_videocap.release()
         cv2.destroyAllWindows()
 
     def calculate_total_bytes(self, bytes_left_to_read):

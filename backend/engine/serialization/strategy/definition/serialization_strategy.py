@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import numpy as np
+from multipledispatch import dispatch
 
 
 class SerializationStrategy(ABC):
@@ -14,14 +15,19 @@ class SerializationStrategy(ABC):
         self.out_format: str = out_format
 
     @abstractmethod
-    def serialize(self, bytes_chunk, frames_collection, i):
+    def serialize(self, bytes_chunk, frames_collection, i, context=None):
         pass
 
     @abstractmethod
-    def deserialize(self, bytes_amount_to_read, encrypted_frame: np.ndarray, bytes_collection, i):
+    def deserialize(self, bytes_amount_to_read, encrypted_frame: np.ndarray, bytes_collection, i, context=None):
         pass
 
+    @dispatch()
     def calculate_chunk_size(self):
         if self.chunk_size <= 0:
             self.chunk_size = int(self.dims_multiplied / self.bytes_2_pixels_ratio)
         return self.chunk_size
+
+    @dispatch(np.int32)
+    def calculate_chunk_size(self, dims_multiplied: int) -> int:
+        return int(dims_multiplied / self.bytes_2_pixels_ratio)

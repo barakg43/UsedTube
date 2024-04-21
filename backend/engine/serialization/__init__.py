@@ -4,15 +4,14 @@ import os
 import queue
 import threading
 
-import constants as c
-import constants as c
+import engine.constants as c
 
 LOG_DIR = c.ENGINE_ROOT / "logs"
 if not os.path.exists(LOG_DIR):
     os.mkdir(LOG_DIR)
 ENCRYPTION_LOGS = os.path.join(LOG_DIR, 'serialize.log')
 DECRYPTION_LOGS = os.path.join(LOG_DIR, 'deserialize.log')
-GENERAL_LOGS =  os.path.join(LOG_DIR, 'general.log')
+GENERAL_LOGS = os.path.join(LOG_DIR, 'general.log')
 formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s ### %(message)s', datefmt="%Y-%m-%d %H:%M:%S")
 
 
@@ -38,7 +37,7 @@ init_logger(GENERAL_LOGS, c.GENERAL_LOGGER)
 
 def init_logger_async(log_path, logger_name):
     logger = logging.getLogger(logger_name)
-
+    logger.propagate = False
     logger.setLevel(logging.DEBUG)
 
     log_queue = queue.Queue()
@@ -50,7 +49,7 @@ def init_logger_async(log_path, logger_name):
         while True:
             try:
                 record = log_queue.get(block=True, timeout=None)
-                with open(log_path, 'w') as file:
+                with open(log_path, 'a') as file:
                     file.write(formatter.format(record) + '\n')
             except Exception as e:
                 logging.getLogger(c.GENERAL_LOGGER).critical(e.with_traceback())
@@ -68,5 +67,5 @@ def init_logger_async(log_path, logger_name):
         logger.addHandler(console_handler)
 
 
-init_logger_async(ENCRYPTION_LOGS, c.SERIALIZE_LOGGER)
-init_logger_async(DECRYPTION_LOGS, c.DESERIALIZE_LOGGER)
+init_logger(ENCRYPTION_LOGS, c.SERIALIZE_LOGGER)
+init_logger(DECRYPTION_LOGS, c.DESERIALIZE_LOGGER)

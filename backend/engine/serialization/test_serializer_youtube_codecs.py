@@ -1,7 +1,7 @@
 import unittest
 
-from backend.engine.serialization.test_serializer import SerializerTest, OUTPUT_DIR, RESOURCES_DIR
-
+from engine.serialization.test_serializer import SerializerTest
+from engine.constants import TEST_RESOURCES_DIR, TEST_OUTPUT_DIR
 file_arry = [
 
     # ['RGBA', 'avi'],  # too big
@@ -27,10 +27,10 @@ for file in file_arry:
     codec = file[0]
     file_ext = file[1]
     video_path = ((
-                          OUTPUT_DIR / "result-youtube" / f"output video {codec} (2160p_25fps_VP9 LQ-128kbit_AAC).{file_ext}")
+                          TEST_OUTPUT_DIR / "result-youtube" / f"output video {codec} (2160p_25fps_VP9 LQ-128kbit_AAC).{file_ext}")
                   .as_posix())
     test_method_name_Bit_Block = 'test_decryption_YouTube_1B_1Block_{0}_{1}'.format(codec, file_ext)
-    file_path = (RESOURCES_DIR / "sample-file2.pdf").as_posix()
+    file_path = (TEST_RESOURCES_DIR / "sample-file.pdf").as_posix()
 
 
     # Function to perform the test for a specific codec

@@ -2,17 +2,14 @@ import os
 import time
 import unittest
 from pathlib import Path
-
 import numpy as np
-
 from engine.serialization.serializer import Serializer
 from engine.serialization.strategy.impl.bit_to_block import BitToBlock
 from engine.serialization.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
-ENGINE_DIR = os.path.dirname(__file__)[:-13]
-RESOURCES_DIR = Path(os.path.join(ENGINE_DIR, 'resources'))
-OUTPUT_DIR = Path(os.path.join(ENGINE_DIR, 'output_files'))
-if not os.path.exists(OUTPUT_DIR):
-    os.mkdir(OUTPUT_DIR)
+from engine.constants import TEST_RESOURCES_DIR, TEST_OUTPUT_DIR
+
+
+
 PDF_PATH = 0
 ENC_OUT_VID_PATH = 1
 COVER_VID_PATH = 2
@@ -23,13 +20,13 @@ class SerializerTest(unittest.TestCase):
 
     def paths_dict(self):
         original_file_ext = "pdf"
-        paths_dict = {PDF_PATH: (RESOURCES_DIR / f"sample-file.{original_file_ext}").as_posix(),
+        paths_dict = {PDF_PATH: (TEST_RESOURCES_DIR / f"sample-file.{original_file_ext}").as_posix(),
                       ENC_OUT_VID_PATH: (
-                              OUTPUT_DIR / f"output-video_{self.enc.strategy.fourcc}.{self.enc.strategy.out_format}")
+                              TEST_OUTPUT_DIR / f"output-video_{self.enc.strategy.fourcc}.{self.enc.strategy.out_format}")
                       .as_posix(),
-                      COVER_VID_PATH: (RESOURCES_DIR / "sample.mp4").as_posix(),
+                      COVER_VID_PATH: (TEST_RESOURCES_DIR / "sample.mp4").as_posix(),
                       DEC_PDF_PATH: (
-                              OUTPUT_DIR / f"sample-file-decrypted_{self.enc.strategy.fourcc}.{original_file_ext}").as_posix()}
+                              TEST_OUTPUT_DIR / f"sample-file-decrypted_{self.enc.strategy.fourcc}.{original_file_ext}").as_posix()}
 
         return paths_dict
 
@@ -76,7 +73,7 @@ class SerializerTest(unittest.TestCase):
 
         begin_time = time.time()
         file_size = os.stat(original_file_path).st_size
-        self.enc._deserialize(serialized_video_path, file_size, decrypted_pdf_file)
+        self.enc.deserialize(serialized_video_path, file_size, decrypted_pdf_file)
         end_time = time.time()
         print(f"Decoded In {end_time - begin_time}")
         original_sha256 = self.enc.generateSha256ForFile(pdf_file)
