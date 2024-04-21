@@ -10,9 +10,8 @@ ZIPPED_FILE_TO_SERIALIZE_PATH: int = 2
 class DriverTest(unittest.TestCase):
     def paths_dict(self):
         paths_dict = {
-            FILE_TO_SERIALIZE_PATH: (TEST_RESOURCES_DIR / "sample-file.pdf").as_posix(),
-            ZIPPED_FILE_TO_SERIALIZE_PATH: (TEST_RESOURCES_DIR / "sample-file.pdf.zip").as_posix(),
-            VIDEO_TO_DESERIALIZE_PATH: (FILES_READY_FOR_STORAGE_DIR / "c6bcc67e-d342-4b33-8fff-85a8f4d5e6c4.mp4").as_posix()
+            FILE_TO_SERIALIZE_PATH: (TEST_RESOURCES_DIR / "sample-file2.pdf").as_posix(),
+            VIDEO_TO_DESERIALIZE_PATH: (FILES_READY_FOR_STORAGE_DIR / "f806bd7a-6454-4ac2-8569-5ca31a058d25.mp4").as_posix()
         }
 
         return paths_dict
@@ -20,11 +19,11 @@ class DriverTest(unittest.TestCase):
     def test_file_to_video(self):
         paths_dict = self.paths_dict()
         driver = Driver()
-        driver.process_file_to_video(paths_dict[FILE_TO_SERIALIZE_PATH])
+        print(driver.process_file_to_video(paths_dict[FILE_TO_SERIALIZE_PATH])[1])
         pass
 
     def test_driver_video_to_file(self):
         paths_dict = self.paths_dict()
         driver = Driver()
-        driver.process_video_to_file(paths_dict[VIDEO_TO_DESERIALIZE_PATH], os.path.getsize(paths_dict[ZIPPED_FILE_TO_SERIALIZE_PATH]))
+        driver.process_video_to_file(paths_dict[VIDEO_TO_DESERIALIZE_PATH], 48484244)
         pass

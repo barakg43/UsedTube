@@ -16,7 +16,9 @@ DESERIALIZE_LOGGER = "DeSerialization-Logger"
 GENERAL_LOGGER = "GeneralLogger"
 BITS_PER_BYTE = 8
 BYTES_PER_PIXEL = 3
-IS_WRITING_TO_CONSOLE = True
 BIG_FILE = "big"
 SMALL_FILE = "small"
 _4_MiB = 4 * (2 ** 20)
+
+IS_WRITING_TO_CONSOLE = False
+DEBUG = True

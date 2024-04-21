@@ -49,7 +49,7 @@ def init_logger_async(log_path, logger_name):
         while True:
             try:
                 record = log_queue.get(block=True, timeout=None)
-                with open(log_path, 'a+') as file:
+                with open(log_path, 'a') as file:
                     file.write(formatter.format(record) + '\n')
             except Exception as e:
                 logging.getLogger(c.GENERAL_LOGGER).critical(e.with_traceback())
@@ -67,5 +67,5 @@ def init_logger_async(log_path, logger_name):
         logger.addHandler(console_handler)
 
 
-init_logger_async(ENCRYPTION_LOGS, c.SERIALIZE_LOGGER)
-init_logger_async(DECRYPTION_LOGS, c.DESERIALIZE_LOGGER)
+init_logger(ENCRYPTION_LOGS, c.SERIALIZE_LOGGER)
+init_logger(DECRYPTION_LOGS, c.DESERIALIZE_LOGGER)

@@ -2,7 +2,7 @@ import cv2
 import logging
 import uuid
 
-from engine.constants import FILES_READY_FOR_STORAGE_DIR, FILES_READY_FOR_RETRIEVAL_DIR, GENERAL_LOGGER
+from engine.constants import FILES_READY_FOR_STORAGE_DIR, GENERAL_LOGGER, TMP_WORK_DIR
 
 
 class ObfuscationManager:
@@ -89,7 +89,7 @@ class ObfuscationManager:
         width = int(obsv.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(obsv.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        out_path = (FILES_READY_FOR_RETRIEVAL_DIR / f"{uuid.uuid4()}.mp4").as_posix()  # Generate unique filename using UUID
+        out_path = (TMP_WORK_DIR / f"{uuid.uuid4()}.mp4").as_posix()  # Generate unique filename using UUID
         fourcc = cv2.VideoWriter.fourcc(*'mp4v')
         out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
 

@@ -11,7 +11,7 @@ import cv2
 import numpy as np
 from more_itertools import consume
 
-from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, FILES_READY_FOR_RETRIEVAL_DIR
+from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, FILES_READY_FOR_RETRIEVAL_DIR, TMP_WORK_DIR
 from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 from engine.serialization.strategy.impl.bit_to_block import BitToBlock
 
@@ -155,7 +155,7 @@ class StatelessSerializer:
         if StatelessSerializer.workers:
             wait(futures)
 
-        deserialized_out_path = (FILES_READY_FOR_RETRIEVAL_DIR / f"{uuid.uuid4()}").as_posix()
+        deserialized_out_path = (TMP_WORK_DIR / f"{uuid.uuid4()}").as_posix()
         deserialized_out_file = open(deserialized_out_path, 'wb')
         consume(map(lambda _bytes: deserialized_out_file.write(bytes(_bytes.tolist())), deserialized_bytes))
         deserialized_out_file.close()
