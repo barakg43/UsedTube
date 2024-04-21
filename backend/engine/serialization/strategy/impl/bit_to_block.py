@@ -57,7 +57,7 @@ class BitToBlock(SerializationStrategy):
         bytes_as_rows = bytes_array.reshape(row_amount, -1)
         return np.repeat(bytes_as_rows[:, :, np.newaxis], BYTES_PER_PIXEL, axis=2)
 
-    def serialize(self, bytes_chunk, frames_collection, i, context):
+    def serialize(self, bytes_chunk, frames_collection, i, context=None):
         begin_time = time.time()
         width, height = context.dims
         block_size = self.block_size
@@ -70,7 +70,7 @@ class BitToBlock(SerializationStrategy):
         filled_frame[:frame_of_blocks.shape[0], : frame_of_blocks.shape[1]] = frame_of_blocks
         frames_collection[i] = filled_frame
         end_time = time.time()
-        self.enc_logger.debug(f"Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec")
+        self.enc_logger.debug(f"serialized frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec")
 
 
     def __save_frame_to_csv(self, is_print_in_binary, is_encrypted, i, array):
@@ -83,18 +83,21 @@ class BitToBlock(SerializationStrategy):
                 for col in range(self.dims[0]):
                     str_array.append(str(array[row, col]))
             np.savetxt(
-                f"../output_files/frames_collection[0]_{'encrypted' if is_encrypted else 'decrypted'}_{self.fourcc}.csv",
+                f"../output_files/frames_collection[0]_{'serialized' if is_encrypted else 'deserialized'}_{self.fourcc}.csv",
                 np.array(str_array).reshape(self.dims[1], self.dims[0]), delimiter=",", fmt="%s")
 
-    def deserialize(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i, context):
-        begin_time = time.time()
-        block_size = self.block_size
-        width, height = context.dims
-        block_amount_over_width = width // block_size
-        block_amount_over_height = height // block_size
-        blocks = encrypted_frame.reshape((block_amount_over_height, block_size, block_amount_over_width,  block_size, 3))
-        blocks_means = np.mean(blocks, axis=(1, 3, 4)).flatten().astype(np.uint8)[:bytes_amount_to_read * BITS_PER_BYTE]
-        decoded_bits = np.where(blocks_means > 127, 1, 0)
-        bytes_collection[i] = np.packbits(decoded_bits)
-        end_time = time.time()
-        self.dec_logger.debug(f"Decrypt frame {i + 1}/{context.frames_amount:.0f} end {end_time - begin_time:.2f} sec")
+    def deserialize(self, bytes_amount_to_read, encrypted_frame, bytes_collection, i, context=None):
+        try:
+            begin_time = time.time()
+            block_size = self.block_size
+            width, height = context.dims
+            block_amount_over_width = width // block_size
+            block_amount_over_height = height // block_size
+            blocks = encrypted_frame.reshape((block_amount_over_height, block_size, block_amount_over_width,  block_size, 3))
+            blocks_means = np.mean(blocks, axis=(1, 3, 4)).flatten().astype(np.uint8)[:bytes_amount_to_read * BITS_PER_BYTE]
+            decoded_bits = np.where(blocks_means > 127, 1, 0)
+            bytes_collection[i] = np.packbits(decoded_bits)
+            end_time = time.time()
+            self.dec_logger.debug(f"deserialized frame {i + 1}/{context.frames_count:.0f} end {end_time - begin_time:.2f} sec")
+        except Exception as e:
+            self.dec_logger.critical(e)
