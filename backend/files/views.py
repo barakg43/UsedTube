@@ -30,5 +30,5 @@ class Download(View):
 
 
 class Upload(View):
-    def get(self, request: HttpRequest):
+    def post(self, request: HttpRequest):
         return HttpResponse('hello world!')
