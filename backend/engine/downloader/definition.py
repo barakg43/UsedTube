@@ -4,7 +4,6 @@ from pathlib import Path
 
 
 class Downloader(ABC):
-    tmp_folder = Path(dirname(__file__)).parent / "tmp"
 
     @abstractmethod
     @staticmethod
