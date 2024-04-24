@@ -9,7 +9,6 @@ from engine.downloader.definition import Downloader
 from files.query import get_items_in_folder
 from engine.driver import Driver
 
-
 class Download(View):
     def get(self, request: HttpRequest):
         # receive user request to download file

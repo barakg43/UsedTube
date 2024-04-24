@@ -25,5 +25,7 @@ class DriverTest(unittest.TestCase):
     def test_driver_video_to_file(self):
         paths_dict = self.paths_dict()
         driver = Driver()
+        # sample-file2.pdf compressed size == 48484244
+        # sample-file.pdf compressed size = 358621
         driver.process_video_to_file(paths_dict[VIDEO_TO_DESERIALIZE_PATH], 48484244)
         pass
