@@ -12,12 +12,13 @@ def show(frame):
 
 
 class BitToBlock(SerializationStrategy):
-    def __init__(self, block_size=4, fourcc: str = "RBGA", out_format: str = "avi"):
-        super().__init__(fourcc, out_format)
+    def __init__(self, block_size=4 ,fourcc: str = "RBGA",encoder_library_name=None, out_format: str = "avi"):
+        super().__init__(fourcc, encoder_library_name,out_format)
         self.block_size = block_size
         self.bytes_2_pixels_ratio = BITS_PER_BYTE * (block_size ** 2)
         self.enc_logger = logging.getLogger(SERIALIZE_LOGGER)
         self.dec_logger = logging.getLogger(DESERIALIZE_LOGGER)
+       
 
     def __create_blocks_from_bytes(self, bytes_row):
         block_size = self.block_size
