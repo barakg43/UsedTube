@@ -4,8 +4,7 @@ import os
 import queue
 import threading
 
-import constants as c
-import constants as c
+import server.engine.serialization.constants as c
 
 LOG_DIR = c.ENGINE_ROOT / "logs"
 if not os.path.exists(LOG_DIR):
@@ -23,7 +22,7 @@ def init_logger(log_path, logger_name):
 
     logger = logging.getLogger(logger_name)
 
-    if c.IS_WRITING_TO_CONSOLE:
+    if c.IS_WRITING_LOGS_TO_CONSOLE:
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
@@ -62,7 +61,7 @@ def init_logger_async(log_path, logger_name):
     listener_thread.start()
 
     logger.addHandler(queue_handler)
-    if c.IS_WRITING_TO_CONSOLE:
+    if c.IS_WRITING_LOGS_TO_CONSOLE:
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
