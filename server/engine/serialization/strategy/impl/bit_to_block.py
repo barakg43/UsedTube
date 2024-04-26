@@ -71,7 +71,6 @@ class BitToBlock(SerializationStrategy):
         end_time = time.time()
         self.enc_logger.debug(f"Encrypt frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec")
 
-
     def __save_frame_to_csv(self, is_print_in_binary, is_encrypted, i, array):
         if (i == 0):
             print(f"saving frame {i} to file...")
@@ -91,7 +90,7 @@ class BitToBlock(SerializationStrategy):
         width, height = self.dims
         block_amount_over_width = width // block_size
         block_amount_over_height = height // block_size
-        blocks = encrypted_frame.reshape((block_amount_over_height, block_size, block_amount_over_width,  block_size, 3))
+        blocks = encrypted_frame.reshape((block_amount_over_height, block_size, block_amount_over_width, block_size, 3))
         blocks_means = np.mean(blocks, axis=(1, 3, 4)).flatten().astype(np.uint8)[:bytes_amount_to_read * BITS_PER_BYTE]
         decoded_bits = np.where(blocks_means > 127, 1, 0)
         bytes_collection[i] = np.packbits(decoded_bits)
