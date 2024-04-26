@@ -2,7 +2,7 @@ import ffmpeg
 
 
 class VideoWriter:
-    def __init__(self, out_video_path, fourcc: str, fps: int, bitrate: int, frame_size: (int, int),
+    def __init__(self, out_video_path, fourcc: str, fps: int, frame_size: (int, int),
                  logging_stdout=False):
         self.path = out_video_path
         self.output_video = (
@@ -10,7 +10,7 @@ class VideoWriter:
                          s='{}x{}'.format(frame_size[0], frame_size[1]))
             .output(out_video_path, r=f'{fps}', vtag=fourcc)
             .overwrite_output()
-            .run_async(pipe_stdin=True)
+            .run_async(pipe_stdin=True, quiet=not logging_stdout)
         )
 
     def write(self, frame):
@@ -18,5 +18,4 @@ class VideoWriter:
 
     def release(self):
         self.output_video.stdin.close()
-        # self.output_video.stdout.close()
         self.output_video.wait()

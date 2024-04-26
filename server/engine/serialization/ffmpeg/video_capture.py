@@ -8,7 +8,7 @@ class VideoCapture:
         self.video_stream = (
             ffmpeg.input(video_stream_path)
             .output('pipe:', format='rawvideo', pix_fmt='bgr24')
-            .run_async(pipe_stdout=True)
+            .run_async(pipe_stdout=True, quiet=not logging_stdout)
         )
 
         self.video_props = self.__get_video_props(video_stream_path)
@@ -40,8 +40,5 @@ class VideoCapture:
         return self.video_props
 
     def release(self):
-        print("Closing video stream")
-        # self.video_stream.stdout.close()
-        print("Video stream closed")
+        self.video_stream.stdout.close()
         self.video_stream.wait()
-        print("Video stream terminated")
