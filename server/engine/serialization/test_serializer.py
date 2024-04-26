@@ -9,7 +9,6 @@ from server.engine.serialization.serializer import Serializer
 from server.engine.serialization.strategy.impl.bit_to_block import BitToBlock
 from server.engine.serialization.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
 
-
 RESOURCES_DIR = Path('server/engine/resources/')
 OUTPUT_DIR = Path('server/engine/output_files')
 
@@ -25,7 +24,7 @@ class SerializerTest(unittest.TestCase):
 
     def paths_dict(self):
         original_file_ext = "pdf"
-        paths_dict = {PDF_PATH: (RESOURCES_DIR / f"sample-file.{original_file_ext}").as_posix(),
+        paths_dict = {PDF_PATH: (RESOURCES_DIR / f"sample-file3.{original_file_ext}").as_posix(),
                       ENC_OUT_VID_PATH: (
                               OUTPUT_DIR / f"output-video_{self.enc.strategy.fourcc}.{self.enc.strategy.out_format}")
                       .as_posix(),
@@ -38,13 +37,17 @@ class SerializerTest(unittest.TestCase):
     def check_pdf_serialization(self, proto):
         self.enc = Serializer(proto, concurrent_execution=True)
         paths = self.paths_dict()
+
         pdf_file = open(paths[PDF_PATH], 'rb')
         deserialized_pdf_file = open(paths[DEC_PDF_PATH], "wb+")
         begin_time = time.time()
 
         self.enc.serialize(pdf_file, paths[COVER_VID_PATH], paths[ENC_OUT_VID_PATH])
+
         end_time = time.time()
+        pdf_file.close()
         print(f"Encoded In {end_time - begin_time}")
+        pdf_file = open(paths[PDF_PATH], 'rb')
         begin_time = time.time()
         file_size = os.stat(paths[PDF_PATH]).st_size
         self.enc.deserialize(paths[ENC_OUT_VID_PATH], file_size, deserialized_pdf_file)
@@ -107,13 +110,13 @@ class SerializerTest(unittest.TestCase):
         sha256_1, sha256_2 = self.check_pdf_serialization(ThreeBytesToTwoPixels(fourcc=codec, out_format=file_ext))
         self.assertEqual(sha256_1, sha256_2)
 
-    def perform_test_1Bit_Block(self, codec, file_ext):
+    def perform_test_1Bit_Block(self, codec, encoder, file_ext):
         # Replace this with your actual test implementation
         print(f"#### Bit to Block: Testing codec '{codec}' with file extension '.{file_ext}' ###")
-        sha256_1, sha256_2 = self.check_pdf_serialization(BitToBlock(fourcc=codec, out_format=file_ext, block_size=4))
+        sha256_1, sha256_2 = self.check_pdf_serialization(
+            BitToBlock(fourcc=codec, encoder_library_name=encoder, out_format=file_ext, block_size=4))
         self.assertEqual(sha256_1, sha256_2)
         print(f"$$$$ Bit to Block: Testing codec '{codec}' PASS $$$$")
-
 
     def perform_test_youtube_1B_1Block_decryption(self, codec, file_ext, encrypted_video_path, original_file_path):
         # Replace this with your actual test implementation
