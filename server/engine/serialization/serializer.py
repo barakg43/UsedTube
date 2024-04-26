@@ -35,12 +35,12 @@ class Serializer:
         self.deser_logger = logging.getLogger(DESERIALIZE_LOGGER)
         self.original_sha256 = ""
 
-    def get_cover_video_metadata(self, cover_video):
-        self.strategy.dims = (
-            int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        )
-        self.fps = cover_video.get(cv2.CAP_PROP_FPS)
-        self.encoding = cv2.VideoWriter.fourcc(*self.strategy.fourcc)
+    def get_cover_video_metadata(self, video_io: VideoCapture):
+        width, height = video_io.get_video_props()["width"], video_io.get_video_props()["height"]
+
+        self.strategy.dims = (width, height)
+        self.fps = video_io.get_video_props()["fps"]
+        self.encoding = video_io.get_video_props()["codec"]
         self.strategy.dims_multiplied = np.multiply(*self.strategy.dims)
 
     def collect_metadata(self, file_br, cover_video):
@@ -48,13 +48,42 @@ class Serializer:
         fd = file_br.fileno()
         self.file_size = os.fstat(fd).st_size
 
+    def __write_frames_concurrently_to_video(self, serialized_frames, output_video,
+                                             futures: np.ndarray[concurrent.futures.Future]):
+        frame_amount_in_block = 10
+
+        # def process_frame(frame):
+        #     self.__write_frame_to_video(frame, output_video)
+        #     return None  # to remove the frame form memory
+
+        for start_index in np.arange(0, len(serialized_frames), frame_amount_in_block):
+            end_index = start_index + frame_amount_in_block
+            wait(futures[start_index:end_index])
+            consume(map(output_video.write, serialized_frames[start_index:end_index]))
+
+    # def __write_frame_to_video(self, frame, output_video):
+    #     output_video.stdin.write(frame.tobytes())
+
+    def __write_bytes_concurrently_to_file(self, decrypted_bytes, decrypted_file,
+                                           futures: np.ndarray[concurrent.futures.Future]):
+        bytes_amount_in_block = 1000
+
+        def process_byte(byte):
+            decrypted_file.write(bytes(byte.tolist()))
+            # return None  # to remove the byte form memory
+
+        for start_index in np.arange(0, len(decrypted_bytes), bytes_amount_in_block):
+            end_index = start_index + bytes_amount_in_block
+            wait(futures[start_index:end_index])
+            consume(map(process_byte, decrypted_bytes[start_index:end_index]))
+
     def serialize(self, file_to_serialize: IO, cover_video_path: str, out_vid_path: str):
         """"
         :param out_vid_path: string path
         :param cover_video_path:
         :parameter file_to_serialize an open file descriptor in 'rb' to the file
         """
-        cover_video = cv2.VideoCapture(cover_video_path)
+        cover_video = VideoCapture(cover_video_path)
         self.collect_metadata(file_to_serialize, cover_video)
 
         if self.chunk_size == 0:
