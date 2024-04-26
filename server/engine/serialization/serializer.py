@@ -4,13 +4,15 @@ import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, wait
 from typing import IO
-import vidgear.gears as vid
-import cv2
+
+# import vidgear.gears as vid
 import numpy as np
 from more_itertools import consume
 
 from server.engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
 from server.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
+from server.engine.serialization.video_capture import VideoCapture
+from server.engine.serialization.video_write import VideoWriter
 
 serialize_logger = logging.getLogger(SERIALIZE_LOGGER)
 deserialize_logger = logging.getLogger(DESERIALIZE_LOGGER)
@@ -97,32 +99,37 @@ class Serializer:
         bytes_chunk = file_to_serialize.read(self.chunk_size)
         self.strategy.frames_amount = np.ceil(self.file_size / self.chunk_size)
         chunk_number = 0
+        width, height = self.strategy.dims
+        output_video = VideoWriter(out_vid_path, self.strategy.fourcc, self.fps, (width, height), True)
         while bytes_chunk:
-            # use serializ without ThreadPool
+            # use serialize without ThreadPool
             if self.workers:
                 futures[chunk_number] = self.workers.submit(self.strategy.serialize, bytes_chunk, serialized_frames,
                                                             chunk_number)
             else:
-                futures[chunk_number] = self.strategy.serializ(bytes_chunk, serialized_frames,
-                                                               chunk_number)
+                self.strategy.serialize(bytes_chunk, serialized_frames,
+                                        chunk_number)
+                # output_video.write(serialized_frames[chunk_number])
             # read next chunk
             chunk_number += 1
-            self.ser_logger.debug(f"serializor submitted chunk number #{chunk_number} for serialization")
+            self.ser_logger.debug(f"serializer submitted chunk number #{chunk_number} for serialization")
             bytes_chunk = file_to_serialize.read(self.chunk_size)
 
         self.ser_logger.debug(f"total of {chunk_number} chunks were submitted to workers")
         if self.workers:
-            wait(futures)
+            self.__write_frames_concurrently_to_video(serialized_frames, output_video,
+                                                      futures)  # wait for file worker to finish
+        else:
+            consume(map(output_video.write, serialized_frames))
+
         self.ser_logger.debug("waiting for workers to finish processing chunks...")
         #  "-vcodec":"libx264","-vtag":self.strategy.fourcc
-        output_params_dic={"-output_dimensions": self.strategy.dims,} 
-        output_video = vid.WriteGear(out_vid_path,compression_mode=True,**output_params_dic)
-        consume(map(output_video.write, serialized_frames))
+        # "-vcodec": self.strategy.encoder_name
 
         # Closes all the video sources
-        cover_video.release()
-        output_video.close()
-        cv2.destroyAllWindows()
+        # cover_video.release()
+        output_video.release()
+        self.ser_logger.debug("finish encoding!")
 
     def generateSha256ForFile(self, file_bytes: IO):
         file_bytes.seek(0)
@@ -132,7 +139,7 @@ class Serializer:
 
     def deserialize(self, serialized_file_as_video_path, file_size, deserialized_file):
 
-        enc_file_videocap = cv2.VideoCapture(serialized_file_as_video_path)
+        enc_file_videocap = VideoCapture(serialized_file_as_video_path)
         self.get_cover_video_metadata(enc_file_videocap)
 
         bytes_left_to_read = file_size
@@ -171,9 +178,7 @@ class Serializer:
             wait(futures)
 
         consume(map(lambda _bytes: deserialized_file.write(bytes(_bytes.tolist())), deserialized_bytes))
-
         enc_file_videocap.release()
-        cv2.destroyAllWindows()
 
     def calculate_total_bytes(self, bytes_left_to_read):
         bytes_amount_to_read = self.chunk_size if bytes_left_to_read > self.strategy.dims_multiplied / self.strategy.bytes_2_pixels_ratio else bytes_left_to_read
