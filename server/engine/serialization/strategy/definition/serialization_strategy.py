@@ -3,7 +3,7 @@ import numpy as np
 
 
 class SerializationStrategy(ABC):
-    def __init__(self, fourcc: str = "RGBA", out_format: str = "avi"):
+    def __init__(self, fourcc: str = "RGBA",encoder_name:str="", out_format: str = "avi"):
         # W, H
         self.dims: tuple[int, int] = None
         self.dims_multiplied: int = 0
@@ -12,6 +12,7 @@ class SerializationStrategy(ABC):
         self.bytes_2_pixels_ratio: float = 0
         self.fourcc: str = fourcc
         self.out_format: str = out_format
+        self.encoder_name=encoder_name
 
     @abstractmethod
     def serialize(self, bytes_chunk, frames_collection, i):
