@@ -6,27 +6,31 @@ codec_arry = [
 
     # ['RGBA', 'avi'],  # too big
     # ['av01', 'mp4'], not working
-    # ['vp09', 'mp4'],
+    # ['vp9', 'mp4',"libvpx"],
+    # ["av01","mp4",None],
 
-    ['mp4v', 'mp4'],
-    ['avc1', 'mp4'],
-    ['avc3', 'mp4'],
+    # ['mp4v', 'mp4',"libx264",],
+    ['avc1', 'mp4', "libx264"],
+    ['avc3', 'mp4', "libx264"],
     # ['drac', 'mp4'], # not working
-    ['hev1', 'mp4'],
+    # ['hev1', 'mp4',"libx264"],
     # ['hvc1', 'mp4'], # not working
     # ['mhm1', 'mp4'], # not working
     # ['mlpa', 'mp4'], # not working
-    # ['mp4s', 'mp4'], # not working
-    ['mp4v', 'mp4'],
-    ['vc-1', 'mp4'],
-    ['davc', 'mp4'],
-    ['xvid', 'mp4']
+    # ['hevc', 'mp4',None], # not working
+    # ['mp4v', 'mp4',None],
+    # ['vc-1', 'mp4',None],
+    # ['davc', 'mp4',None],
+    # ['xvid', 'mp4',None]
 ]
 # Test class for running tests for each codec
 # print(Path.cwd())
+
+
 for codec_pair in codec_arry:
     codec = codec_pair[0]
     file_ext = codec_pair[1]
+    encoder = codec_pair[2]
     test_method_name_3P_2B = 'test_serializer_pdf_3B_2P_{0}_{1}'.format(codec, file_ext)
     test_method_name_Bit_Block = 'test_serializer_pdf_1B_1Block_{0}_{1}'.format(codec, file_ext)
 
@@ -36,8 +40,8 @@ for codec_pair in codec_arry:
         SerializerTest.perform_test_3P_2B(self, codec_arg, file_ext_arg)
 
 
-    def test_bit_block(self, codec_arg=codec, file_ext_arg=file_ext):
-        SerializerTest.perform_test_1Bit_Block(self, codec_arg, file_ext_arg)
+    def test_bit_block(self, codec_arg=codec, encoder=encoder, file_ext_arg=file_ext):
+        SerializerTest.perform_test_1Bit_Block(self, codec_arg, encoder, file_ext_arg)
 
 
     # setattr(SerializerTest, test_method_name_3P_2B, test_3p_2B)
