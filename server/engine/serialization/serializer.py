@@ -10,9 +10,9 @@ import numpy as np
 from more_itertools import consume
 
 from server.engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
+from server.engine.serialization.ffmpeg.video_capture import VideoCapture
+from server.engine.serialization.ffmpeg.video_write import VideoWriter
 from server.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
-from server.engine.serialization.video_capture import VideoCapture
-from server.engine.serialization.video_write import VideoWriter
 
 serialize_logger = logging.getLogger(SERIALIZE_LOGGER)
 deserialize_logger = logging.getLogger(DESERIALIZE_LOGGER)
@@ -100,7 +100,7 @@ class Serializer:
         self.strategy.frames_amount = np.ceil(self.file_size / self.chunk_size)
         chunk_number = 0
         width, height = self.strategy.dims
-        output_video = VideoWriter(out_vid_path, self.strategy.fourcc, self.fps, (width, height), True)
+        output_video = VideoWriter(out_vid_path, self.strategy.fourcc, self.fps, (width, height))
         while bytes_chunk:
             # use serialize without ThreadPool
             if self.workers:

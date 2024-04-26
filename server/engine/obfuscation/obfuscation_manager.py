@@ -1,5 +1,3 @@
-
-
 class ObfuscationManager:
 
     def __init__(self, intermeshing_cycle=1):
@@ -11,7 +9,6 @@ class ObfuscationManager:
         serialized frames.
         """
         self.cycle = intermeshing_cycle
-
 
     def obfuscate(self, file_frames_path, cover_video_path) -> str:
         pass
