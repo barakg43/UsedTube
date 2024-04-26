@@ -1,24 +1,22 @@
 import logging
 import time
-import matplotlib.pyplot as plt
-import numpy as np
-from server.engine.serialization.constants import BYTES_PER_PIXEL, BITS_PER_BYTE
-from server.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
-from server.engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
 
-def show(frame):
-    plt.imshow(frame)
-    plt.show()
+import numpy as np
+
+from server.engine.serialization.constants import BYTES_PER_PIXEL, BITS_PER_BYTE
+from server.engine.serialization.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER
+from server.engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 
 
 class BitToBlock(SerializationStrategy):
-    def __init__(self, block_size=4 ,fourcc: str = "RBGA",encoder_library_name=None, out_format: str = "avi"):
-        super().__init__(fourcc, encoder_library_name,out_format)
+    def __init__(self, block_size=4, fourcc: str = "avc1", encoder_library_name=None,
+                 out_format: str = "mp4"):
+        super().__init__(fourcc, encoder_library_name, out_format)
+
         self.block_size = block_size
         self.bytes_2_pixels_ratio = BITS_PER_BYTE * (block_size ** 2)
         self.enc_logger = logging.getLogger(SERIALIZE_LOGGER)
         self.dec_logger = logging.getLogger(DESERIALIZE_LOGGER)
-       
 
     def __create_blocks_from_bytes(self, bytes_row):
         block_size = self.block_size
