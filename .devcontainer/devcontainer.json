@@ -3,13 +3,11 @@
 {
   "name": "Python 3",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "image": "barakg43/used_tube-dev:latest",
+  "image": "barakg43/used_tube-dev:1.2",
 
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
-  "containerEnv": {
-    "PYTHONPATH": "/workspaces/UsedTube"
-  },
+  "containerEnv": { "PYTHONPATH": "/workspaces/UsedTube"},
   // Configure tool-specific properties.
   "customizations": {
     // Configure properties specific to VS Code.
