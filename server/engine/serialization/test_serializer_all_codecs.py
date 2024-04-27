@@ -11,7 +11,7 @@ codec_arry = [
 
     # ['mp4v', 'mp4',"libx264",],
     ['avc1', 'mp4', "libx264"],
-    ['avc3', 'mp4', "libx264"],
+    # ['avc3', 'mp4', "libx264"],
     # ['drac', 'mp4'], # not working
     # ['hev1', 'mp4',"libx264"],
     # ['hvc1', 'mp4'], # not working
