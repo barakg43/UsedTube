@@ -24,7 +24,7 @@ IF ONLY ONE COVER VIDEO IS USED, METADATA SHOULD ALSO BE RETRIEVED ONCE
 
 
 class StatelessSerializer:
-    strategy: SerializationStrategy = BitToBlock(2, "mp4v", "mp4")
+    strategy: SerializationStrategy = BitToBlock(5, "mp4v", "mp4")
     concurrent_execution = True
     workers: ThreadPoolExecutor = ThreadPoolExecutor(50) if concurrent_execution else None
     ser_logger = logging.getLogger(SERIALIZE_LOGGER)

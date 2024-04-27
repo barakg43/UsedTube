@@ -33,6 +33,14 @@ BYTES_PER_PIXEL = 3
 BIG_FILE = "big"
 SMALL_FILE = "small"
 _4_MiB = 4 * (2 ** 20)
-
+SAMPLE_FILE_1 = "sample-file"
+SAMPLE_FILE_2 = "sample-file2.pdf"
+SAMPLE_FILE_3 = "sample-file3.pdf"
+SAMPLE_FILE_4 = "sample-file4.pdf"
+# sizes are for compressed
+SF_1_SIZE = 358621
+SF_2_SIZE = 48484244
+SF_3_SIZE = 12233262
+SF_4_SIZE = 5310879
 IS_WRITING_TO_CONSOLE = False
 DEBUG = True

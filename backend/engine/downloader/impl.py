@@ -9,12 +9,9 @@ import uuid
 class YouTubeDownloader(Downloader):
 
     @staticmethod
-    def download(link) -> Path:
+    def download(link) -> str:
         yt = YouTube(link)
-        stream = yt.streams.get_highest_resolution()
-        output_path = f"{VIDEOS_READY_FOR_PROCESSING}/{uuid.uuid1()}.mp4"
-        stream.download(output_path=output_path)
-        return Path(output_path)
+        return yt.streams.filter(res="720p").first().download(output_path=VIDEOS_READY_FOR_PROCESSING)
 
 
 

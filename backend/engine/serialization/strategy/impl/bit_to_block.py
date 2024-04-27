@@ -101,4 +101,5 @@ class BitToBlock(SerializationStrategy):
             self.dec_logger.debug(f"deserialized frame {i + 1}/{context.frames_count:.0f} end {end_time - begin_time:.2f} sec")
         except Exception as e:
             self.dec_logger.critical(e)
+            print(e)
 
