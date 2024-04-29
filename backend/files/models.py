@@ -32,3 +32,7 @@ class SharedItem(models.Model):
 
     class Meta:
         unique_together = ('item', 'shared_with')
+
+class UsedSpace(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    value = models.IntegerField()
