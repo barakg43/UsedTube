@@ -7,13 +7,14 @@ from django.views import View
 from engine.constants import SF_3_SIZE, SF_4_SIZE
 from engine.downloader.impl import YouTubeDownloader
 from engine.downloader.definition import Downloader
-from files.models import UsedSpace as UsedSpace_model
+from files.models import UsedSpace
 from files.query import get_items_in_folder
 from engine.driver import Driver
 
 
-@login_required
+
 class Download(View):
+    @login_required
     def get(self, request: HttpRequest):
         # receive user request to download file
         # you get in request: user id, file_name
@@ -35,14 +36,14 @@ class Download(View):
                             content_type=None)
 
 
-@login_required
+
 class Upload(View):
+    @login_required
     def post(self, request: HttpRequest):
         return HttpResponse('hello world!')
 
 
-@login_required
-class UsedSpace(View): #
+class UsedSpaceView(View): #
     def get(self, request: HttpRequest):
-        used_space: UsedSpace_model = get_object_or_404(UsedSpace_model, user_id=request.user.id)
+        used_space = request.user.used_space.first()
         return JsonResponse({'value': used_space.value})

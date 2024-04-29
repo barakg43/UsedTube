@@ -1,12 +1,23 @@
+import datetime
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpRequest, JsonResponse
 from django.views import View
 
+from files.models import UsedSpace, Folder
+
 
 # Create your views here.
 
 class Register(View):
+    def __additional_registration_actions(self, user: User):
+        # set used space to 0
+        UsedSpace.objects.create(user=user, value=0)
+        # create root folder
+        now = datetime.datetime.now()
+        Folder.objects.create(name='root', parent=None, owner=user, created_at=now, updated_at=now)
+        
     def post(self, request:HttpRequest):
         # Get data from request
         username = request.POST.get('username')
@@ -21,9 +32,7 @@ class Register(View):
 
         # Create user
         user = User.objects.create_user(username=username, email=email, password=password)
-
-        # Optionally, we may want to send a confirmation email or perform additional actions here
-
+        self.__additional_registration_actions(user)
         return JsonResponse({'message': 'User registered successfully'})
 
     def delete(self, request: HttpRequest):
@@ -44,6 +53,8 @@ class Login(View):
         password = request.POST.get('password')
 
         # Authenticate user
+        if request.user.is_authenticated:
+            return JsonResponse({'error': 'Already logged in'}, status=403)
         user = authenticate(request, username=username, password=password)
 
         # Check if authentication was successful

@@ -34,5 +34,5 @@ class SharedItem(models.Model):
         unique_together = ('item', 'shared_with')
 
 class UsedSpace(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    of_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='used_space')
     value = models.IntegerField()
