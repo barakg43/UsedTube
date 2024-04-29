@@ -42,7 +42,7 @@ class Upload(View):
 
 
 @login_required
-class UsedSpace(View):
+class UsedSpace(View): #
     def get(self, request: HttpRequest):
         used_space: UsedSpace_model = get_object_or_404(UsedSpace_model, user_id=request.user.id)
         return JsonResponse({'value': used_space.value})
