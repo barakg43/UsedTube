@@ -1,16 +1,18 @@
-from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 import os
-from django.http import HttpRequest, HttpResponse, FileResponse
+from django.http import HttpRequest, HttpResponse, FileResponse, JsonResponse
 from django.views import View
 
 from engine.constants import SF_3_SIZE, SF_4_SIZE
 from engine.downloader.impl import YouTubeDownloader
 from engine.downloader.definition import Downloader
+from files.models import UsedSpace as UsedSpace_model
 from files.query import get_items_in_folder
 from engine.driver import Driver
 
 
+@login_required
 class Download(View):
     def get(self, request: HttpRequest):
         # receive user request to download file
@@ -33,7 +35,14 @@ class Download(View):
                             content_type=None)
 
 
+@login_required
 class Upload(View):
     def post(self, request: HttpRequest):
-
         return HttpResponse('hello world!')
+
+
+@login_required
+class UsedSpace(View): #
+    def get(self, request: HttpRequest):
+        used_space: UsedSpace_model = get_object_or_404(UsedSpace_model, user_id=request.user.id)
+        return JsonResponse({'value': used_space.value})
