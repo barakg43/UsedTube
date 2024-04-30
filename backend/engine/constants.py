@@ -8,7 +8,7 @@ TEST_OUTPUT_DIR = Path(os.path.join(ARTIFACTS_DIR, 'test_output_files'))
 COVER_VIDEOS_DIR = Path(os.path.join(ARTIFACTS_DIR, 'cover_videos'))
 FILES_READY_FOR_STORAGE_DIR = Path(os.path.join(ARTIFACTS_DIR, 'awaiting_storage'))
 FILES_READY_FOR_RETRIEVAL_DIR = Path(os.path.join(ARTIFACTS_DIR, 'awaiting_retrieval'))
-VIDEOS_READY_FOR_PROCESSING = Path(os.path.join(ARTIFACTS_DIR, 'downloaded_preprocessed'))
+ITEMS_READY_FOR_PROCESSING = Path(os.path.join(ARTIFACTS_DIR, 'downloaded_preprocessed'))
 TMP_WORK_DIR = Path(os.path.join(ARTIFACTS_DIR, 'tmp'))
 DIRS = [
     ARTIFACTS_DIR,
@@ -17,7 +17,7 @@ DIRS = [
     COVER_VIDEOS_DIR,
     FILES_READY_FOR_STORAGE_DIR,
     FILES_READY_FOR_RETRIEVAL_DIR,
-    VIDEOS_READY_FOR_PROCESSING,
+    ITEMS_READY_FOR_PROCESSING,
     TMP_WORK_DIR
 ]
 

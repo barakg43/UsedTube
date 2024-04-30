@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.http import HttpRequest, JsonResponse
 from django.views import View
 
+from constants import ERROR, MESSAGE, already_exists
 from files.models import UsedSpace, Folder
 
 
@@ -26,21 +27,23 @@ class Register(View):
 
         # Check if username or email already exists
         if User.objects.filter(username=username).exists():
-            return JsonResponse({'error': 'Username already exists'}, status=400)
+            return JsonResponse({ERROR: already_exists('Username')}, status=400)
         if User.objects.filter(email=email).exists():
-            return JsonResponse({'error': 'Email already exists'}, status=400)
+            return JsonResponse({ERROR: already_exists('Email')}, status=400)
 
         # Create user
         user = User.objects.create_user(username=username, email=email, password=password)
+
         self.__additional_registration_actions(user)
-        return JsonResponse({'message': 'User registered successfully'})
+
+        return JsonResponse({MESSAGE: 'User registered successfully'})
 
     def delete(self, request: HttpRequest):
         # Get current user
         user = request.user
 
         if not user.is_authenticated:
-            return JsonResponse({'error': 'User is not authenticated'}, status=401)
+            return JsonResponse({ERROR: 'User is not authenticated'}, status=401)
 
         user.delete()
 
@@ -61,9 +64,9 @@ class Login(View):
         if user is not None:
             # Login user
             login(request, user)
-            return JsonResponse({'message': 'Login successful'})
+            return JsonResponse({MESSAGE: 'Login successful'})
         else:
-            return JsonResponse({'error': 'Invalid credentials'}, status=401)
+            return JsonResponse({ERROR: 'Invalid credentials'}, status=401)
 
 
 class Logout(View):
@@ -72,6 +75,6 @@ class Logout(View):
         if request.user.is_authenticated:
             # Log out user
             logout(request)
-            return JsonResponse({'message': 'Logout successful'})
+            return JsonResponse({MESSAGE: 'Logout successful'})
         else:
-            return JsonResponse({'error': 'User is not authenticated'}, status=401)
+            return JsonResponse({ERROR: 'User is not authenticated'}, status=401)
