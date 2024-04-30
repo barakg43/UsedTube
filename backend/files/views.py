@@ -8,6 +8,7 @@ from constants import *
 from engine.constants import SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
 from engine.downloader.impl import YouTubeDownloader
 from engine.downloader.definition import Downloader
+from engine.manager import Mr_EngineManager
 from files.models import Folder, File
 from engine.driver import Driver
 from itertools import chain
@@ -16,7 +17,8 @@ from itertools import chain
 class DownloadView(View):
     @login_required
     def get(self, request: HttpRequest):
-        # receive user request to download file
+        user = request.user
+
         # you get in request: user id, file_name
         file_name = 'sample-file2.pdf'
         # from the db extract video_url, compressed_file_size, content-type
@@ -34,7 +36,6 @@ class DownloadView(View):
                             filename=file_name,
                             as_attachment=True,
                             content_type=None)
-
 
 
 class UploadView(View):
@@ -56,23 +57,26 @@ class UploadView(View):
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
 
-        driver = Driver()
-        serialized_file_as_video_path, compressed_file_size = driver.process_file_to_video(str(file_path))
+        return JsonResponse({JOB_ID: Mr_EngineManager.process_file_to_video_async(str(file_path))})
 
-        # Send back the modified file as an attachment
-        with open(serialized_file_as_video_path, 'rb') as modified_file:
-            response = HttpResponse(modified_file.read(), content_type='application/octet-stream')
-            response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
-            return response
+    @login_required
+    def get(self, request: HttpRequest):
+        job_id = json.loads(request.body)[JOB_ID]
+        if Mr_EngineManager.is_processing_done(job_id):
+            # return the video to upload
+            pass
+        else:
+            return JsonResponse({})
 
 
-class UsedSpaceView(View): #
+class UsedSpaceView(View):  #
     def get(self, request: HttpRequest):
         used_space = request.user.used_space.first()
         return JsonResponse({'value': used_space.value})
 
 
 class DirectoryContentView(View):
+    @login_required
     def get(self, request: HttpRequest):
         def properties_dict(_subitem: File | Folder):
             properties = {
@@ -92,8 +96,6 @@ class DirectoryContentView(View):
             return JsonResponse(list(map(properties_dict, folder_subitems)))
         else:
             return JsonResponse({ERROR: 'bad request'}, 400)
-
-
 
     def __select_folder_subitems(self, request) -> Iterator[Union[Folder, File]]:
         user = request.user
