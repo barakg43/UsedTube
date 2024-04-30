@@ -1,19 +1,19 @@
+import json, os
+from typing import Union, Iterator, Set
+
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
-import os
 from django.http import HttpRequest, HttpResponse, FileResponse, JsonResponse
 from django.views import View
-
-from engine.constants import SF_3_SIZE, SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
+from constants import *
+from engine.constants import SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
 from engine.downloader.impl import YouTubeDownloader
 from engine.downloader.definition import Downloader
-from files.models import UsedSpace
-from files.query import get_items_in_folder
+from files.models import Folder, File
 from engine.driver import Driver
+from itertools import chain
 
 
-
-class Download(View):
+class DownloadView(View):
     @login_required
     def get(self, request: HttpRequest):
         # receive user request to download file
@@ -37,14 +37,18 @@ class Download(View):
 
 
 
-class Upload(View):
+class UploadView(View):
     @login_required
     def post(self, request: HttpRequest):
         # Check if file was uploaded
-        if 'file' not in request.FILES:
-            return HttpResponse('No file provided', status=400)
+        # WHAT ABOUT CREATION OF A FOLDER?
+        # IF FOLDER CREATION:
+        #   PASS
+        # ELSE:
+        if FILE not in request.FILES:
+            return JsonResponse({ERROR: 'no file provided'}, status=400)
 
-        uploaded_file = request.FILES['file']
+        uploaded_file = request.FILES[FILE]
 
         # Save the uploaded file to disk
         file_path = os.path.join(ITEMS_READY_FOR_PROCESSING, uploaded_file.name)
@@ -66,3 +70,37 @@ class UsedSpaceView(View): #
     def get(self, request: HttpRequest):
         used_space = request.user.used_space.first()
         return JsonResponse({'value': used_space.value})
+
+
+class DirectoryContentView(View):
+    def get(self, request: HttpRequest):
+        def properties_dict(_subitem: File | Folder):
+            properties = {
+                ITEM_TYPE: FILE if isinstance(_subitem, File) else FOLDER,
+                NAME: _subitem.name.value_to_string(),
+            }
+
+            if properties[ITEM_TYPE] == FILE:
+                properties[EXTENSION] = _subitem.extension.value_to_string()
+                properties[SIZE] = _subitem.size.value_to_string()
+
+            return properties
+
+        # create a json listing all files and their size of the requested folder
+        if request.content_type == 'application/json':
+            folder_subitems = self.__select_folder_subitems(request)
+            return JsonResponse(list(map(properties_dict, folder_subitems)))
+        else:
+            return JsonResponse({ERROR: 'bad request'}, 400)
+
+
+
+    def __select_folder_subitems(self, request) -> Iterator[Union[Folder, File]]:
+        user = request.user
+        folder_properties = json.loads(request.body)
+        folder = Folder.objects.filter(
+            owner=user, parent=folder_properties[PARENT], name=folder_properties[NAME]
+        )
+        sub_folders = Folder.objects.filter(owner=user, parent=folder)
+        files = File.objects.filter(owner=user, folder=folder)
+        return chain(sub_folders, files)
