@@ -4,7 +4,7 @@ import os
 from django.http import HttpRequest, HttpResponse, FileResponse, JsonResponse
 from django.views import View
 
-from engine.constants import SF_3_SIZE, SF_4_SIZE
+from engine.constants import SF_3_SIZE, SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
 from engine.downloader.impl import YouTubeDownloader
 from engine.downloader.definition import Downloader
 from files.models import UsedSpace
@@ -40,7 +40,26 @@ class Download(View):
 class Upload(View):
     @login_required
     def post(self, request: HttpRequest):
-        return HttpResponse('hello world!')
+        # Check if file was uploaded
+        if 'file' not in request.FILES:
+            return HttpResponse('No file provided', status=400)
+
+        uploaded_file = request.FILES['file']
+
+        # Save the uploaded file to disk
+        file_path = os.path.join(ITEMS_READY_FOR_PROCESSING, uploaded_file.name)
+        with open(file_path, 'wb') as destination:
+            for chunk in uploaded_file.chunks():
+                destination.write(chunk)
+
+        driver = Driver()
+        serialized_file_as_video_path, compressed_file_size = driver.process_file_to_video(str(file_path))
+
+        # Send back the modified file as an attachment
+        with open(serialized_file_as_video_path, 'rb') as modified_file:
+            response = HttpResponse(modified_file.read(), content_type='application/octet-stream')
+            response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
+            return response
 
 
 class UsedSpaceView(View): #
