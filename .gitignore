@@ -9,3 +9,6 @@ backend/engine/resources/output.mp4
 backend/engine/resources/sample-file2.zip
 
 backend/engine/logs/
+*Postgres*
+*artifacts*
+*migrations*
