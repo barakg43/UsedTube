@@ -1,5 +1,6 @@
-import FolderItem from "@/src/components/FolderItem";
+
 import { Divider, List } from "@mui/material";
+import FolderItem from "./FolderItem";
 
 function FolderList() {
   return (

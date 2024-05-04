@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import FolderList from "./FolderList";
+import FolderList from "./(components)/FolderList";
 
 function page() {
   return (
