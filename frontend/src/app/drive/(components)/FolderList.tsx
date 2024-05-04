@@ -1,4 +1,4 @@
-import FolderItem from "@/src/components/FolderItem";
+import FolderItem from "@/src/app/drive/(components)/FolderItem";
 import { Divider, List } from "@mui/material";
 
 function FolderList() {
