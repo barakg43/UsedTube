@@ -18,6 +18,16 @@ class DownloadView(View):
     def get(self, request: HttpRequest):
         # receive user request to download file
         # you get in request: user id, file_name
+        # The `file_name` variable in the `DownloadView` class is being set to 'sample-file2.pdf'.
+        # This variable is used to specify the name of the file that will be downloaded by the user.
+        # It is later used when returning the `FileResponse` in the `get` method of the `DownloadView`
+        # class to provide the downloaded file with a specific filename when it is sent back to the
+        # user for download.
+        # The `file_name` variable in the `DownloadView` class is being set to 'sample-file2.pdf'.
+        # This variable is used to specify the name of the file that will be downloaded by the user.
+        # It is later used when returning the `FileResponse` in the `get` method of the `DownloadView`
+        # class to provide the downloaded file with a specific filename when it is sent back to the
+        # user for download.
         file_name = 'sample-file2.pdf'
         # from the db extract video_url, compressed_file_size, content-type
         compressed_file_size = SF_4_SIZE  # in Bytes

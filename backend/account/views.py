@@ -78,3 +78,4 @@ class Logout(View):
             return JsonResponse({MESSAGE: 'Logout successful'})
         else:
             return JsonResponse({ERROR: 'User is not authenticated'}, status=401)
+        
