@@ -1,7 +1,8 @@
-from typing import Dict, Tuple
 from concurrent.futures import ThreadPoolExecutor, Future
-from uuid import uuid1
 from threading import Lock
+from typing import Dict, Tuple
+from uuid import uuid1
+
 from engine.driver import Driver
 
 

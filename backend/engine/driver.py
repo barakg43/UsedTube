@@ -1,13 +1,12 @@
-import shutil
-import sys
-from typing import Tuple
-
-from engine.constants import BIG_FILE, _4_MiB, SMALL_FILE, COVER_VIDEOS_DIR, TMP_WORK_DIR, FILES_READY_FOR_RETRIEVAL_DIR
-from engine.serialization.stateless_serializer import StatelessSerializer
-from engine.obfuscation.obfuscation_manager import ObfuscationManager
 import gzip
 import os
+import shutil
 from pathlib import Path
+from typing import Tuple
+
+from engine.constants import _4_MiB, COVER_VIDEOS_DIR, TMP_WORK_DIR, FILES_READY_FOR_RETRIEVAL_DIR
+from engine.obfuscation.obfuscation_manager import ObfuscationManager
+from engine.serialization.stateless_serializer import StatelessSerializer
 
 
 class Driver:

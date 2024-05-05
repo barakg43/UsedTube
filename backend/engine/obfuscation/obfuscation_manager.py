@@ -1,6 +1,7 @@
-import cv2 
 import logging
 import uuid
+
+import cv2
 
 from engine.constants import FILES_READY_FOR_STORAGE_DIR, GENERAL_LOGGER, TMP_WORK_DIR
 

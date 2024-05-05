@@ -1,17 +1,19 @@
-import json, os
-from typing import Union, Iterator, Set
+import json
+import os
+from itertools import chain
+from typing import Union, Iterator
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest, HttpResponse, FileResponse, JsonResponse
+from django.http import HttpRequest, FileResponse, JsonResponse
 from django.views import View
-from constants import *
+
+from constants import FILE, ERROR, JOB_ID, ITEM_TYPE, FOLDER, EXTENSION, NAME, SIZE, PARENT
 from engine.constants import SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
-from engine.downloader.impl import YouTubeDownloader
 from engine.downloader.definition import Downloader
+from engine.downloader.impl import YouTubeDownloader
+from engine.driver import Driver
 from engine.manager import Mr_EngineManager
 from files.models import Folder, File
-from engine.driver import Driver
-from itertools import chain
 
 
 class DownloadView(View):

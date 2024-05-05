@@ -4,14 +4,13 @@ import logging
 import os
 import uuid
 from concurrent.futures import ThreadPoolExecutor, wait
-from pathlib import Path
 from typing import IO
-from multipledispatch import dispatch
+
 import cv2
 import numpy as np
 from more_itertools import consume
 
-from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, FILES_READY_FOR_RETRIEVAL_DIR, TMP_WORK_DIR
+from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, TMP_WORK_DIR
 from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 from engine.serialization.strategy.impl.bit_to_block import BitToBlock
 

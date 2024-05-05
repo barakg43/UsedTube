@@ -1,14 +1,13 @@
 import os
 import time
 import unittest
-from pathlib import Path
+
 import numpy as np
+
+from engine.constants import TEST_RESOURCES_DIR, TEST_OUTPUT_DIR
 from engine.serialization.serializer import Serializer
 from engine.serialization.strategy.impl.bit_to_block import BitToBlock
 from engine.serialization.strategy.impl.three_bytes_to_two_pixels import ThreeBytesToTwoPixels
-from engine.constants import TEST_RESOURCES_DIR, TEST_OUTPUT_DIR
-
-
 
 PDF_PATH = 0
 ENC_OUT_VID_PATH = 1

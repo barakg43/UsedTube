@@ -1,8 +1,6 @@
-import os.path
 import unittest
 
-from engine.constants import TEST_RESOURCES_DIR, FILES_READY_FOR_STORAGE_DIR, FILES_READY_FOR_RETRIEVAL_DIR, \
-    ITEMS_READY_FOR_PROCESSING, SF_3_SIZE, SAMPLE_FILE_4, SF_4_SIZE
+from engine.constants import TEST_RESOURCES_DIR, FILES_READY_FOR_STORAGE_DIR, SAMPLE_FILE_4, SF_4_SIZE
 from engine.driver import Driver
 
 FILE_TO_SERIALIZE_PATH: int = 0

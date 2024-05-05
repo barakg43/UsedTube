@@ -1,9 +1,7 @@
-from pathlib import Path
+from pytube import YouTube
 
 from engine.constants import ITEMS_READY_FOR_PROCESSING
 from engine.downloader.definition import Downloader
-from pytube import YouTube
-import uuid
 
 
 class YouTubeDownloader(Downloader):
