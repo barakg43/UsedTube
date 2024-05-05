@@ -1,7 +1,8 @@
 import unittest
 
-from engine.serialization.test_serializer import SerializerTest
 from engine.constants import TEST_RESOURCES_DIR, TEST_OUTPUT_DIR
+from engine.serialization.test_serializer import SerializerTest
+
 file_arry = [
 
     # ['RGBA', 'avi'],  # too big

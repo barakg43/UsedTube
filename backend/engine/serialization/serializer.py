@@ -4,10 +4,11 @@ import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, wait
 from typing import IO, overload
-from multipledispatch import dispatch
+
 import cv2
 import numpy as np
 from more_itertools import consume
+from multipledispatch import dispatch
 
 from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, FILES_READY_FOR_RETRIEVAL_DIR
 from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
