@@ -29,7 +29,7 @@ const InputField: React.FC<InputFieldProps> = ({
     const errorMessage = (errorName: string) => errors[errorName]?.message;
 
     return (
-        <div  className="mb-5 flex flex-col">
+        <div  className="mb-5 flex flex-col w-13">
             <TextField
                 {...register(name)} // Assuming this comes from a parent component using useForm
                 label={label}
@@ -39,6 +39,7 @@ const InputField: React.FC<InputFieldProps> = ({
                 helperText={errorMessage(name)}
                 {...props}
                 size="small"
+                sx={{width: '200px'}}
             />
         </div>
     );

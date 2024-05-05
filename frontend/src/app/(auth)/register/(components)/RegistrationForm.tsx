@@ -9,6 +9,10 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import * as yup from "yup";
 import InputField from './InputField';
+import axios from 'axios';
+import api_root from '@/config';
+import { json } from 'stream/consumers';
+
 
 type FormValues = {
   username:string,
@@ -32,7 +36,7 @@ const schema = yup.object<FormValues, any>().shape({
   lastName: yup.string()
     .required('Last name is required')
     .matches(/^[a-zA-Z]+$/, 'This field can only contain letters'),
-  retypedPassword: yup
+  confirmPassword: yup
     .string()
     .required('Please retype your password')
     .oneOf([yup.ref('password')], 'Passwords must match'),
@@ -49,6 +53,7 @@ const password = "password"
 const RegistrationForm: React.FC = () => {
   
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const {
     register,
@@ -57,67 +62,84 @@ const RegistrationForm: React.FC = () => {
   } = useForm({
     resolver: yupResolver(schema)});
 
-  const onSubmit = (data: any) => {
-    console.log(data); // Replace with your form submission logic
-    // You can add validation logic in the onSubmit function as well
+  const onSubmit = async (data: FormValues) => {
+    try {
+      const json_data = JSON.stringify(data)
+      console.log(json_data)
+      const response = await axios.post(`http://${api_root}/account/register`, data);
+      if (response.status !== 200) {
+        console.log('User registered successfully');
+      }
+    } catch (error: any){
+      setErrorMessage(error.message)
+    }
   };
 
   
 
   return (
-  <div className='flex flex-col items-center'>
-    <h2 className='mt-4 mb-4'>Lets register</h2>
-    <InputField
-      name={firstName}
-      label="First Name"
-      register={register}
-      errors={errors}
-    />
-    <InputField
-      name={lastName}
-      label="Last Name"
-      register={register}
-      errors={errors}
-    />
-    <InputField
-      name={email}
-      label="Email"
-      type={email}
-      autoComplete={email}
-      register={register}
-      errors={errors}
-    />
-    <InputField
-      name={userName}
-      label="Username"
-      register={register}
-      errors={errors}
-    />
-    <InputField
-      name={password}
-      label="Password"
-      type={showPassword ? "text" : password}
-      autoComplete={password}
-      register={register}
-      errors={errors}
-      InputProps={{
-        endAdornment: (
-          <IconButton onClick={()=>{setShowPassword(!showPassword)}}>
-            {showPassword ? <VisibilityOff /> : <Visibility />}
-          </IconButton>
-        ),
-      }}
-    />
-    <InputField
-      name="confirmPassword"
-      label="Confirm Password"
-      type={password}
-      autoComplete={password}
-      register={register}
-      errors={errors}
-    />
-    <Button onClick={handleSubmit(onSubmit)}>Submit</Button>
-  </div>
+  <>
+    <div className='flex flex-col items-center'>
+      <h2 className='mt-4 mb-4'>Lets register</h2>
+      {errorMessage && <p className="text-red-500 mb-7">{errorMessage}</p>}
+      <InputField
+        name={firstName}
+        label="First Name"
+        register={register}
+        errors={errors}
+      />
+      <InputField
+        name={lastName}
+        label="Last Name"
+        register={register}
+        errors={errors}
+      />
+      <InputField
+        name={email}
+        label="Email"
+        autoComplete='email'
+        type={email}
+        register={register}
+        errors={errors}
+      />
+      <InputField
+        name={userName}
+        label="Username"
+        autoComplete='username'
+        register={register}
+        errors={errors}
+      />
+      <InputField
+        name={password}
+        label="Password"
+        type={showPassword ? "text" : password}
+        register={register}
+        errors={errors}
+        InputProps={{
+          endAdornment: (
+            <IconButton onClick={()=>{setShowPassword(!showPassword)}}>
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          ),
+        }}
+      />
+      <InputField
+        name="confirmPassword"
+        label="Confirm Password"
+        type={password}
+        register={register}
+        errors={errors}
+      />
+    </div>
+    
+    <Button
+      className='fixed bottom-4 right-4'
+      variant='contained'
+      onClick={handleSubmit(onSubmit)}
+    >submit</Button>
+
+    
+    </>
   );
 };
 

@@ -20,7 +20,7 @@ class Register(View):
         
     def post(self, request:HttpRequest):
         # Get data from request
-        username = request.POST.get('username')
+        username = request.POST.get('userName')
         password = request.POST.get('password')
         email = request.POST.get('email')
 
