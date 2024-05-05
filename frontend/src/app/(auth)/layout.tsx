@@ -8,6 +8,7 @@ const Layout = ({
   return (
     <html>
         <body>
+            <div>Home</div>
             <div>{children}</div>
         </body>
     </html>

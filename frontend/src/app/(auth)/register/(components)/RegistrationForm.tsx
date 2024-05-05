@@ -1,137 +1,129 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
   TextField,
+  IconButton,
   Button,
-  FormControl,
-  InputLabel,
-  FormHelperText,
-  Grid,
 } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import * as yup from "yup";
+import InputField from './InputField';
 
-// Define the interface for form data type
-interface FormValues {
-  userName: string;
-  password: string;
-  retypedPassword: string;
-  firstName: string;
-  lastName: string;
-  email: string;
+type FormValues = {
+  username:string,
+  password: string,
+  confirmPassword: string,
+  email: string,
+  firstName: string,
+  lastName: string
 }
 
+const schema = yup.object<FormValues, any>().shape({
+  username: yup.string().required('Username is required.'),
+  email: yup.string().email().required('Email is required'),
+  password: yup.string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters long')
+    .max(32, 'Password must be at most 32 characters long'),
+  firstName: yup.string()
+    .required('First name is required')
+    .matches(/^[a-zA-Z]+$/, 'This field can only contain letters'),
+  lastName: yup.string()
+    .required('Last name is required')
+    .matches(/^[a-zA-Z]+$/, 'This field can only contain letters'),
+  retypedPassword: yup
+    .string()
+    .required('Please retype your password')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
+});
+
+
+
+const firstName = "firstName"
+const lastName = "lastName"
+const email = "email"
+const userName = "username"
+const password = "password"
+
 const RegistrationForm: React.FC = () => {
+  
+  const [showPassword, setShowPassword] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm({
+    resolver: yupResolver(schema)});
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = (data: any) => {
     console.log(data); // Replace with your form submission logic
     // You can add validation logic in the onSubmit function as well
   };
 
+  
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label="Username"
-            {...register('userName', {
-              required: 'Username is required',
-              minLength: 3,
-              maxLength: 20,
-              pattern: /^[a-zA-Z0-9]+$/, // Allow only alphanumeric characters
-              errorMessage: 'Username can only contain letters and numbers (3-20 characters)',
-            })}
-            error={!!errors.userName}
-            helperText={errors.userName?.message}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth
-            label="Password"
-            type="password"
-            {...register('password', {
-              required: 'Password is required',
-              minLength: 8, // Adjust minimum password length as needed
-              pattern: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[.!@#$%^&*])/, // Strong password pattern
-              errorMessage:
-                'Password must be at least 8 characters and include a lowercase letter, an uppercase letter, a number, and a special character',
-            })}
-            error={!!errors.password}
-            helperText={errors.password?.message}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth
-            label="Retype Password"
-            type="password"
-            {...register('retypedPassword', {
-              required: 'Retyped password is required',
-              validate: {
-                value: (value) =>
-                  value === register('password').ref || 'Passwords do not match',
-              },
-            })}
-            error={!!errors.retypedPassword}
-            helperText={errors.retypedPassword?.message}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth
-            label="First Name"
-            {...register('firstName', {
-              required: 'First name is required',
-            })}
-            error={!!errors.firstName}
-            helperText={errors.firstName?.message}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth
-            label="Last Name"
-            {...register('lastName', {
-              required: 'Last name is required',
-            })}
-            error={!!errors.lastName}
-            helperText={errors.firstName?.message}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            fullWidth
-            label="Email"
-            type="email"
-            {...register('email', {
-              required: 'Email is required',
-              validate: validateEmail, // Use the custom validation function
-            })}
-            error={!!errors.email}
-            helperText={errors.email?.message} // Access the error message from the function
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Button variant="contained" type="submit">
-            Register
-          </Button>
-        </Grid>
-      </Grid>
-    </form>
+  <div className='flex flex-col items-center'>
+    <h2 className='mt-4 mb-4'>Lets register</h2>
+    <InputField
+      name={firstName}
+      label="First Name"
+      register={register}
+      errors={errors}
+    />
+    <InputField
+      name={lastName}
+      label="Last Name"
+      register={register}
+      errors={errors}
+    />
+    <InputField
+      name={email}
+      label="Email"
+      type={email}
+      autoComplete={email}
+      register={register}
+      errors={errors}
+    />
+    <InputField
+      name={userName}
+      label="Username"
+      register={register}
+      errors={errors}
+    />
+    <InputField
+      name={password}
+      label="Password"
+      type={showPassword ? "text" : password}
+      autoComplete={password}
+      register={register}
+      errors={errors}
+      InputProps={{
+        endAdornment: (
+          <IconButton onClick={()=>{setShowPassword(!showPassword)}}>
+            {showPassword ? <VisibilityOff /> : <Visibility />}
+          </IconButton>
+        ),
+      }}
+    />
+    <InputField
+      name="confirmPassword"
+      label="Confirm Password"
+      type={password}
+      autoComplete={password}
+      register={register}
+      errors={errors}
+    />
+    <Button onClick={handleSubmit(onSubmit)}>Submit</Button>
+  </div>
   );
 };
 
 export default RegistrationForm;
 
-const validateEmail = (value: string) => {
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-  if (!emailRegex.test(value)) {
-    return 'Invalid email format';
-  }
-  return undefined; // No error if email is valid
-};
+
+function createTag(fieldName: string){
+  return fieldName+"-input"
+}
