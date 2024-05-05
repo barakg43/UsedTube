@@ -12,3 +12,4 @@ backend/engine/logs/
 *Postgres*
 *artifacts*
 *migrations*
+server/engine/logs/
