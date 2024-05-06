@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   TextField,
@@ -59,10 +59,10 @@ const RegistrationForm: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema)});
+  } = useForm<FormValues>({
+    resolver: yupResolver<FormValues>(schema)});
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
     try {
       const json_data = JSON.stringify(data)
       console.log(json_data)
