@@ -152,5 +152,5 @@ LOGGING = {
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
-    # Add more origins if needed
+    # Add more origins if needed 
 ]
