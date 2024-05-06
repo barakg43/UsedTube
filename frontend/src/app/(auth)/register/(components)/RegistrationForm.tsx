@@ -47,7 +47,7 @@ const schema = yup.object<FormValues, any>().shape({
 const firstName = "firstName"
 const lastName = "lastName"
 const email = "email"
-const userName = "username"
+const userName = "userName"
 const password = "password"
 
 const RegistrationForm: React.FC = () => {
@@ -68,10 +68,13 @@ const RegistrationForm: React.FC = () => {
       console.log(json_data)
       const response = await axios.post(`http://${api_root}/account/register`, data);
       if (response.status !== 200) {
-        console.log('User registered successfully');
+        setErrorMessage(response.data.message)
+      } else {
+        setErrorMessage(response.data.error)
       }
+      console.log(response.data)
     } catch (error: any){
-      setErrorMessage(error.message)
+      setErrorMessage("WTF DUDE!")
     }
   };
 
