@@ -1,4 +1,5 @@
 import datetime
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpRequest, JsonResponse
@@ -20,9 +21,10 @@ class Register(View):
         
     def post(self, request:HttpRequest):
         # Get data from request
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        email = request.POST.get('email')
+        user_data = json.loads(request.body)
+        username = user_data.get('userName', None)
+        password = user_data.get('password', None)
+        email = user_data.get('email', None)
 
         # Check if username or email already exists
         if User.objects.filter(username=username).exists():
