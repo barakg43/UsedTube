@@ -6,7 +6,7 @@ from django.http import HttpRequest, JsonResponse
 from django.views import View
 
 from constants import ERROR, MESSAGE
-from files.models import UsedSpace, Folder
+from files.models import UserDetails, Folder
 from utils import already_exists
 from utils import convert_body_json_to_dict
 
@@ -16,16 +16,18 @@ from utils import convert_body_json_to_dict
 class Register(View):
     def __additional_registration_actions(self, user: User):
         # set used space to 0
-        UsedSpace.objects.create(user=user, value=0)
+
         # create root folder
         now = datetime.datetime.now()
-        Folder.objects.create(name='root', parent=None, owner=user, created_at=now, updated_at=now)
-        
-    def post(self, request:HttpRequest):
+        root_folder = Folder.objects.create(name='root', parent=None, owner=user, created_at=now, updated_at=now)
+        UserDetails.objects.create(user=user, storage_usage=0, root_folder=root_folder)
+
+    def post(self, request: HttpRequest):
+        body_dict = convert_body_json_to_dict(request)
         # Get data from request
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        email = request.POST.get('email')
+        username = body_dict.get('username')
+        password = body_dict.get('password')
+        email = body_dict.get('email')
 
         # Check if username or email already exists
         if User.objects.filter(username=username).exists():
@@ -53,9 +55,11 @@ class Register(View):
 
 
 class Login(View):
-    def post(self,  request:HttpRequest):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+    def post(self, request: HttpRequest):
+
+        body_dict = convert_body_json_to_dict(request)
+        username = body_dict.get('username')
+        password = body_dict.get('password')
 
         # Authenticate user
         if request.user.is_authenticated:
@@ -72,7 +76,7 @@ class Login(View):
 
 
 class Logout(View):
-    def post(self, request:HttpRequest):
+    def post(self, request: HttpRequest):
         # Check if user is authenticated
         if request.user.is_authenticated:
             # Log out user
