@@ -6,5 +6,5 @@ urlpatterns =[
     path('download', DownloadView.as_view()),
     path('upload', UploadView.as_view()),
     path('used-space', UsedSpaceView.as_view(), name='used_space'),
-    path('dir-content/<int:id>', DirectoryContentView.as_view())
+    path('dir-content/<int:folder_id>', DirectoryContentView.as_view())
 ]
