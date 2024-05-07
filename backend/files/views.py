@@ -1,13 +1,12 @@
 import json
 import os
-from itertools import chain
 from typing import Union, Iterator
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, FileResponse, JsonResponse
 from django.views import View
 
-from constants import FILE, ERROR, JOB_ID, ITEM_TYPE, FOLDER, EXTENSION, NAME, SIZE, PARENT
+from constants import FILE, ERROR, JOB_ID, ITEM_TYPE, FOLDER, EXTENSION, NAME, SIZE
 from engine.constants import SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
 from engine.downloader.definition import Downloader
 from engine.downloader.impl import YouTubeDownloader
@@ -78,33 +77,23 @@ class UsedSpaceView(View):  #
 
 
 class DirectoryContentView(View):
-    @login_required
-    def get(self, request: HttpRequest):
-        def properties_dict(_subitem: File | Folder):
-            properties = {
-                ITEM_TYPE: FILE if isinstance(_subitem, File) else FOLDER,
-                NAME: _subitem.name.value_to_string(),
-            }
 
-            if properties[ITEM_TYPE] == FILE:
-                properties[EXTENSION] = _subitem.extension.value_to_string()
-                properties[SIZE] = _subitem.size.value_to_string()
-
-            return properties
-
+    # @login_required
+    def get(self, request: HttpRequest, folder_id: int):
         # create a json listing all files and their size of the requested folder
         if request.content_type == 'application/json':
-            folder_subitems = self.__select_folder_subitems(request)
-            return JsonResponse(list(map(properties_dict, folder_subitems)))
+            folder_subitems = self.__select_folder_subitems(request, folder_id)
+            return JsonResponse(folder_subitems)
         else:
-            return JsonResponse({ERROR: 'bad request'}, 400)
 
-    def __select_folder_subitems(self, request) -> Iterator[Union[Folder, File]]:
+            return JsonResponse({ERROR: 'bad request'}, status=400)
+
+    def __select_folder_subitems(self, request, folder_id) -> dict:
         user = request.user
-        folder_properties = json.loads(request.body)
-        folder = Folder.objects.filter(
-            owner=user, parent=folder_properties[PARENT], name=folder_properties[NAME]
-        )
-        sub_folders = Folder.objects.filter(owner=user, parent=folder)
-        files = File.objects.filter(owner=user, folder=folder)
-        return chain(sub_folders, files)
+        folder_parent = Folder.objects.get(id=folder_id)
+        sub_folders = Folder.objects.filter(owner=user, parent=folder_parent)
+        files = File.objects.filter(owner=user, folder=folder_parent)
+        sub_folders_list = list(sub_folders.values())
+        files_list = list(
+            files.values("id", "name", "extension", "size", "folder", "created_at", "updated_at"))
+        return {"folders": sub_folders_list, "files": files_list}
