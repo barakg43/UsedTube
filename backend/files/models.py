@@ -25,18 +25,25 @@ class File(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
+
     def __str__(self):
         return f"{self.name}.{self.extension}"
 
+
 class SharedItem(models.Model):
-    item = models.ForeignKey(Folder, on_delete=models.CASCADE, null=True, related_name='shared_folders')
-    item = models.ForeignKey(File, on_delete=models.CASCADE, null=True, related_name='shared_files')
+    folder_item = models.ForeignKey(Folder, on_delete=models.CASCADE, null=True, related_name='shared_folders')
+    file_item = models.ForeignKey(File, on_delete=models.CASCADE, null=True, related_name='shared_files')
     shared_with = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shared_items')
-    created_at = models.DateTimeField(auto_now_add=True)
+    shared_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('item', 'shared_with')
+        unique_together = ('folder_item', 'file_item', 'shared_with')
+    
 
-class UsedSpace(models.Model):
-    of_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='used_space')
-    value = models.IntegerField()
+class UserDetails(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_details')
+    storage_usage = models.IntegerField()
+    root_folder = models.ForeignKey(Folder, on_delete=models.CASCADE)
+
+    
