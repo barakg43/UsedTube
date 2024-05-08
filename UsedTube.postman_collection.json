@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "4e6690c4-a8c6-4292-a29c-bd23b6991244",
+		"name": "UsedTube",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20782088"
+	},
+	"item": [
+		{
+			"name": "register",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n    \"username\"=\"barak\"&\r\n    \"password\"=\"barak\"\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{port}}/account/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"account",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get folder content",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"uuid": "5e139ff3-f5cb-403b-b6c5-68c6d951d56f"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:{{port}}/files/dir-content/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"files",
+						"dir-content",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get folder content",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:{{port}}/files/dir-content/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"files",
+								"dir-content",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 07 May 2024 19:25:00 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.12.0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "409"
+						},
+						{
+							"key": "Vary",
+							"value": "Cookie"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Cross-Origin-Opener-Policy",
+							"value": "same-origin"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"folders\": [\n        {\n            \"name\": \"test-lvl1\",\n            \"id\": 2,\n            \"parent_id\": 1,\n            \"owner_id\": 1,\n            \"created_at\": \"2024-05-03T13:01:48.185Z\",\n            \"updated_at\": \"2024-05-03T13:01:48.185Z\"\n        }\n    ],\n    \"files\": [\n        {\n            \"id\": 2,\n            \"name\": \"test root\",\n            \"extension\": \"mp3\",\n            \"size\": 1133,\n            \"folder_id\": 1,\n            \"owner_id\": 1,\n            \"url\": \"https://www.youtube.com/watch?v=VYpCy6tR-pUwef\",\n            \"created_at\": \"2024-05-07T19:24:45.683Z\",\n            \"updated_at\": \"2024-05-07T19:24:45.683Z\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "logout",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "port",
+			"value": "8000"
+		}
+	]
+}
