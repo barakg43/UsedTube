@@ -15,9 +15,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <Navbar/>      
-      <body className={inter.className}>{children}</body>
-    </html>
+    <div lang='en'>
+      <Navbar />
+      <main className={inter.className}>{children}</main>
+    </div>
   );
 }
