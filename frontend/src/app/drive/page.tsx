@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-import FolderList from "./(components)/FolderList";
 
 function page() {
   return (
@@ -13,7 +12,6 @@ function page() {
       flexDirection='column'
     >
       <h1>Drive</h1>
-      <FolderList />
     </Box>
   );
 }
