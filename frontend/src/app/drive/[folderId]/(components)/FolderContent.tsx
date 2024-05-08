@@ -5,7 +5,7 @@ type FolderContentProps = {
   folderId: string;
 };
 function FolderContent({ folderId }: FolderContentProps) {
-
+  // TODO: need to call api to get folder data using folderId
   console.log("folderId", folderId);
 
   return (
