@@ -6,9 +6,10 @@ const Register = () => {
   const [isRegistered, setIsRegistered] = useState(false);
   return (
     <>
-      <RegistrationForm/>
+      <RegistrationForm />
+      {/* api key retrieval */}
     </>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;

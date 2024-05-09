@@ -1,154 +1,142 @@
-import React, { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  TextField,
-  IconButton,
-  Button,
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import * as yup from "yup";
-import InputField from './InputField';
-import axios from 'axios';
-import api_root from '@/config';
-import { json } from 'stream/consumers';
+import React, { useState } from "react";
+import { Controller, SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { TextField, IconButton, Button, Modal } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import axios from "axios";
+import api_root from "@/config";
+import { FormValues } from "../types";
+import { schema } from "../schema";
+import OnRegistrationModal from "./OnRegistrationModal";
+import { redirect } from "next/navigation";
 
-
-type FormValues = {
-  username:string,
-  password: string,
-  confirmPassword: string,
-  email: string,
-  firstName: string,
-  lastName: string
-}
-
-const schema = yup.object<FormValues, any>().shape({
-  username: yup.string().required('Username is required.'),
-  email: yup.string().email().required('Email is required'),
-  password: yup.string()
-    .required('Password is required')
-    .min(8, 'Password must be at least 8 characters long')
-    .max(32, 'Password must be at most 32 characters long'),
-  firstName: yup.string()
-    .required('First name is required')
-    .matches(/^[a-zA-Z]+$/, 'This field can only contain letters'),
-  lastName: yup.string()
-    .required('Last name is required')
-    .matches(/^[a-zA-Z]+$/, 'This field can only contain letters'),
-  confirmPassword: yup
-    .string()
-    .required('Please retype your password')
-    .oneOf([yup.ref('password')], 'Passwords must match'),
-});
-
-
-
-const firstName = "firstName"
-const lastName = "lastName"
-const email = "email"
-const userName = "userName"
-const password = "password"
+const firstName = "firstName";
+const lastName = "lastName";
+const email = "email";
+const username = "username";
+const password = "password";
+const confirmPassword = "confirmPassword";
 
 const RegistrationForm: React.FC = () => {
-  
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [errorFromServer, setErrorFromServer] = useState<string | boolean>(false);
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<FormValues>({
-    resolver: yupResolver<FormValues>(schema)});
+    //@ts-ignore
+    resolver: yupResolver<FormValues>(schema),
+  });
 
   const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
-    try {
-      const json_data = JSON.stringify(data)
-      console.log(json_data)
-      const response = await axios.post(`http://${api_root}/account/register`, data);
-      if (response.status !== 200) {
-        setErrorMessage(response.data.message)
-      } else {
-        setErrorMessage(response.data.error)
-      }
-      console.log(response.data)
-    } catch (error: any){
-      setErrorMessage("WTF DUDE!")
+    const response = await axios.post(`http://${api_root}/account/register`, data).catch(function (error) {
+      setErrorFromServer(error.response.data.error);
+    });
+    if (response) {
+      setErrorFromServer(false);
+      redirect("/");
     }
   };
 
-  
-
   return (
-  <>
-    <div className='flex flex-col items-center'>
-      <h2 className='mt-4 mb-4'>Lets register</h2>
-      {errorMessage && <p className="text-red-500 mb-7">{errorMessage}</p>}
-      <InputField
-        name={firstName}
-        label="First Name"
-        register={register}
-        errors={errors}
-      />
-      <InputField
-        name={lastName}
-        label="Last Name"
-        register={register}
-        errors={errors}
-      />
-      <InputField
-        name={email}
-        label="Email"
-        autoComplete='email'
-        type={email}
-        register={register}
-        errors={errors}
-      />
-      <InputField
-        name={userName}
-        label="Username"
-        autoComplete='username'
-        register={register}
-        errors={errors}
-      />
-      <InputField
-        name={password}
-        label="Password"
-        type={showPassword ? "text" : password}
-        register={register}
-        errors={errors}
-        InputProps={{
-          endAdornment: (
-            <IconButton onClick={()=>{setShowPassword(!showPassword)}}>
-              {showPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          ),
-        }}
-      />
-      <InputField
-        name="confirmPassword"
-        label="Confirm Password"
-        type={password}
-        register={register}
-        errors={errors}
-      />
-    </div>
-    
-    <Button
-      className='fixed bottom-4 right-4'
-      variant='contained'
-      onClick={handleSubmit(onSubmit)}
-    >submit</Button>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex gap-7 flex-col items-center justify-center">
+          <h2 className="mt-4 mb-4">Lets register</h2>
+          {errorFromServer && <div className="text-red-500">{errorFromServer}</div>}
+          <div>
+            <Controller
+              render={({ field }) => <TextField {...field} label="first name" size="small" sx={{ width: "200px" }} />}
+              name={firstName}
+              control={control}
+            />
+            {errors[firstName] && <div className="text-red-500">{errors[firstName].message}</div>}
+          </div>
+          <div>
+            <Controller
+              render={({ field }) => <TextField {...field} label="last name" size="small" sx={{ width: "200px" }} />}
+              //@ts-ignore
+              name={lastName}
+              control={control}
+            />
+            {errors[lastName] && <div className="text-red-500">{errors[lastName].message}</div>}
+          </div>
 
-    
+          <div>
+            <Controller
+              render={({ field }) => <TextField {...field} label="email" size="small" sx={{ width: "200px" }} />}
+              //@ts-ignore
+              name={email}
+              control={control}
+            />
+            {errors[email] && <div className="text-red-500">{errors[email].message}</div>}
+          </div>
+
+          <div>
+            <Controller
+              render={({ field }) => <TextField {...field} label="username" size="small" sx={{ width: "200px" }} />}
+              //@ts-ignore
+              name={username}
+              control={control}
+            />
+            {errors[username] && <div className="text-red-500">{errors[username].message}</div>}
+          </div>
+
+          <div>
+            <Controller
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="password"
+                  size="small"
+                  sx={{ width: "200px" }}
+                  type={showPassword ? "text" : password}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        onClick={() => {
+                          setShowPassword(!showPassword);
+                        }}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    ),
+                  }}
+                />
+              )}
+              //@ts-ignore
+              name={password}
+              control={control}
+            />
+            {errors[password] && <div className="text-red-500">{errors[password].message}</div>}
+          </div>
+
+          <div>
+            <Controller
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="confirm password"
+                  type={showPassword ? "text" : password}
+                  size="small"
+                  sx={{ width: "200px" }}
+                />
+              )}
+              //@ts-ignore
+              name={confirmPassword}
+              control={control}
+            />
+            {errors[confirmPassword] && <div className="text-red-500">{errors[confirmPassword].message}</div>}
+          </div>
+          <Button variant="contained" className="mb-4" type="submit">
+            submit
+          </Button>
+        </div>
+      </form>
     </>
   );
 };
 
 export default RegistrationForm;
-
-
-function createTag(fieldName: string){
-  return fieldName+"-input"
-}
