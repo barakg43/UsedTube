@@ -1,6 +1,8 @@
+import api_root from "@/config";
 import { UserValues } from "@/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState: UserValues = {
   username: "",
@@ -12,10 +14,13 @@ const initialState: UserValues = {
   apiKey: "",
 };
 
-const registerUserData = createAsyncThunk("", async (userId: number, thunkAPI) => {
-  const response = await userAPI.fetchById(userId);
-  return response.data;
-});
+export const registerUserData = createAsyncThunk(
+  `${api_root}/account/register`,
+  async (userData: UserValues, thunkAPI) => {
+    const response = await axios.post(`${api_root}/account/register`, userData);
+    return response.data;
+  }
+);
 
 export const userSlice = createSlice({
   name: "user",
@@ -49,7 +54,7 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(registerUserData.fulfilled, (state, action) => {
-      // Add user to the state array
+      debugger;
     });
   },
 });

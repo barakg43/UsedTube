@@ -10,10 +10,7 @@ const Register = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <>
-      {isRegistered ? <RegisterYouTubeAPIKey /> : <RegistrationForm setIsRegistered={setIsRegistered} />}
-      {/* api key retrieval */}
-    </>
+    <>{isRegistered ? <RegisterYouTubeAPIKey /> : <RegistrationForm setIsFinishFillingForm={setIsRegistered} />}</>
   );
 };
 

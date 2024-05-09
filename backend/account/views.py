@@ -28,7 +28,7 @@ class Register(View):
         username = body_dict.get('username')
         password = body_dict.get('password')
         email = body_dict.get('email')
-
+        # add empty cases handle
         # Check if username or email already exists
         if User.objects.filter(username=username).exists():
             return JsonResponse({ERROR: already_exists('Username')}, status=400)
@@ -86,10 +86,9 @@ class Logout(View):
             return JsonResponse({ERROR: 'User is not authenticated'}, status=401)
 
 class Validate(View):
-    def get(self, request: HttpRequest):
+    def post(self, request: HttpRequest):
         body = convert_body_json_to_dict(request)
-        field = body.keys()
-        value = body[field]
+        field, value = next(iter(body.items()))
         match field:
             case 'username':
                 if User.objects.filter(username=value).exists():

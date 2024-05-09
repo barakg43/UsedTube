@@ -10,22 +10,22 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "background.paper",
-  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
 
-const OnRegistrationModal: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
+const OnRegistrationModal: React.FC<{ isOpen: boolean; setIsOpen: Function }> = ({ isOpen, setIsOpen }) => {
   return (
     <Modal open={isOpen} aria-labelledby="registration-success">
       <Box sx={style}>
         <Typography id="registered successfully" variant="h6" component="h2">
           Registration successful!
         </Typography>
-        <div className="">
+        <div className="flex flex-row-reverse space-x-4">
           <Button
             variant="outlined"
             onClick={() => {
+              setIsOpen(false);
               redirect("/login");
             }}
           >

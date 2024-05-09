@@ -2,6 +2,10 @@
 import { TextField, Typography, Button } from "@mui/material";
 import React, { useState } from "react";
 import OnRegistrationModal from "./OnRegistrationModal";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { registerUserData, setApiKey } from "@/redux/slices/userSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const CustomLink: React.FC<{ href: string; children: React.ReactNode }> = ({ href, children }) => {
   return (
@@ -12,10 +16,13 @@ const CustomLink: React.FC<{ href: string; children: React.ReactNode }> = ({ hre
 };
 
 const RegisterYouTubeAPIKey = () => {
-  const [isEmpty, setIsEmpty] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((s: RootState) => s.user);
+
   const onClick = () => {
-    setShowModal(true);
+    dispatch(registerUserData(user));
+    // setShowModal(true);
   };
   return (
     <div className="flex justify-center items-center h-screen">
@@ -59,19 +66,20 @@ const RegisterYouTubeAPIKey = () => {
         </Typography>
         <TextField
           onChange={(e) => {
-            setIsEmpty(e.target.value === "");
+            dispatch(setApiKey(e.target.value));
           }}
+          value={user.apiKey}
           label="YouTube API Key"
           variant="standard"
           className="w-full mt-2 mb-2"
         />
         <div className="mb-4 flex flex-row-reverse w-full">
-          <Button disabled={isEmpty} variant="contained" color="primary" onClick={onClick}>
+          <Button disabled={user.apiKey === ""} variant="contained" color="primary" onClick={onClick}>
             Submit
           </Button>
         </div>
       </div>
-      <OnRegistrationModal isOpen={showModal} />
+      <OnRegistrationModal isOpen={showModal} setIsOpen={setShowModal} />
     </div>
   );
 };
