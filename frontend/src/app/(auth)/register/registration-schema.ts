@@ -1,8 +1,8 @@
 import * as yup from "yup";
-import { FormValues } from "./types";
+import { UserValues } from "../../../types";
 
-export const schema = yup.object<FormValues, any>().shape({
-  username: yup.string().required("Username is required."),
+export const schema = yup.object<UserValues, any>().shape({
+  username: yup.string().required("Username is required.").min(4, "Longer than 4!"),
   email: yup.string().email().required("Email is required"),
   password: yup
     .string()

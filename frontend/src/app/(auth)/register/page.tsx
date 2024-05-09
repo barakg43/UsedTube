@@ -1,12 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RegistrationForm from "./(components)/RegistrationForm";
+import RegisterYouTubeAPIKey from "./(components)/RegisterYouTubeAPIKey";
+import StoreProvider from "@/app/StoreProvider";
+import { useAppDispatch } from "@/redux/hooks";
 
 const Register = () => {
   const [isRegistered, setIsRegistered] = useState(false);
+  const dispatch = useAppDispatch();
+
   return (
     <>
-      <RegistrationForm />
+      {isRegistered ? <RegisterYouTubeAPIKey /> : <RegistrationForm setIsRegistered={setIsRegistered} />}
       {/* api key retrieval */}
     </>
   );

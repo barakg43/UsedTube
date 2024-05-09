@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const Sidebar = () => {
-  return (
-    <aside>Sidebar</aside>
-  )
-}
+  return <nav className="h-full w-20 bg-purple-600">sss</nav>;
+};
 
-export default Sidebar
+export default Sidebar;

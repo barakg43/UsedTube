@@ -15,9 +15,9 @@ const style = {
   p: 4,
 };
 
-const OnRegistrationModal: React.FC<{ showModal: boolean; setShowModal: Function }> = ({ showModal, setShowModal }) => {
+const OnRegistrationModal: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
   return (
-    <Modal open={showModal} aria-labelledby="registration-success">
+    <Modal open={isOpen} aria-labelledby="registration-success">
       <Box sx={style}>
         <Typography id="registered successfully" variant="h6" component="h2">
           Registration successful!
@@ -26,22 +26,21 @@ const OnRegistrationModal: React.FC<{ showModal: boolean; setShowModal: Function
           <Button
             variant="outlined"
             onClick={() => {
-              setShowModal(false);
               redirect("/login");
             }}
           >
             <Typography id="what's next" sx={{ mt: 2 }}>
-              go to login
+              login
             </Typography>
           </Button>
           <Button
             variant="outlined"
             onClick={() => {
-              setShowModal(false);
+              redirect("/");
             }}
           >
             <Typography id="what's next" sx={{ mt: 2 }}>
-              stay here
+              home
             </Typography>
           </Button>
         </div>

@@ -5,10 +5,8 @@ import { TextField, IconButton, Button, Modal } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 import api_root from "@/config";
-import { FormValues } from "../types";
-import { schema } from "../schema";
-import OnRegistrationModal from "./OnRegistrationModal";
-import { redirect } from "next/navigation";
+import { UserValues } from "../../../../types";
+import { schema } from "../registration-schema";
 
 const firstName = "firstName";
 const lastName = "lastName";
@@ -17,7 +15,7 @@ const username = "username";
 const password = "password";
 const confirmPassword = "confirmPassword";
 
-const RegistrationForm: React.FC = () => {
+const RegistrationForm: React.FC<{ setIsRegistered: Function }> = ({ setIsRegistered }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorFromServer, setErrorFromServer] = useState<string | boolean>(false);
 
@@ -25,18 +23,18 @@ const RegistrationForm: React.FC = () => {
     handleSubmit,
     formState: { errors },
     control,
-  } = useForm<FormValues>({
+  } = useForm<UserValues>({
     //@ts-ignore
-    resolver: yupResolver<FormValues>(schema),
+    resolver: yupResolver<UserValues>(schema),
   });
 
-  const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
+  const onSubmit: SubmitHandler<UserValues> = async (data: UserValues) => {
     const response = await axios.post(`http://${api_root}/account/register`, data).catch(function (error) {
       setErrorFromServer(error.response.data.error);
     });
     if (response) {
       setErrorFromServer(false);
-      redirect("/");
+      setIsRegistered(true);
     }
   };
 
@@ -44,7 +42,7 @@ const RegistrationForm: React.FC = () => {
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex gap-7 flex-col items-center justify-center">
-          <h2 className="mt-4 mb-4">Lets register</h2>
+          <h2 className="mt-4 mb-4">Register</h2>
           {errorFromServer && <div className="text-red-500">{errorFromServer}</div>}
           <div>
             <Controller
@@ -131,7 +129,7 @@ const RegistrationForm: React.FC = () => {
             {errors[confirmPassword] && <div className="text-red-500">{errors[confirmPassword].message}</div>}
           </div>
           <Button variant="contained" className="mb-4" type="submit">
-            submit
+            {"Let's get API key"}
           </Button>
         </div>
       </form>

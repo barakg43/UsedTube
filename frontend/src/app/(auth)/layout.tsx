@@ -1,6 +1,7 @@
-import Image from "next/image";
+import "@/app/globals.css";
 import Link from "next/link";
 import React from "react";
+import StoreProvider from "../StoreProvider";
 
 const Layout = ({
   children,
@@ -13,7 +14,7 @@ const Layout = ({
         <div>
           <Link href="/">UsedTube</Link>
         </div>
-        <div>{children}</div>
+        <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
   );
