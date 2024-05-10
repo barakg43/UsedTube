@@ -1,19 +1,12 @@
-import { Box } from "@mui/material";
+"use client";
+import { useAppSelector } from "@/redux/hooks";
+import { RootState } from "@/redux/store";
+import { FC } from "react";
 
-function page() {
-  return (
-    <Box
-      //   style={{ textAlign: "center" }}
-      flex={1}
-      height={"100vh"}
-      justifyContent='flex-start'
-      alignItems='center'
-      display='flex'
-      flexDirection='column'
-    >
-      <h1>Drive</h1>
-    </Box>
-  );
-}
+const Drive: FC = () => {
+  const tree = useAppSelector((state: RootState) => state.items);
 
-export default page;
+  return <div>hello</div>;
+};
+
+export default Drive;

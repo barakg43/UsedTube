@@ -1,6 +1,10 @@
+"use client";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setShowModal } from "@/redux/slices/generalSlice";
+import { RootState } from "@/redux/store";
 import { Box, Button, Modal } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const style = {
@@ -10,38 +14,38 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "background.paper",
-  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
 
-const OnRegistrationModal: React.FC<{ showModal: boolean; setShowModal: Function }> = ({ showModal, setShowModal }) => {
+const OnRegistrationModal: React.FC = () => {
+  const isOpen = useAppSelector((s: RootState) => s.general.showModal);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const redirectToLogin = () => {
+    dispatch(setShowModal(false));
+    router.push("/login");
+  };
+
+  const redirectToHome = () => {
+    dispatch(setShowModal(false));
+    router.push("/");
+  };
   return (
-    <Modal open={showModal} aria-labelledby="registration-success">
+    <Modal open={isOpen} aria-labelledby="registration-success">
       <Box sx={style}>
         <Typography id="registered successfully" variant="h6" component="h2">
           Registration successful!
         </Typography>
-        <div className="">
-          <Button
-            variant="outlined"
-            onClick={() => {
-              setShowModal(false);
-              redirect("/login");
-            }}
-          >
+        <div className="flex flex-row-reverse space-x-4">
+          <Button variant="outlined" onClick={redirectToLogin}>
             <Typography id="what's next" sx={{ mt: 2 }}>
-              go to login
+              login
             </Typography>
           </Button>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              setShowModal(false);
-            }}
-          >
+          <Button variant="outlined" onClick={redirectToHome}>
             <Typography id="what's next" sx={{ mt: 2 }}>
-              stay here
+              home
             </Typography>
           </Button>
         </div>

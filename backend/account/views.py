@@ -28,7 +28,7 @@ class Register(View):
         username = body_dict.get('username')
         password = body_dict.get('password')
         email = body_dict.get('email')
-
+        # add empty cases handle
         # Check if username or email already exists
         if User.objects.filter(username=username).exists():
             return JsonResponse({ERROR: already_exists('Username')}, status=400)
@@ -36,7 +36,8 @@ class Register(View):
             return JsonResponse({ERROR: already_exists('Email')}, status=400)
 
         # Create user
-        user = User.objects.create_user(username=username, email=email, password=password)
+        user = User.objects.create_user(username=username, email=email, password=password, first_name=body_dict.get('first_name'),
+                                        last_name=body_dict.get('last_name'))
 
         self.__additional_registration_actions(user)
 
@@ -56,13 +57,13 @@ class Register(View):
 
 class Login(View):
     def post(self, request: HttpRequest):
-
         body_dict = convert_body_json_to_dict(request)
         username = body_dict.get('username')
         password = body_dict.get('password')
 
         # Authenticate user
         if request.user.is_authenticated:
+            
             return JsonResponse({'error': 'Already logged in'}, status=403)
         user = authenticate(request, username=username, password=password)
 
@@ -84,4 +85,19 @@ class Logout(View):
             return JsonResponse({MESSAGE: 'Logout successful'})
         else:
             return JsonResponse({ERROR: 'User is not authenticated'}, status=401)
-        
+
+class Validate(View):
+    def post(self, request: HttpRequest):
+        body = convert_body_json_to_dict(request)
+        field, value = next(iter(body.items()))
+        match field:
+            case 'username':
+                if User.objects.filter(username=value).exists():
+                    return JsonResponse({ERROR: already_exists('Username')}, status=400)
+            case 'email':
+                if User.objects.filter(email=value).exists():
+                    return JsonResponse({ERROR: already_exists('Email')}, status=400)
+            case _:
+                return JsonResponse({ERROR: 'Invalid field'}, status=400)
+        return JsonResponse({MESSAGE: 'Field is valid'})
+       

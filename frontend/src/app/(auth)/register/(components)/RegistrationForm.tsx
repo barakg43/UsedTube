@@ -1,51 +1,53 @@
+"use client";
 import React, { useState } from "react";
-import { Controller, SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { TextField, IconButton, Button, Modal } from "@mui/material";
+import { TextField, IconButton, Button } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import axios from "axios";
-import api_root from "@/config";
-import { FormValues } from "../types";
-import { schema } from "../schema";
-import OnRegistrationModal from "./OnRegistrationModal";
-import { redirect } from "next/navigation";
+import { UserValues } from "../../../../types";
+import { schema } from "../registration-schema";
+import { validateNotExisting } from "@/redux/api";
+import { confirmPassword, email, firstName, lastName, password, username } from "@/constants";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setFormData } from "@/redux/slices/userSlice";
+import { RootState } from "@/redux/store";
 
-const firstName = "firstName";
-const lastName = "lastName";
-const email = "email";
-const username = "username";
-const password = "password";
-const confirmPassword = "confirmPassword";
-
-const RegistrationForm: React.FC = () => {
+const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({ setIsFinishFillingForm }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [errorFromServer, setErrorFromServer] = useState<string | boolean>(false);
+  const dispatch = useAppDispatch();
+  const apiKey = useAppSelector((s: RootState) => s.user.apiKey);
 
   const {
     handleSubmit,
     formState: { errors },
     control,
-  } = useForm<FormValues>({
+    setError,
+  } = useForm<UserValues>({
     //@ts-ignore
-    resolver: yupResolver<FormValues>(schema),
+    resolver: yupResolver<UserValues>(schema),
   });
 
-  const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
-    const response = await axios.post(`http://${api_root}/account/register`, data).catch(function (error) {
-      setErrorFromServer(error.response.data.error);
-    });
-    if (response) {
-      setErrorFromServer(false);
-      redirect("/");
+  const onBlur = async (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => {
+    const results = await validateNotExisting(e.target.name, e.target.value);
+    if (!results.valid) {
+      //@ts-ignore
+      setError(e.target.name, {
+        type: "manual",
+        message: results.message,
+      });
     }
+  };
+
+  const onSubmit: SubmitHandler<UserValues> = async (data: UserValues) => {
+    dispatch(setFormData({ ...data, apiKey }));
+    setIsFinishFillingForm(true);
   };
 
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex gap-7 flex-col items-center justify-center">
-          <h2 className="mt-4 mb-4">Lets register</h2>
-          {errorFromServer && <div className="text-red-500">{errorFromServer}</div>}
+          <h2 className="mt-4 mb-4">Register</h2>
           <div>
             <Controller
               render={({ field }) => <TextField {...field} label="first name" size="small" sx={{ width: "200px" }} />}
@@ -57,7 +59,6 @@ const RegistrationForm: React.FC = () => {
           <div>
             <Controller
               render={({ field }) => <TextField {...field} label="last name" size="small" sx={{ width: "200px" }} />}
-              //@ts-ignore
               name={lastName}
               control={control}
             />
@@ -66,8 +67,9 @@ const RegistrationForm: React.FC = () => {
 
           <div>
             <Controller
-              render={({ field }) => <TextField {...field} label="email" size="small" sx={{ width: "200px" }} />}
-              //@ts-ignore
+              render={({ field }) => (
+                <TextField {...field} label={email} onBlur={onBlur} size="small" sx={{ width: "200px" }} />
+              )}
               name={email}
               control={control}
             />
@@ -76,8 +78,9 @@ const RegistrationForm: React.FC = () => {
 
           <div>
             <Controller
-              render={({ field }) => <TextField {...field} label="username" size="small" sx={{ width: "200px" }} />}
-              //@ts-ignore
+              render={({ field }) => (
+                <TextField {...field} label={username} onBlur={onBlur} size="small" sx={{ width: "200px" }} />
+              )}
               name={username}
               control={control}
             />
@@ -89,7 +92,7 @@ const RegistrationForm: React.FC = () => {
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="password"
+                  label={password}
                   size="small"
                   sx={{ width: "200px" }}
                   type={showPassword ? "text" : password}
@@ -131,7 +134,7 @@ const RegistrationForm: React.FC = () => {
             {errors[confirmPassword] && <div className="text-red-500">{errors[confirmPassword].message}</div>}
           </div>
           <Button variant="contained" className="mb-4" type="submit">
-            submit
+            {"Let's get API key"}
           </Button>
         </div>
       </form>

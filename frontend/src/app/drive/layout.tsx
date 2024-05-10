@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Navbar from "./(components)/Navbar";
-
-const inter = Inter({ subsets: ["latin"] });
+import TopBar from "./(components)/TopBar";
+import Sidebar from "./(components)/Sidebar";
+import StoreProvider from "../StoreProvider";
 
 export const metadata: Metadata = {
   title: "UsedTube",
@@ -15,9 +14,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div lang='en'>
-      <Navbar />
-      <main className={inter.className}>{children}</main>
-    </div>
+    <html lang="en" className="h-full">
+      <body className="h-full">
+        <StoreProvider>
+          <div className="flex flex-col h-full">
+            <TopBar />
+            <div className="flex flex-row flex-grow bg-green-500 w-full h-full">
+              <Sidebar />
+              {children}
+            </div>
+          </div>
+        </StoreProvider>
+      </body>
+    </html>
   );
 }
