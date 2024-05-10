@@ -6,6 +6,12 @@ export type UserValues = {
   firstName: string;
   lastName: string;
   apiKey?: string;
+  sessionToken?: string;
+};
+
+export type UserCredentials = {
+  username: string;
+  password: string;
 };
 
 export type ItemsType = {
@@ -19,4 +25,8 @@ export type FSNode = {
   type: "file" | "folder";
   path: string;
   children?: FSNode[];
+};
+
+export type GeneralState = {
+  showModal: boolean;
 };

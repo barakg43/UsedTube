@@ -1,6 +1,10 @@
+"use client";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setShowModal } from "@/redux/slices/generalSlice";
+import { RootState } from "@/redux/store";
 import { Box, Button, Modal } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const style = {
@@ -14,7 +18,19 @@ const style = {
   p: 4,
 };
 
-const OnRegistrationModal: React.FC<{ isOpen: boolean; setIsOpen: Function }> = ({ isOpen, setIsOpen }) => {
+const OnRegistrationModal: React.FC = () => {
+  const isOpen = useAppSelector((s: RootState) => s.general.showModal);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const redirectToLogin = () => {
+    dispatch(setShowModal(false));
+    router.push("/login");
+  };
+
+  const redirectToHome = () => {
+    dispatch(setShowModal(false));
+    router.push("/");
+  };
   return (
     <Modal open={isOpen} aria-labelledby="registration-success">
       <Box sx={style}>
@@ -22,23 +38,12 @@ const OnRegistrationModal: React.FC<{ isOpen: boolean; setIsOpen: Function }> = 
           Registration successful!
         </Typography>
         <div className="flex flex-row-reverse space-x-4">
-          <Button
-            variant="outlined"
-            onClick={() => {
-              setIsOpen(false);
-              redirect("/login");
-            }}
-          >
+          <Button variant="outlined" onClick={redirectToLogin}>
             <Typography id="what's next" sx={{ mt: 2 }}>
               login
             </Typography>
           </Button>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              redirect("/");
-            }}
-          >
+          <Button variant="outlined" onClick={redirectToHome}>
             <Typography id="what's next" sx={{ mt: 2 }}>
               home
             </Typography>

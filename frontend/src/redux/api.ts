@@ -1,7 +1,7 @@
 import api_root from "@/config";
 import axios from "axios";
 
-const validateNotExisting = async (field: string, value: string) => {
+export const validateNotExisting = async (field: string, value: string) => {
   try {
     const response = await axios.post(`${api_root}/account/validate`, { [field]: value });
     return { valid: true, message: response.data.message };
@@ -10,4 +10,11 @@ const validateNotExisting = async (field: string, value: string) => {
   }
 };
 
-export default validateNotExisting;
+export const login = async (username: string, password: string) => {
+  try {
+    const response = await axios.post(`${api_root}/account/login`, { username, password });
+    return response.data;
+  } catch (error: any) {
+    return error.response.data;
+  }
+};

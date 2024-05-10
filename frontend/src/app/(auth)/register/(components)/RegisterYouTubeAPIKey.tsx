@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { registerUserData, setApiKey } from "@/redux/slices/userSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { setShowModal } from "@/redux/slices/generalSlice";
 
 const CustomLink: React.FC<{ href: string; children: React.ReactNode }> = ({ href, children }) => {
   return (
@@ -16,13 +17,12 @@ const CustomLink: React.FC<{ href: string; children: React.ReactNode }> = ({ hre
 };
 
 const RegisterYouTubeAPIKey = () => {
-  const [showModal, setShowModal] = useState(false);
   const dispatch = useAppDispatch();
   const user = useAppSelector((s: RootState) => s.user);
 
   const onClick = () => {
     dispatch(registerUserData(user));
-    // setShowModal(true);
+    dispatch(setShowModal(true));
   };
   return (
     <div className="flex justify-center items-center h-screen">
@@ -79,7 +79,7 @@ const RegisterYouTubeAPIKey = () => {
           </Button>
         </div>
       </div>
-      <OnRegistrationModal isOpen={showModal} setIsOpen={setShowModal} />
+      <OnRegistrationModal />
     </div>
   );
 };

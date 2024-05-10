@@ -6,7 +6,7 @@ import { TextField, IconButton, Button } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { UserValues } from "../../../../types";
 import { schema } from "../registration-schema";
-import validateNotExisting from "@/redux/api";
+import { validateNotExisting } from "@/redux/api";
 import { confirmPassword, email, firstName, lastName, password, username } from "@/constants";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setFormData } from "@/redux/slices/userSlice";

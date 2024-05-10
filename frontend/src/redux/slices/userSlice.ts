@@ -1,5 +1,5 @@
 import api_root from "@/config";
-import { UserValues } from "@/types";
+import { UserCredentials, UserValues } from "@/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
@@ -14,13 +14,15 @@ const initialState: UserValues = {
   apiKey: "",
 };
 
-export const registerUserData = createAsyncThunk(
-  `${api_root}/account/register`,
-  async (userData: UserValues, thunkAPI) => {
-    const response = await axios.post(`${api_root}/account/register`, userData);
-    return response.data;
-  }
-);
+export const registerUserData = createAsyncThunk("account/register", async (userData: UserValues, thunkAPI) => {
+  const response = await axios.post(`${api_root}/account/register`, userData);
+  return response.data;
+});
+
+export const loginRequest = createAsyncThunk("account/login", async (userData: UserCredentials, thunkAPI) => {
+  const response = await axios.post(`${api_root}/account/login`, userData);
+  return response.data;
+});
 
 export const userSlice = createSlice({
   name: "user",
@@ -48,14 +50,24 @@ export const userSlice = createSlice({
       state.apiKey = action.payload;
     },
     setFormData: (state, action: PayloadAction<UserValues>) => {
-      state = action.payload;
+      const { username, password, email, confirmPassword, firstName, lastName } = action.payload;
+      state.username = username;
+      state.password = password;
+      state.email = email;
+      state.confirmPassword = confirmPassword;
+      state.firstName = firstName;
+      state.lastName = lastName;
+    },
+    setSessionToken: (state, action: PayloadAction<string>) => {
+      state.sessionToken = action.payload;
     },
   },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
-    builder.addCase(registerUserData.fulfilled, (state, action) => {
-      debugger;
-    });
+    builder.addCase(registerUserData.fulfilled, (state, action) => {}),
+      builder.addCase(loginRequest.fulfilled, (state, action) => {
+        state.apiKey = action.payload.apiKey;
+      });
   },
 });
 
