@@ -3,7 +3,7 @@ import React from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { TreeNode } from "@/types";
+import { FSNode } from "@/types";
 import { setActiveDirectory } from "@/redux/slices/generalSlice";
 import { useAppDispatch } from "@/redux/hooks";
 
@@ -16,7 +16,7 @@ const TreeContainer: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
 };
 
 type MyProps = {
-  node: TreeNode;
+  node: FSNode;
   spaces: number;
 };
 
@@ -24,7 +24,7 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
   const [, updateState] = React.useState<object>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
   const dispatch = useAppDispatch();
-  const handleArrowToggle = (node: TreeNode): void => {
+  const handleArrowToggle = (node: FSNode): void => {
     if (node.IsOpened) {
       node.IsOpened = false;
     } else {
@@ -33,9 +33,9 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
     forceUpdate();
   };
 
-  const onLabelClick = (node: TreeNode) => {
+  const onLabelClick = (node: FSNode) => {
     // set active directory
-    dispatch(setActiveDirectory(node.Label));
+    dispatch(setActiveDirectory(node));
   };
 
   return (
@@ -45,16 +45,12 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
         {node.IsOpened && node.Children && <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />}
         {!node.IsOpened && node.Children && <ArrowRightIcon onClick={() => handleArrowToggle(node)} />}
         {!node.Children && <CancelIcon />}
-        {node.Amount ? (
-          <span onClick={() => onLabelClick(node)}>{`${node.Label} (${node.Amount.toFixed(2)})`}</span>
-        ) : (
-          <span onClick={() => onLabelClick(node)}>{`${node.Label}`}</span>
-        )}
+        {<span onClick={() => onLabelClick(node)}>{`${node.Label}`}</span>}
       </div>
       {node.IsOpened && node.Children && (
         <>
           <TreeContainer>
-            {node.Children.map((child: TreeNode, index: number) => {
+            {node.Children.map((child: FSNode, index: number) => {
               return <TreeFragment key={index} spaces={spaces + 1} node={child} />;
             })}
           </TreeContainer>

@@ -13,31 +13,21 @@ export type UserCredentials = {
   password: string;
 };
 
-export type ItemsType = {
+export type FSItems = {
   myItems: FSNode[];
   sharedItems: FSNode[];
 };
 
-export type FSNode = {
-  id: string;
-  name: string;
-  type: "file" | "folder";
-  path: string;
-  children?: FSNode[];
-};
-
 export type GeneralState = {
   showModal: boolean;
-  activeDirectory: string;
+  activeDirectory: FSNode | null;
   userId: string;
 };
 
-export interface TreeNode {
+export interface FSNode {
   Label: string;
   Date?: string;
-  Amount?: number;
-  AutoActionId?: number;
   IsOpened?: boolean;
-  Children?: TreeNode[];
+  Children?: FSNode[];
   Context?: any;
 }

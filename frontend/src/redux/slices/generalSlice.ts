@@ -1,10 +1,10 @@
-import { GeneralState } from "@/types";
+import { FSNode, GeneralState } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: GeneralState = {
   showModal: false,
-  activeDirectory: "My Drive",
+  activeDirectory: null,
   userId: "",
 };
 
@@ -15,7 +15,7 @@ export const generalSlice = createSlice({
     setShowModal: (state, action: PayloadAction<boolean>) => {
       state.showModal = action.payload;
     },
-    setActiveDirectory: (state, action: PayloadAction<string>) => {
+    setActiveDirectory: (state, action: PayloadAction<FSNode>) => {
       state.activeDirectory = action.payload;
     },
     setUserId: (state, action: PayloadAction<string>) => {

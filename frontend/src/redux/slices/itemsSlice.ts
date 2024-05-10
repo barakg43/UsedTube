@@ -1,8 +1,8 @@
-import { ItemsType } from "@/types";
+import { FSItems } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 import { fakeData } from "./itemsSliceFakeData";
 
-const initialState: ItemsType = fakeData;
+const initialState: FSItems = fakeData;
 
 export const itemsSlice = createSlice({
   name: "items",

@@ -1,6 +1,6 @@
-import { ItemsType, TreeNode } from "@/types";
+import { FSItems, FSNode } from "@/types";
 
-export const fakeData: ItemsType = {
+export const fakeData: FSItems = {
   myItems: [
     { id: "1", name: "My Item 1", type: "file", path: "path/to/my/item1" },
     { id: "2", name: "My Item 2", type: "file", path: "path/to/my/item2" },
@@ -26,7 +26,7 @@ export const fakeData: ItemsType = {
   ],
 };
 
-export const fakeData2: TreeNode = {
+export const fakeData2: FSNode = {
   Label: "My Drive",
   IsOpened: false,
   Children: [
