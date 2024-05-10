@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
@@ -5,7 +6,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { TreeNode } from "@/types";
 
 const Space = () => {
-  return <div className="w-[40px]" />;
+  return <div className="w-[8px]" />;
 };
 
 const TreeContainer: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
@@ -15,13 +16,12 @@ const TreeContainer: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
 type MyProps = {
   node: TreeNode;
   spaces: number;
-  onClick?: any;
 };
 
-export const TreeFragment: React.FC<MyProps> = ({ node, spaces, onClick }) => {
+export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
   const [, updateState] = React.useState<object>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
-  const handleNodeToggle = (node: TreeNode): void => {
+  const handleArrowToggle = (node: TreeNode): void => {
     if (node.IsOpened) {
       node.IsOpened = false;
     } else {
@@ -30,30 +30,23 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces, onClick }) => {
     forceUpdate();
   };
 
+  const onClick = (node: TreeNode) => {
+    // set active directory
+    console.log("Clicked on node: ", node);
+  };
+
   const onLabelClick = (node: TreeNode) => {
-    if (onClick && !node.Children) {
+    if (!node.Children) {
       onClick(node);
     }
   };
   return (
     <TreeContainer>
-      <div className="flex cursor-pointer text-black m-[2] pl-[5px]" onClick={() => handleNodeToggle(node)}>
-        {spaces === 1 && <Space />}
-        {spaces === 2 && (
-          <>
-            <Space />
-            <Space />
-          </>
-        )}
-        {spaces === 3 && (
-          <>
-            <Space />
-            <Space />
-            <Space />
-          </>
-        )}
-        {node.IsOpened && node.Children && <ArrowDropDownIcon />}
-        {!node.IsOpened && node.Children && <ArrowRightIcon />}
+      {/* {onClick={() => handleNodeToggle(node)}} */}
+      <div className="flex cursor-pointer text-black m-[2] pl-[5px]">
+        {spaces > 0 && new Array(spaces).fill(0).map((_, index) => <Space key={index} />)}
+        {node.IsOpened && node.Children && <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />}
+        {!node.IsOpened && node.Children && <ArrowRightIcon onClick={() => handleArrowToggle(node)} />}
         {!node.Children && <CancelIcon />}
         {node.Amount ? (
           <span onClick={() => onLabelClick(node)}>{`${node.Label} (${node.Amount.toFixed(2)})`}</span>
@@ -65,7 +58,7 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces, onClick }) => {
         <>
           <TreeContainer>
             {node.Children.map((child: TreeNode, index: number) => {
-              return <TreeFragment onClick={onClick} key={child.AutoActionId} spaces={spaces + 1} node={child} />;
+              return <TreeFragment key={index} spaces={spaces + 1} node={child} />;
             })}
           </TreeContainer>
         </>
@@ -73,3 +66,5 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces, onClick }) => {
     </TreeContainer>
   );
 };
+
+export default TreeFragment;

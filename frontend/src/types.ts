@@ -33,8 +33,8 @@ export type GeneralState = {
 
 export interface TreeNode {
   Label: string;
-  Amount: number;
   Date?: string;
+  Amount?: number;
   AutoActionId?: number;
   IsOpened?: boolean;
   Children?: TreeNode[];

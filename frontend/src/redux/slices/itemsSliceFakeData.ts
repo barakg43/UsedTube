@@ -1,4 +1,4 @@
-import { ItemsType } from "@/types";
+import { ItemsType, TreeNode } from "@/types";
 
 export const fakeData: ItemsType = {
   myItems: [
@@ -23,5 +23,24 @@ export const fakeData: ItemsType = {
   sharedItems: [
     { id: "3", name: "Shared Item 1", type: "file", path: "path/to/shared/item1" },
     { id: "4", name: "Shared Item 2", type: "file", path: "path/to/shared/item2" },
+  ],
+};
+
+export const fakeData2: TreeNode = {
+  Label: "Root",
+  IsOpened: false,
+  Children: [
+    {
+      Label: "Folder 1",
+      IsOpened: false,
+      Children: [
+        {
+          Label: "Folder 1.1",
+          IsOpened: false,
+          Children: [{ Label: "Folder 1.1.1", IsOpened: false, Children: [] }],
+        },
+      ],
+    },
+    { Label: "Folder 2", IsOpened: false, Children: [] },
   ],
 };
