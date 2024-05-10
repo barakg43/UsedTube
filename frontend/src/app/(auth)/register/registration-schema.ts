@@ -2,7 +2,7 @@ import * as yup from "yup";
 import { UserValues } from "../../../types";
 
 export const schema = yup.object<UserValues, any>().shape({
-  username: yup.string().required("Username is required.").min(4, "Longer than 4!"),
+  username: yup.string().required("Username is required.").min(4, "Username must be at least 4 characters long."),
   email: yup.string().email().required("Email is required"),
   password: yup
     .string()

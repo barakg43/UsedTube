@@ -24,15 +24,14 @@ const LoginForm: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<UserCredentials> = async (data: UserCredentials) => {
-    try {
-      const response = await login(data.username, data.password);
-      console.log(response);
-      router.push("/drive");
-    } catch (error) {
-      setError("password", {
+    const response = await login(data.username, data.password);
+    if (response.error) {
+      setError(password, {
         type: "manual",
-        message: "Invalid username or password",
+        message: response.message,
       });
+    } else {
+      router.push("/drive");
     }
   };
 
@@ -41,38 +40,42 @@ const LoginForm: React.FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex gap-7 flex-col items-center justify-center">
           <h2 className="mt-4 mb-4">Login</h2>
-          <div>
-            <Controller
-              render={({ field }) => <TextField {...field} label={username} size="small" sx={{ width: "200px" }} />}
-              name={username}
-              control={control}
-            />
-            {errors.username && <div className="text-red-500">{errors.username.message}</div>}
-          </div>
 
-          <div>
-            <Controller
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Password"
-                  size="small"
-                  sx={{ width: "200px" }}
-                  type={showPassword ? "text" : password}
-                  InputProps={{
-                    endAdornment: (
-                      <IconButton onClick={() => setShowPassword(!showPassword)}>
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    ),
-                  }}
-                />
-              )}
-              name={password}
-              control={control}
-            />
-            {errors.password && <div className="text-red-500">{errors.password.message}</div>}
-          </div>
+          <Controller
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label={username}
+                size="small"
+                helperText={errors[username] ? errors[username].message : ""}
+                sx={{ width: "200px" }}
+              />
+            )}
+            name={username}
+            control={control}
+          />
+
+          <Controller
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Password"
+                size="small"
+                sx={{ width: "200px" }}
+                type={showPassword ? "text" : password}
+                helperText={errors[password] ? errors[password].message : ""}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  ),
+                }}
+              />
+            )}
+            name={password}
+            control={control}
+          />
 
           <Button variant="contained" className="mb-4" type="submit">
             Login
