@@ -19,7 +19,7 @@ class Register(View):
 
         # create root folder
         now = datetime.datetime.now()
-        root_folder = Folder.objects.create(name='root', parent=None, owner=user, created_at=now, updated_at=now)
+        root_folder = Folder.objects.create(name='My Drive', parent=None, owner=user, created_at=now, updated_at=now)
         UserDetails.objects.create(user=user, storage_usage=0, root_folder=root_folder)
 
     def post(self, request: HttpRequest):
@@ -62,7 +62,7 @@ class Login(View):
         password = body_dict.get('password')
 
         # Authenticate user
-        if request.user.is_active:
+        if request.user.is_authenticated:
             return JsonResponse({'error': 'Already logged in'}, status=403)
         user = authenticate(request, username=username, password=password)
 

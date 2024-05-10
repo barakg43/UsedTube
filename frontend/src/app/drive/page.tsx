@@ -1,14 +1,20 @@
 "use client";
-import { useAppSelector } from "@/redux/hooks";
-import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
+import MainArea from "./(components)/MainArea";
 
 const Drive: FC = () => {
-  const tree = useAppSelector((state: RootState) => state.items);
+  const [lsUserId, setLsUserId] = useState("");
   const router = useRouter();
-
-  return <div>hello</div>;
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      router.push("/login");
+    } else {
+      setLsUserId(userId);
+    }
+  }, []);
+  return <MainArea />;
 };
 
 export default Drive;

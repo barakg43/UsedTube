@@ -28,7 +28,8 @@ export type FSNode = {
 
 export type GeneralState = {
   showModal: boolean;
-  isLoggedIn: boolean;
+  activeDirectory: string;
+  userId: string;
 };
 
 export interface TreeNode {

@@ -10,7 +10,7 @@ import { password, username } from "@/constants";
 import { login } from "@/redux/api";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/hooks";
-import { setIsLoggedIn } from "@/redux/slices/generalSlice";
+import { setUserId } from "@/redux/slices/generalSlice";
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +34,8 @@ const LoginForm: React.FC = () => {
         message: response.error.error,
       });
     } else {
-      dispatch(setIsLoggedIn(true));
+      localStorage.setItem("userId", response.userId);
+      dispatch(setUserId(response.userId));
       router.push("/drive");
     }
   };
@@ -51,7 +52,8 @@ const LoginForm: React.FC = () => {
                 {...field}
                 label={username}
                 size="small"
-                error={errors[password] ? true : false}
+                error={errors[password] ? true : false || errors[username] ? true : false}
+                helperText={errors[username] ? errors[username].message : ""}
                 sx={{ width: "200px" }}
               />
             )}

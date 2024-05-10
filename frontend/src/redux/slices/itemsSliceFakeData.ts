@@ -27,7 +27,7 @@ export const fakeData: ItemsType = {
 };
 
 export const fakeData2: TreeNode = {
-  Label: "Root",
+  Label: "My Drive",
   IsOpened: false,
   Children: [
     {

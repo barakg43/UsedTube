@@ -4,6 +4,8 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { TreeNode } from "@/types";
+import { setActiveDirectory } from "@/redux/slices/generalSlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 const Space = () => {
   return <div className="w-[8px]" />;
@@ -21,6 +23,7 @@ type MyProps = {
 export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
   const [, updateState] = React.useState<object>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
+  const dispatch = useAppDispatch();
   const handleArrowToggle = (node: TreeNode): void => {
     if (node.IsOpened) {
       node.IsOpened = false;
@@ -30,19 +33,13 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
     forceUpdate();
   };
 
-  const onClick = (node: TreeNode) => {
+  const onLabelClick = (node: TreeNode) => {
     // set active directory
-    console.log("Clicked on node: ", node);
+    dispatch(setActiveDirectory(node.Label));
   };
 
-  const onLabelClick = (node: TreeNode) => {
-    if (!node.Children) {
-      onClick(node);
-    }
-  };
   return (
     <TreeContainer>
-      {/* {onClick={() => handleNodeToggle(node)}} */}
       <div className="flex cursor-pointer text-black m-[2] pl-[5px]">
         {spaces > 0 && new Array(spaces).fill(0).map((_, index) => <Space key={index} />)}
         {node.IsOpened && node.Children && <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />}

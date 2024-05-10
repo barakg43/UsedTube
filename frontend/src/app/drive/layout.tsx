@@ -20,7 +20,7 @@ export default function RootLayout({
         <StoreProvider>
           <div className="flex flex-col h-full">
             <TopBar />
-            <div className="flex flex-row flex-grow bg-green-500 w-full h-full">
+            <div className="flex flex-row flex-grow bg-paper w-full h-full">
               <Sidebar />
               {children}
             </div>
