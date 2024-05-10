@@ -6,7 +6,6 @@ export type UserValues = {
   firstName: string;
   lastName: string;
   apiKey?: string;
-  sessionToken?: string;
 };
 
 export type UserCredentials = {
@@ -29,4 +28,15 @@ export type FSNode = {
 
 export type GeneralState = {
   showModal: boolean;
+  isLoggedIn: boolean;
 };
+
+export interface TreeNode {
+  Label: string;
+  Amount: number;
+  Date?: string;
+  AutoActionId?: number;
+  IsOpened?: boolean;
+  Children?: TreeNode[];
+  Context?: any;
+}

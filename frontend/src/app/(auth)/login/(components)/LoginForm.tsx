@@ -9,9 +9,12 @@ import { schema } from "../login-schema";
 import { password, username } from "@/constants";
 import { login } from "@/redux/api";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/redux/hooks";
+import { setIsLoggedIn } from "@/redux/slices/generalSlice";
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const {
     handleSubmit,
@@ -28,9 +31,10 @@ const LoginForm: React.FC = () => {
     if (response.error) {
       setError(password, {
         type: "manual",
-        message: response.message,
+        message: response.error.error,
       });
     } else {
+      dispatch(setIsLoggedIn(true));
       router.push("/drive");
     }
   };
@@ -47,7 +51,7 @@ const LoginForm: React.FC = () => {
                 {...field}
                 label={username}
                 size="small"
-                helperText={errors[username] ? errors[username].message : ""}
+                error={errors[password] ? true : false}
                 sx={{ width: "200px" }}
               />
             )}
@@ -64,6 +68,7 @@ const LoginForm: React.FC = () => {
                 sx={{ width: "200px" }}
                 type={showPassword ? "text" : password}
                 helperText={errors[password] ? errors[password].message : ""}
+                error={errors[password] ? true : false}
                 InputProps={{
                   endAdornment: (
                     <IconButton onClick={() => setShowPassword(!showPassword)}>

@@ -62,8 +62,7 @@ class Login(View):
         password = body_dict.get('password')
 
         # Authenticate user
-        if request.user.is_authenticated:
-            
+        if request.user.is_active:
             return JsonResponse({'error': 'Already logged in'}, status=403)
         user = authenticate(request, username=username, password=password)
 
@@ -71,7 +70,7 @@ class Login(View):
         if user is not None:
             # Login user
             login(request, user)
-            return JsonResponse({MESSAGE: 'Login successful'})
+            return JsonResponse({MESSAGE: 'Login successful', 'userId': user.id})
         else:
             return JsonResponse({ERROR: 'Invalid credentials'}, status=401)
 

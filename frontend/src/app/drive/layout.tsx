@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import TopBar from "./(components)/TopBar";
 import Sidebar from "./(components)/Sidebar";
 import StoreProvider from "../StoreProvider";
+import "@/app/globals.css";
 
 export const metadata: Metadata = {
   title: "UsedTube",

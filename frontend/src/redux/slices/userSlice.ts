@@ -58,9 +58,6 @@ export const userSlice = createSlice({
       state.firstName = firstName;
       state.lastName = lastName;
     },
-    setSessionToken: (state, action: PayloadAction<string>) => {
-      state.sessionToken = action.payload;
-    },
   },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
