@@ -1,38 +1,47 @@
-import { FSItems, FSNode } from "@/types";
+import { FSItems } from "@/types";
 
 export const fakeData: FSItems = {
   myItems: [
-    { id: "1", name: "My Item 1", type: "file", isOpened: false },
-    { id: "2", name: "My Item 2", type: "file", isOpened: false },
+    // make all items below sit under My Drive folder as the root, nothing outside of it
     {
-      id: "3",
-      name: "My Folder 1",
+      id: "0",
+      name: "My Drive",
       type: "folder",
       isOpened: false,
-    },
-    {
-      id: "4",
-      name: "My Folder 2",
-      type: "folder",
-      isOpened: false,
-    },
-    {
-      id: "5",
-      name: "My Folder 3",
-      type: "folder",
-      isOpened: false,
-    },
-    {
-      id: "6",
-      name: "My Folder 4",
-      type: "folder",
-      isOpened: false,
-    },
-    {
-      id: "7",
-      name: "My Folder 5",
-      type: "folder",
-      isOpened: false,
+      children: [
+        { id: "1", name: "My Item 1", type: "file", isOpened: false },
+        { id: "2", name: "My Item 2", type: "file", isOpened: false },
+        {
+          id: "3",
+          name: "My Folder 1",
+          type: "folder",
+          isOpened: false,
+        },
+        {
+          id: "4",
+          name: "My Folder 2",
+          type: "folder",
+          isOpened: false,
+        },
+        {
+          id: "5",
+          name: "My Folder 3",
+          type: "folder",
+          isOpened: false,
+        },
+        {
+          id: "6",
+          name: "My Folder 4",
+          type: "folder",
+          isOpened: false,
+        },
+        {
+          id: "7",
+          name: "My Folder 5",
+          type: "folder",
+          isOpened: false,
+        },
+      ],
     },
   ],
   sharedItems: [

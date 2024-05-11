@@ -24,6 +24,12 @@ export type GeneralState = {
   userId: string;
 };
 
+export type ItemsState = {
+  items: FSItems;
+  activeDirectory: FSNode;
+  displayType: DisplayType;
+};
+
 export type NodeType = "file" | "folder";
 
 export interface FSNode {
@@ -36,3 +42,5 @@ export interface FSNode {
   children?: FSNode[];
   context?: any;
 }
+
+export type DisplayType = "grid" | "row";

@@ -1,4 +1,4 @@
-import { FSNode, GeneralState } from "@/types";
+import { GeneralState } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -15,9 +15,7 @@ export const generalSlice = createSlice({
     setShowModal: (state, action: PayloadAction<boolean>) => {
       state.showModal = action.payload;
     },
-    setActiveDirectory: (state, action: PayloadAction<FSNode>) => {
-      state.activeDirectory = action.payload;
-    },
+
     setUserId: (state, action: PayloadAction<string>) => {
       state.userId = action.payload;
     },
@@ -25,6 +23,6 @@ export const generalSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setShowModal, setActiveDirectory, setUserId } = generalSlice.actions;
+export const { setShowModal, setUserId } = generalSlice.actions;
 
 export default generalSlice.reducer;

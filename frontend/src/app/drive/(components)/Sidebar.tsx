@@ -9,11 +9,11 @@ const SideBarItem: FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 const Sidebar = () => {
-  const items = useAppSelector((state: RootState) => state.items.myItems);
+  const tree = useAppSelector((state: RootState) => state.items.activeDirectory);
   return (
     <nav className="h-full w-[150px] flex flex-col px-2">
       <SideBarItem>
-        <TreeFragment node={items} spaces={0} />
+        <TreeFragment node={tree} spaces={0} />
       </SideBarItem>
       <SideBarItem>Shared with me</SideBarItem>
       <SideBarItem>Quota and storage left</SideBarItem>
