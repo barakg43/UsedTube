@@ -10,7 +10,7 @@ const ItemsDisplayNode: FC<{ node: FSNode }> = ({ node }) => {
 
 const ItemsDisplayGrid: FC<{ items: FSNode[] }> = ({ items }) => {
   return (
-    <div className="mt-10 flex-grow  overflow-y-scroll">
+    <div className="mt-10 flex-grow grid grid-cols-4 overflow-y-scroll">
       {items?.map((node: FSNode, index: number) => {
         return <ItemsDisplayNode key={index} node={node} />;
       })}
