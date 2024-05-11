@@ -1,7 +1,5 @@
 import json
 import os
-from typing import Union, Iterator
-
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, FileResponse, JsonResponse
 from django.views import View
@@ -13,13 +11,13 @@ from engine.downloader.impl import YouTubeDownloader
 from engine.driver import Driver
 from engine.manager import Mr_EngineManager
 from files.models import Folder, File
+from files.query import select_folder_subitems
 
 
 class DownloadView(View):
     @login_required
     def get(self, request: HttpRequest):
         user = request.user
-
         # you get in request: user id, file_name
         # The `file_name` variable in the `DownloadView` class is being set to 'sample-file2.pdf'.
         # This variable is used to specify the name of the file that will be downloaded by the user.
@@ -92,18 +90,10 @@ class DirectoryContentView(View):
     def get(self, request: HttpRequest, folder_id: int):
         # create a json listing all files and their size of the requested folder
         if request.content_type == 'application/json':
-            folder_subitems = self.__select_folder_subitems(request, folder_id)
+            folder_subitems = select_folder_subitems(request.user, folder_id)
             return JsonResponse(folder_subitems)
         else:
 
             return JsonResponse({ERROR: 'bad request'}, status=400)
 
-    def __select_folder_subitems(self, request, folder_id) -> dict:
-        user = request.user
-        folder_parent = Folder.objects.get(id=folder_id)
-        sub_folders = Folder.objects.filter(owner=user, parent=folder_parent)
-        files = File.objects.filter(owner=user, folder=folder_parent)
-        sub_folders_list = list(sub_folders.values())
-        files_list = list(
-            files.values("id", "name", "extension", "size", "folder", "created_at", "updated_at"))
-        return {"folders": sub_folders_list, "files": files_list}
+    

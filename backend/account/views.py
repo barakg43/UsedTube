@@ -7,6 +7,7 @@ from django.views import View
 
 from constants import ERROR, MESSAGE
 from files.models import UserDetails, Folder
+from files.query import select_folder_subitems
 from utils import already_exists
 from utils import convert_body_json_to_dict
 
@@ -72,9 +73,7 @@ class Login(View):
             login(request, user)
             # get user root folder and its children
             root_folder = UserDetails.objects.get(user=user).root_folder
-            sub_folders = root_folder.subfolders.all() 
-            sub_files = root_folder.files.all()
-            raise NotImplementedError('Get user root folder and its children')
+            folder_subitems = select_folder_subitems(user, root_folder.id)
             return JsonResponse({'userId': user.id, })
         else:
             return JsonResponse({ERROR: 'Invalid credentials'}, status=401)
