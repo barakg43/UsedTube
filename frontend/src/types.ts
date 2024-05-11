@@ -25,8 +25,10 @@ export type GeneralState = {
 };
 
 export interface FSNode {
-  Label: string;
-  Date?: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  type: "file | folder";
   IsOpened?: boolean;
   Children?: FSNode[];
   Context?: any;

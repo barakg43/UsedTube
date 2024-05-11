@@ -70,7 +70,12 @@ class Login(View):
         if user is not None:
             # Login user
             login(request, user)
-            return JsonResponse({MESSAGE: 'Login successful', 'userId': user.id})
+            # get user root folder and its children
+            root_folder = UserDetails.objects.get(user=user).root_folder
+            sub_folders = root_folder.subfolders.all() 
+            sub_files = root_folder.files.all()
+            raise NotImplementedError('Get user root folder and its children')
+            return JsonResponse({'userId': user.id, })
         else:
             return JsonResponse({ERROR: 'Invalid credentials'}, status=401)
 

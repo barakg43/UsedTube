@@ -45,7 +45,7 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
         {node.IsOpened && node.Children && <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />}
         {!node.IsOpened && node.Children && <ArrowRightIcon onClick={() => handleArrowToggle(node)} />}
         {!node.Children && <CancelIcon />}
-        {<span onClick={() => onLabelClick(node)}>{`${node.Label}`}</span>}
+        {<span onClick={() => onLabelClick(node)}>{`${node.name}`}</span>}
       </div>
       {node.IsOpened && node.Children && (
         <>

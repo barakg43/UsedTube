@@ -11,7 +11,7 @@ const MainArea = () => {
   return (
     <div className="flex flex-col flex-grow px-4 py-4 mb-4 mr-4 bg-dustyPaper rounded-3xl">
       <div className="flex flex-row justify-between w-full">
-        <Typography variant="h4">{activeDirectory?.Label}</Typography>
+        <Typography variant="h4">{activeDirectory?.name}</Typography>
         <div>display options</div>
       </div>
       <ItemsDisplay displayType={displayType} />

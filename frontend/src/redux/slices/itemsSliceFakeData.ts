@@ -27,20 +27,20 @@ export const fakeData: FSItems = {
 };
 
 export const fakeData2: FSNode = {
-  Label: "My Drive",
+  name: "My Drive",
   IsOpened: false,
   Children: [
     {
-      Label: "Folder 1",
+      name: "Folder 1",
       IsOpened: false,
       Children: [
         {
-          Label: "Folder 1.1",
+          name: "Folder 1.1",
           IsOpened: false,
-          Children: [{ Label: "Folder 1.1.1", IsOpened: false, Children: [] }],
+          Children: [{ name: "Folder 1.1.1", IsOpened: false, Children: [] }],
         },
       ],
     },
-    { Label: "Folder 2", IsOpened: false, Children: [] },
+    { name: "Folder 2", IsOpened: false, Children: [] },
   ],
 };
