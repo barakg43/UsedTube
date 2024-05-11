@@ -25,10 +25,10 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
   const forceUpdate = React.useCallback(() => updateState({}), []);
   const dispatch = useAppDispatch();
   const handleArrowToggle = (node: FSNode): void => {
-    if (node.IsOpened) {
-      node.IsOpened = false;
+    if (node.isOpened) {
+      node.isOpened = false;
     } else {
-      node.IsOpened = true;
+      node.isOpened = true;
     }
     forceUpdate();
   };
@@ -42,15 +42,15 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
     <TreeContainer>
       <div className="flex cursor-pointer text-black m-[2] pl-[5px]">
         {spaces > 0 && new Array(spaces).fill(0).map((_, index) => <Space key={index} />)}
-        {node.IsOpened && node.Children && <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />}
-        {!node.IsOpened && node.Children && <ArrowRightIcon onClick={() => handleArrowToggle(node)} />}
-        {!node.Children && <CancelIcon />}
+        {node.isOpened && node.children && <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />}
+        {!node.isOpened && node.children && <ArrowRightIcon onClick={() => handleArrowToggle(node)} />}
+        {!node.children && <CancelIcon />}
         {<span onClick={() => onLabelClick(node)}>{`${node.name}`}</span>}
       </div>
-      {node.IsOpened && node.Children && (
+      {node.isOpened && node.children && (
         <>
           <TreeContainer>
-            {node.Children.map((child: FSNode, index: number) => {
+            {node.children.map((child: FSNode, index: number) => {
               return <TreeFragment key={index} spaces={spaces + 1} node={child} />;
             })}
           </TreeContainer>

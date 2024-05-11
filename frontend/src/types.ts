@@ -24,12 +24,15 @@ export type GeneralState = {
   userId: string;
 };
 
+export type NodeType = "file" | "folder";
+
 export interface FSNode {
+  id: string;
   name: string;
-  createdAt: string;
-  updatedAt: string;
-  type: "file | folder";
-  IsOpened?: boolean;
-  Children?: FSNode[];
-  Context?: any;
+  createdAt?: string;
+  updatedAt?: string;
+  type: NodeType;
+  isOpened: boolean;
+  children?: FSNode[];
+  context?: any;
 }
