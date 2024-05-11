@@ -1,12 +1,12 @@
 import { DisplayType, FSNode, ItemsState } from "@/types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { fakeData } from "./itemsSliceFakeData";
-import { grid } from "@/constants";
+import { grid, row } from "@/constants";
 
 const initialState: ItemsState = {
   items: fakeData,
   activeDirectory: fakeData.myItems[0],
-  displayType: grid,
+  displayType: row,
 };
 
 export const itemsSlice = createSlice({

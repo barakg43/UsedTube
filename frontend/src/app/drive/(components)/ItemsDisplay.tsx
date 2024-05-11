@@ -8,9 +8,9 @@ const ItemsDisplayNode: FC<{ node: FSNode }> = ({ node }) => {
   return <div>{node.name}</div>;
 };
 
-const ItemsDisplayGrid: FC<{ items: FSNode[] | undefined }> = ({ items }) => {
+const ItemsDisplayGrid: FC<{ items: FSNode[] }> = ({ items }) => {
   return (
-    <div className="mt-10 flex-grow bg-paper rounded-2xl px-4 py-4 overflow-y-scroll">
+    <div className="mt-10 flex-grow  overflow-y-scroll">
       {items?.map((node: FSNode, index: number) => {
         return <ItemsDisplayNode key={index} node={node} />;
       })}
@@ -18,16 +18,23 @@ const ItemsDisplayGrid: FC<{ items: FSNode[] | undefined }> = ({ items }) => {
   );
 };
 
+const ItemsDisplayRow: FC<{ items: FSNode[] }> = ({ items }) => {
+  return (
+    <div className="h-[60%] w-[82%] absolute">
+      <DataGrid columns={columns} rows={items} />
+    </div>
+  );
+};
+
 const ItemsDisplay: React.FC = () => {
   const items = useAppSelector((state) => state.items.activeDirectory.children);
   const displayType = useAppSelector((state) => state.items.displayType);
+
   return (
     <>
-      {displayType === grid ? (
-        <ItemsDisplayGrid items={items} />
-      ) : (
-        <DataGrid className="rounded-2xl" columns={columns} rows={items} />
-      )}
+      <div className="bg-paper rounded-2xl px-4 py-4 flex flex-grow">
+        {displayType === grid ? <ItemsDisplayGrid items={items || []} /> : <ItemsDisplayRow items={items || []} />}
+      </div>
     </>
   );
 };
