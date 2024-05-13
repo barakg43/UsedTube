@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
 import MainArea from "./(components)/(layout)/MainArea";
 
-function Drive({ params }: { params: { folderId: string } }) {
+function Drive({ params }: { params?: { folderId: string } }) {
   const [lsUserId, setLsUserId] = useState("");
   const router = useRouter();
   useEffect(() => {
