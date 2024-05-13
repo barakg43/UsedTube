@@ -38,7 +38,7 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
   const gotFolderChildren_ = gotFolderChildren(node);
   return (
     <TreeContainer>
-      <div className="flex cursor-pointer text-black rounded-xl mb-2 hover:bg-dustyPaperDark">
+      <div className="flex cursor-pointer text-black  hover:bg-dustyPaperDark rounded-xl">
         {spaces > 0 && new Array(spaces).fill(0).map((_, index) => <Space key={index} />)}
         {node.isOpened && gotFolderChildren_ && <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />}
         {!node.isOpened && gotFolderChildren_ && <ArrowRightIcon onClick={() => handleArrowToggle(node)} />}

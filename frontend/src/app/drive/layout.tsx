@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import TopBar from "./(components)/TopBar";
-import Sidebar from "./(components)/Sidebar";
+import TopBar from "./(components)/(layout)/TopBar";
+import Sidebar from "./(components)/(layout)/Sidebar";
 import StoreProvider from "../StoreProvider";
 import "@/app/globals.css";
 

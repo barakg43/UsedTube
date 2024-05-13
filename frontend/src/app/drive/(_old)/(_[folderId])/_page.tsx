@@ -1,4 +1,4 @@
-import FolderContent from "./(components)/FolderContent";
+import FolderContent from "../(components)/FolderContent";
 
 function page({ params }: { params: { folderId: string } }) {
   return <FolderContent folderId={params.folderId} />;

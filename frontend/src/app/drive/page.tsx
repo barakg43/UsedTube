@@ -1,9 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
-import MainArea from "./(components)/MainArea";
+import MainArea from "./(components)/(layout)/MainArea";
 
-const Drive: FC = () => {
+function Drive({ params }: { params?: { folderId: string } }) {
   const [lsUserId, setLsUserId] = useState("");
   const router = useRouter();
   useEffect(() => {
@@ -15,6 +15,6 @@ const Drive: FC = () => {
     }
   }, []);
   return <MainArea />;
-};
+}
 
 export default Drive;
