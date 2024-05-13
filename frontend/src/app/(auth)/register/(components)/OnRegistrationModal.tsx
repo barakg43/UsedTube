@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 const style = {
-  position: "absolute" as "absolute",
+  position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -32,19 +32,22 @@ const OnRegistrationModal: React.FC = () => {
     router.push("/");
   };
   return (
-    <Modal open={isOpen} aria-labelledby="registration-success">
-      <Box sx={style}>
+    <Modal open={isOpen} className=" " aria-labelledby="registration-success">
+      <Box className=" top-1/2 left-1/2 rounded-xl absolute w-[300px] bg-paper p-5 -translate-x-1/2 -translate-y-1/2 outline-none">
         <Typography id="registered successfully" variant="h6" component="h2">
-          Registration successful!
+          registration successful
         </Typography>
-        <div className="flex flex-row-reverse space-x-4">
-          <Button variant="outlined" onClick={redirectToLogin}>
-            <Typography id="what's next" sx={{ mt: 2 }}>
+        <Typography className="ml-4 mb-4" id="what's next" sx={{ mt: 2 }}>
+          {"what's next?"}
+        </Typography>
+        <div className="flex justify-center">
+          <Button className="mr-2" variant="outlined" onClick={redirectToLogin}>
+            <Typography variant="button" id="what's next">
               login
             </Typography>
           </Button>
-          <Button variant="outlined" onClick={redirectToHome}>
-            <Typography id="what's next" sx={{ mt: 2 }}>
+          <Button className="ml-2" variant="outlined" onClick={redirectToHome}>
+            <Typography variant="button" id="what's next">
               home
             </Typography>
           </Button>

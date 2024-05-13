@@ -1,10 +1,9 @@
 "use client";
 import { TextField, Typography, Button } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import OnRegistrationModal from "./OnRegistrationModal";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { registerUserData, setApiKey } from "@/redux/slices/userSlice";
-import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { setShowModal } from "@/redux/slices/generalSlice";
 

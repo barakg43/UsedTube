@@ -1,7 +1,10 @@
-const firstName = "firstName";
-const lastName = "lastName";
-const email = "email";
-const username = "username";
-const password = "password";
-const confirmPassword = "confirmPassword";
-export { firstName, lastName, email, username, password, confirmPassword };
+export const firstName = "firstName";
+export const lastName = "lastName";
+export const email = "email";
+export const username = "username";
+export const password = "password";
+export const confirmPassword = "confirmPassword";
+export const grid = "grid";
+export const row = "row";
+export const folder = "folder";
+export const file = "file";

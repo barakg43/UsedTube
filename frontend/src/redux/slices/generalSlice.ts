@@ -4,6 +4,8 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: GeneralState = {
   showModal: false,
+  activeDirectory: null,
+  userId: "",
 };
 
 export const generalSlice = createSlice({
@@ -13,10 +15,14 @@ export const generalSlice = createSlice({
     setShowModal: (state, action: PayloadAction<boolean>) => {
       state.showModal = action.payload;
     },
+
+    setUserId: (state, action: PayloadAction<string>) => {
+      state.userId = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setShowModal } = generalSlice.actions;
+export const { setShowModal, setUserId } = generalSlice.actions;
 
 export default generalSlice.reducer;

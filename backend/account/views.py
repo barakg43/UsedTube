@@ -7,9 +7,10 @@ from django.views import View
 
 from constants import ERROR, MESSAGE
 from files.models import UserDetails, Folder
+from files.query import select_folder_subitems
 from utils import already_exists
 from utils import convert_body_json_to_dict
-
+from uuid import uuid4
 
 # Create your views here.
 
@@ -19,7 +20,7 @@ class Register(View):
 
         # create root folder
         now = datetime.datetime.now()
-        root_folder = Folder.objects.create(name='root', parent=None, owner=user, created_at=now, updated_at=now)
+        root_folder = Folder.objects.create(id=uuid4(), name='My Drive', parent=None, owner=user, created_at=now, updated_at=now)
         UserDetails.objects.create(user=user, storage_usage=0, root_folder=root_folder)
 
     def post(self, request: HttpRequest):
@@ -36,8 +37,8 @@ class Register(View):
             return JsonResponse({ERROR: already_exists('Email')}, status=400)
 
         # Create user
-        user = User.objects.create_user(username=username, email=email, password=password, first_name=body_dict.get('first_name'),
-                                        last_name=body_dict.get('last_name'))
+        user = User.objects.create_user(username=username, email=email, password=password, first_name=body_dict.get('firstName'),
+                                        last_name=body_dict.get('lastName'))
 
         self.__additional_registration_actions(user)
 
@@ -63,7 +64,6 @@ class Login(View):
 
         # Authenticate user
         if request.user.is_authenticated:
-            
             return JsonResponse({'error': 'Already logged in'}, status=403)
         user = authenticate(request, username=username, password=password)
 
@@ -71,7 +71,10 @@ class Login(View):
         if user is not None:
             # Login user
             login(request, user)
-            return JsonResponse({MESSAGE: 'Login successful'})
+            # get user root folder and its children
+            root_folder = UserDetails.objects.get(user=user).root_folder
+            folder_subitems = select_folder_subitems(user, root_folder.id)
+            return JsonResponse({'userId': user.id,})
         else:
             return JsonResponse({ERROR: 'Invalid credentials'}, status=401)
 

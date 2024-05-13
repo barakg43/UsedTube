@@ -1,3 +1,5 @@
+import { file, folder } from "./constants";
+
 export type UserValues = {
   username: string;
   password: string;
@@ -6,7 +8,6 @@ export type UserValues = {
   firstName: string;
   lastName: string;
   apiKey?: string;
-  sessionToken?: string;
 };
 
 export type UserCredentials = {
@@ -14,19 +15,52 @@ export type UserCredentials = {
   password: string;
 };
 
-export type ItemsType = {
-  myItems: FSNode[];
+export type FSItems = {
+  myItems: FSNode;
   sharedItems: FSNode[];
-};
-
-export type FSNode = {
-  id: string;
-  name: string;
-  type: "file" | "folder";
-  path: string;
-  children?: FSNode[];
 };
 
 export type GeneralState = {
   showModal: boolean;
+  activeDirectory: FSNode | null;
+  userId: string;
+};
+
+export type ItemsState = {
+  items: FSItems;
+  activeDirectory: FSNode;
+  displayType: DisplayType;
+};
+
+export type NodeType = "file" | "folder";
+
+export interface FSNode {
+  id: string;
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
+  type: NodeType;
+  isOpened: boolean;
+  children?: FSNode[];
+  context?: any;
+}
+
+export function gotFolderChildren(node: FSNode) {
+  if (node.type === file) {
+    return false;
+  } else if (node.children) {
+    for (const child of node.children) {
+      if (child.type === folder) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+export type DisplayType = "grid" | "row";
+
+export type ItemsDisplayProp = {
+  onEntryClick: Function;
+  items: FSNode[];
 };

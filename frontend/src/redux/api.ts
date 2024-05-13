@@ -15,6 +15,6 @@ export const login = async (username: string, password: string) => {
     const response = await axios.post(`${api_root}/account/login`, { username, password });
     return response.data;
   } catch (error: any) {
-    return error.response.data;
+    return { error: error.response.data };
   }
 };
