@@ -2,8 +2,9 @@ import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { Typography } from "@mui/material";
 import React, { useState } from "react";
-import ItemsDisplay from "./ItemsDisplay";
-import ItemsDisplayToggle from "./ItemsDisplayToggle";
+import ItemsDisplay from "../(itemsDisplay)/ItemsDisplay";
+import ItemsDisplayToggle from "../(itemsDisplay)/ItemsDisplayToggle";
+import FileUpload from "../FileUpload";
 
 const MainArea = () => {
   const activeDirectory = useAppSelector((state: RootState) => state.items.activeDirectory);
@@ -11,6 +12,7 @@ const MainArea = () => {
     <div className="flex flex-col flex-grow px-4 py-4 mb-4 mr-4 bg-dustyPaper rounded-3xl">
       <div className="flex flex-row justify-between w-full">
         <Typography variant="h4">{activeDirectory?.name}</Typography>
+        <FileUpload />
         <ItemsDisplayToggle />
       </div>
       <ItemsDisplay />
