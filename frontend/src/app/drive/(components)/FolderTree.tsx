@@ -2,11 +2,11 @@
 import React from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import CancelIcon from "@mui/icons-material/Cancel";
 import { FSNode } from "@/types";
 import { useAppDispatch } from "@/redux/hooks";
 import { setActiveDirectory, toggleIsOpened } from "@/redux/slices/itemsSlice";
 import { folder } from "@/constants";
+import { gotFolderChildren } from "@/redux/slices/utils";
 
 const Space = () => {
   return <div className="w-[8px]" />;
@@ -27,6 +27,7 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
   const dispatch = useAppDispatch();
   const handleArrowToggle = (node: FSNode): void => {
     dispatch(toggleIsOpened(node));
+    console.log(node, forceUpdate);
     forceUpdate();
   };
 
@@ -34,22 +35,22 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
     // set active directory
     dispatch(setActiveDirectory(node));
   };
-
+  const gotFolderChildren_ = gotFolderChildren(node);
   return (
     <TreeContainer>
-      <div className="flex cursor-pointer text-black m-[2] pl-[5px]">
+      <div className="flex cursor-pointer text-black rounded-xl mb-2 hover:bg-dustyPaperDark">
         {spaces > 0 && new Array(spaces).fill(0).map((_, index) => <Space key={index} />)}
-        {node.isOpened && node.children && <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />}
-        {!node.isOpened && node.children && <ArrowRightIcon onClick={() => handleArrowToggle(node)} />}
-
-        {<span onClick={() => onLabelClick(node)}>{`${node.name}`}</span>}
+        {node.isOpened && gotFolderChildren_ && <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />}
+        {!node.isOpened && gotFolderChildren_ && <ArrowRightIcon onClick={() => handleArrowToggle(node)} />}
+        {!gotFolderChildren_ && <div className="w-[24px]" />}
+        {<span className="text-left text-ellipsis flex-grow" onClick={() => onLabelClick(node)}>{`${node.name}`}</span>}
       </div>
       {node.isOpened && node.children && (
         <>
           <TreeContainer>
             {node.children
               .filter((node) => {
-                node.type === folder;
+                return node.type === folder;
               })
               .map((child: FSNode, index: number) => {
                 return <TreeFragment key={index} spaces={spaces + 1} node={child} />;

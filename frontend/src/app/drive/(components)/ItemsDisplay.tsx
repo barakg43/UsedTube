@@ -1,9 +1,13 @@
 import React, { FC } from "react";
-import { file, grid } from "@/constants";
+import { file, folder, grid } from "@/constants";
 import { FSNode, ItemsDisplayProp } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { setActiveDirectory } from "@/redux/slices/itemsSlice";
+import FolderIcon from "@mui/icons-material/Folder";
+import DescriptionIcon from "@mui/icons-material/Description";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Typography } from "@mui/material";
 
 const ItemsDisplay: React.FC = () => {
   const items = useAppSelector((state) => state.items.activeDirectory.children);
@@ -29,12 +33,21 @@ const ItemsDisplay: React.FC = () => {
 };
 
 const ItemsDisplayNode: FC<{ node: FSNode; onEntryClick: Function }> = ({ node, onEntryClick }) => {
-  return <div onClick={() => onEntryClick(node)}>{node.name}</div>;
+  return (
+    <div
+      className="cursor-pointer flex-grow flex flex-row rounded-3xl px-2 py-2 mt-2 mr-6 bg-dustyPaper hover:bg-dustyPaperDark border"
+      onClick={() => onEntryClick(node)}
+    >
+      {node.type === folder ? <FolderIcon className="mr-5" /> : <DescriptionIcon className="mr-5" />}
+      <Typography className="text-ellipsis flex-grow">{node.name}</Typography>
+      {node.type === file && <MoreVertIcon className="hover:bg-dustyPaperEvenDarker rounded-full" />}
+    </div>
+  );
 };
 
 const ItemsDisplayGrid: FC<ItemsDisplayProp> = ({ items, onEntryClick }) => {
   return (
-    <div className="mt-10 flex-grow grid grid-cols-4 overflow-y-scroll">
+    <div className="flex-grow grid grid-cols-3 grid-rows-7 overflow-y-scroll">
       {items?.map((node: FSNode, index: number) => {
         return <ItemsDisplayNode onEntryClick={onEntryClick} key={index} node={node} />;
       })}
@@ -50,7 +63,7 @@ const ItemsDisplayRow: FC<ItemsDisplayProp> = ({ items, onEntryClick }) => {
   ];
 
   return (
-    <div className="h-[60%] w-[82%] absolute">
+    <div className="h-[60%] w-[78%] absolute">
       <DataGrid
         columns={columns}
         rows={items}

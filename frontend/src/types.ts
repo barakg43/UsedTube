@@ -1,3 +1,5 @@
+import { file, folder } from "./constants";
+
 export type UserValues = {
   username: string;
   password: string;
@@ -41,6 +43,19 @@ export interface FSNode {
   isOpened: boolean;
   children?: FSNode[];
   context?: any;
+}
+
+export function gotFolderChildren(node: FSNode) {
+  if (node.type === file) {
+    return false;
+  } else if (node.children) {
+    for (const child of node.children) {
+      if (child.type === folder) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 export type DisplayType = "grid" | "row";
