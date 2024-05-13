@@ -9,7 +9,7 @@ const SideBarItem: FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 const Sidebar = () => {
-  const tree = useAppSelector((state: RootState) => state.items.activeDirectory);
+  const tree = useAppSelector((state: RootState) => state.items.items.myItems);
   return (
     <nav className="h-full w-[150px] flex flex-col px-2">
       <SideBarItem>

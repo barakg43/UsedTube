@@ -4,8 +4,9 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { FSNode } from "@/types";
-import { setActiveDirectory } from "@/redux/slices/generalSlice";
 import { useAppDispatch } from "@/redux/hooks";
+import { setActiveDirectory, toggleIsOpened } from "@/redux/slices/itemsSlice";
+import { folder } from "@/constants";
 
 const Space = () => {
   return <div className="w-[8px]" />;
@@ -25,11 +26,7 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
   const forceUpdate = React.useCallback(() => updateState({}), []);
   const dispatch = useAppDispatch();
   const handleArrowToggle = (node: FSNode): void => {
-    if (node.isOpened) {
-      node.isOpened = false;
-    } else {
-      node.isOpened = true;
-    }
+    dispatch(toggleIsOpened(node));
     forceUpdate();
   };
 
@@ -44,15 +41,19 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
         {spaces > 0 && new Array(spaces).fill(0).map((_, index) => <Space key={index} />)}
         {node.isOpened && node.children && <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />}
         {!node.isOpened && node.children && <ArrowRightIcon onClick={() => handleArrowToggle(node)} />}
-        {!node.children && <CancelIcon />}
+
         {<span onClick={() => onLabelClick(node)}>{`${node.name}`}</span>}
       </div>
       {node.isOpened && node.children && (
         <>
           <TreeContainer>
-            {node.children.map((child: FSNode, index: number) => {
-              return <TreeFragment key={index} spaces={spaces + 1} node={child} />;
-            })}
+            {node.children
+              .filter((node) => {
+                node.type === folder;
+              })
+              .map((child: FSNode, index: number) => {
+                return <TreeFragment key={index} spaces={spaces + 1} node={child} />;
+              })}
           </TreeContainer>
         </>
       )}

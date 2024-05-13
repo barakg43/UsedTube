@@ -6,3 +6,5 @@ export const password = "password";
 export const confirmPassword = "confirmPassword";
 export const grid = "grid";
 export const row = "row";
+export const folder = "folder";
+export const file = "file";

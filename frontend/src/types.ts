@@ -14,7 +14,7 @@ export type UserCredentials = {
 };
 
 export type FSItems = {
-  myItems: FSNode[];
+  myItems: FSNode;
   sharedItems: FSNode[];
 };
 
@@ -44,3 +44,8 @@ export interface FSNode {
 }
 
 export type DisplayType = "grid" | "row";
+
+export type ItemsDisplayProp = {
+  onEntryClick: Function;
+  items: FSNode[];
+};
