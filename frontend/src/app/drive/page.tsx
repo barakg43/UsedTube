@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { FC, useEffect, useState } from "react";
-import MainArea from "./(components)/(layout)/MainArea";
+import { useEffect, useState } from "react";
+import MainArea from "./(components)/(layout)/(mainArea)/MainArea";
 
 function Drive({ params }: { params?: { folderId: string } }) {
   const [lsUserId, setLsUserId] = useState("");

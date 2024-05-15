@@ -10,7 +10,7 @@ import { password, username } from "@/constants";
 import { login } from "@/redux/api";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/hooks";
-import { setActiveDirectory, setUserId } from "@/redux/slices/generalSlice";
+import { setUserId } from "@/redux/slices/generalSlice";
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +36,6 @@ const LoginForm: React.FC = () => {
     } else {
       localStorage.setItem("userId", response.userId);
       dispatch(setUserId(response.userId));
-      // dispatch(setActiveDirectory(response.activeDirectory));
       router.push("/drive");
     }
   };
