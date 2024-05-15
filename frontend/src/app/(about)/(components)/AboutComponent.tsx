@@ -26,4 +26,4 @@ const AboutComponent: React.FC = () => {
 };
 
 
-export default AvoutComponent;
+export default AboutComponent;
