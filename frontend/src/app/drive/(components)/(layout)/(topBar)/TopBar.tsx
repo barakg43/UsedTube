@@ -3,7 +3,7 @@ import React from "react";
 import LogoutButton from "./LogoutButton";
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "@/app/drive/(components)/(layout)/(topBar)/theme";
-import Logo from "./Logo";
+import Logo from "../../../../(common)/Logo";
 
 const TopBar = () => {
   return (
