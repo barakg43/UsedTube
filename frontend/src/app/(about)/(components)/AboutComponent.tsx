@@ -3,7 +3,7 @@ import React from "react";
 import Link from 'next/link';
 import styles from '../about.module.css'; // Import CSS module
 
-const AvoutComponent: React.FC = () => {
+const AboutComponent: React.FC = () => {
 
   return (
     <div className={styles.container}>
