@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const LoginContext = () => {
+const LogoutButton = () => {
   const router = useRouter();
   return (
     <div>
@@ -21,4 +21,4 @@ const LoginContext = () => {
   );
 };
 
-export default LoginContext;
+export default LogoutButton;

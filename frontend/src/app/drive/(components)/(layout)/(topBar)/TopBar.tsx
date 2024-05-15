@@ -1,15 +1,16 @@
 "use client";
 import React from "react";
-import LoginContext from "./LoginContext";
+import LogoutButton from "./LogoutButton";
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "@/app/drive/(components)/(layout)/(topBar)/theme";
+import Logo from "./Logo";
 
 const TopBar = () => {
   return (
     <div className="bg-paper h-[120px] flex flex-row justify-between">
       <ThemeProvider theme={theme}>
-        <div className="">logo</div>
-        <LoginContext />
+        <Logo />
+        <LogoutButton />
       </ThemeProvider>
     </div>
   );
