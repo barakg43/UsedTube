@@ -7,11 +7,9 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { UserCredentials } from "../../../../types";
 import { schema } from "../login-schema";
 import { password, username } from "@/constants";
-import { login } from "@/redux/api";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/hooks";
-import { setUserId } from "@/redux/slices/generalSlice";
-import Logo from "@/app/(common)/Logo";
+import { loginRequest, setAuthToken } from "@/redux/slices/generalSlice";
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,19 +26,28 @@ const LoginForm: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<UserCredentials> = async (data: UserCredentials) => {
-    const response = await login(data.username, data.password);
-    if (response.error) {
-      setError(password, {
-        type: "manual",
-        message: response.error.error,
-      });
-    } else {
-      localStorage.setItem("userId", response.userId);
-      dispatch(setUserId(response.userId));
-      router.push("/drive");
+    try {
+      const response = await dispatch(loginRequest(data)); // Dispatch the loginRequest thunk action creator
+      //@ts-ignore
+      if (response.error) {
+        setError(password, {
+          type: "manual",
+          //@ts-ignore
+          message: response.error.error,
+        });
+      } else {
+        //@ts-ignore
+        console.log("server auth header: ", response.payload.headers.authorization);
+
+        //@ts-ignore
+        dispatch(setAuthToken(response.payload.headers.authorization));
+        router.push("/drive");
+      }
+    } catch (error) {
+      console.error("An error occurred during login:", error);
+      // Handle error, maybe display an error message to the user
     }
   };
-
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -49,6 +56,7 @@ const LoginForm: React.FC = () => {
             render={({ field }) => (
               <TextField
                 {...field}
+                defaultValue=""
                 label={username}
                 size="small"
                 error={errors[password] ? true : false || errors[username] ? true : false}
@@ -64,6 +72,7 @@ const LoginForm: React.FC = () => {
             render={({ field }) => (
               <TextField
                 {...field}
+                defaultValue=""
                 label="Password"
                 size="small"
                 sx={{ width: "200px" }}

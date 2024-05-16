@@ -12,8 +12,9 @@ export const validateNotExisting = async (field: string, value: string) => {
 
 export const login = async (username: string, password: string) => {
   try {
-    const response = await axios.post(`${api_root}/account/login`, { username, password });
-    return response.data;
+    const response = await axios.post(`${api_root}/account/login`, { username, password }).catch((error) => {
+      return { error: error.response.data };
+    });
   } catch (error: any) {
     return { error: error.response.data };
   }

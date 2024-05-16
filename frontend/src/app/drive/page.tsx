@@ -1,20 +1,9 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import MainArea from "./(components)/(layout)/(mainArea)/MainArea";
+import WithAuth from "../(common)/WithAuth";
 
 function Drive({ params }: { params?: { folderId: string } }) {
-  const [lsUserId, setLsUserId] = useState("");
-  const router = useRouter();
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      router.push("/login");
-    } else {
-      setLsUserId(userId);
-    }
-  }, []);
   return <MainArea />;
 }
 
-export default Drive;
+export default WithAuth(Drive);

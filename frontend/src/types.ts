@@ -7,7 +7,8 @@ export type UserValues = {
   email: string;
   firstName: string;
   lastName: string;
-  apiKey?: string;
+  apiKey: string;
+  authToken: string;
 };
 
 export type UserCredentials = {
@@ -23,7 +24,7 @@ export type FSItems = {
 export type GeneralState = {
   showModal: boolean;
   activeDirectory: FSNode | null;
-  userId: string;
+  authToken: string | null;
 };
 
 export type ItemsState = {

@@ -12,15 +12,11 @@ const initialState: UserValues = {
   firstName: "",
   lastName: "",
   apiKey: "",
+  authToken: "",
 };
 
 export const registerUserData = createAsyncThunk("account/register", async (userData: UserValues, thunkAPI) => {
   const response = await axios.post(`${api_root}/account/register`, userData);
-  return response.data;
-});
-
-export const loginRequest = createAsyncThunk("account/login", async (userData: UserCredentials, thunkAPI) => {
-  const response = await axios.post(`${api_root}/account/login`, userData);
   return response.data;
 });
 
@@ -61,10 +57,7 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
-    builder.addCase(registerUserData.fulfilled, (state, action) => {}),
-      builder.addCase(loginRequest.fulfilled, (state, action) => {
-        state.apiKey = action.payload.apiKey;
-      });
+    builder.addCase(registerUserData.fulfilled, (state, action) => {});
   },
 });
 
