@@ -10,7 +10,8 @@ import { password, username } from "@/constants";
 import { login } from "@/redux/api";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/hooks";
-import { setActiveDirectory, setUserId } from "@/redux/slices/generalSlice";
+import { setUserId } from "@/redux/slices/generalSlice";
+import Logo from "@/app/(common)/Logo";
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +37,6 @@ const LoginForm: React.FC = () => {
     } else {
       localStorage.setItem("userId", response.userId);
       dispatch(setUserId(response.userId));
-      // dispatch(setActiveDirectory(response.activeDirectory));
       router.push("/drive");
     }
   };
@@ -44,9 +44,7 @@ const LoginForm: React.FC = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex gap-7 flex-col items-center justify-center">
-          <h2 className="mt-4 mb-4">Login</h2>
-
+        <div className="absolute top-[30%] w-full flex flex-col gap-7 items-center justify-center">
           <Controller
             render={({ field }) => (
               <TextField
@@ -84,7 +82,6 @@ const LoginForm: React.FC = () => {
             name={password}
             control={control}
           />
-
           <Button variant="contained" className="mb-4" type="submit">
             Login
           </Button>

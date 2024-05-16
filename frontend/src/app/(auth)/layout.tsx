@@ -2,6 +2,7 @@ import "@/app/globals.css";
 import Link from "next/link";
 import React from "react";
 import StoreProvider from "../StoreProvider";
+import Logo from "../(common)/Logo";
 
 const Layout = ({
   children,
@@ -9,10 +10,12 @@ const Layout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <html>
-      <body>
+    <html className="h-full">
+      <body className="h-full">
         <div>
-          <Link href="/">UsedTube</Link>
+          <Link href="/">
+            <Logo />
+          </Link>
         </div>
         <StoreProvider>{children}</StoreProvider>
       </body>
