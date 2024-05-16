@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django_server.middleware.ResponseLoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'django_server.urls'

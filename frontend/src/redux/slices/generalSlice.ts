@@ -12,7 +12,8 @@ const initialState: GeneralState = {
 
 export const loginRequest = createAsyncThunk("account/login", async (userData: UserCredentials, thunkAPI) => {
   const response = await axios.post(`${api_root}/account/login`, userData);
-  return response;
+  console.log(response);
+  return response.data;
 });
 
 export const generalSlice = createSlice({
@@ -33,7 +34,8 @@ export const generalSlice = createSlice({
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(loginRequest.fulfilled, (state, action) => {
-      state.authToken = action.payload.headers.authorization;
+      console.log(action);
+      state.authToken = action.payload;
     });
   },
 });

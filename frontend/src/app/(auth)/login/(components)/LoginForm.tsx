@@ -26,26 +26,13 @@ const LoginForm: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<UserCredentials> = async (data: UserCredentials) => {
-    try {
-      const response = await dispatch(loginRequest(data)); // Dispatch the loginRequest thunk action creator
-      //@ts-ignore
-      if (response.error) {
-        setError(password, {
-          type: "manual",
-          //@ts-ignore
-          message: response.error.error,
-        });
-      } else {
-        //@ts-ignore
-        console.log("server auth header: ", response.payload.headers.authorization);
-
-        //@ts-ignore
-        dispatch(setAuthToken(response.payload.headers.authorization));
-        router.push("/drive");
-      }
-    } catch (error) {
-      console.error("An error occurred during login:", error);
-      // Handle error, maybe display an error message to the user
+    const response = await dispatch(loginRequest(data)); // Dispatch the loginRequest thunk action creator
+    console.log(response);
+    if (response.payload.token) {
+      dispatch(setAuthToken(response.payload.token));
+      router.push("/drive");
+    } else {
+      setError("password", { message: "Invalid username or password" });
     }
   };
   return (
