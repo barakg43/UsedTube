@@ -15,9 +15,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+  <StoreProvider>
     <html lang="en" className="h-full">
       <body className="h-full">
-        <StoreProvider>
           <div className="flex flex-col h-full">
             <TopBar />
             <div className="flex flex-row flex-grow bg-paper w-full h-full">
@@ -25,8 +25,8 @@ export default function RootLayout({
               {children}
             </div>
           </div>
-        </StoreProvider>
       </body>
     </html>
+    </StoreProvider>
   );
 }

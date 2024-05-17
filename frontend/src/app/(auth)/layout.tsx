@@ -10,6 +10,7 @@ const Layout = ({
   children: React.ReactNode;
 }>) => {
   return (
+  <StoreProvider>
     <html className="h-full">
       <body className="h-full">
         <div>
@@ -17,9 +18,10 @@ const Layout = ({
             <Logo />
           </Link>
         </div>
-        <StoreProvider>{children}</StoreProvider>
+        {children}
       </body>
     </html>
+    </StoreProvider>
   );
 };
 

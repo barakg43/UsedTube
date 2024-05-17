@@ -39,8 +39,8 @@ const LoginForm: React.FC = () => {
     data: UserCredentials
   ) => {
     const response = await dispatch(loginRequest(data)); // Dispatch the loginRequest thunk action creator
-    if (response.type === "general/loginRequest/rejected") {
-      setError("password", { message: "Invalid username or password" });
+    if (response.type === "account/login/rejected") {
+      setError(password, { message: "Invalid username or password" });
     }
   };
   return (

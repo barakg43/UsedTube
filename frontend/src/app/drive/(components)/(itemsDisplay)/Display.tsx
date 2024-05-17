@@ -20,7 +20,7 @@ const ItemsDisplay: React.FC = () => {
 
   return (
     <>
-      <div className="bg-paper rounded-2xl px-4 py-4 flex flex-grow">
+      <div className="bg-paper rounded-2xl px-4 py-4 flex flex-grow w-full h-full">
         {displayType === grid ? (
           <ItemsDisplayGrid onEntryClick={onEntryClick} items={items || []} />
         ) : (
