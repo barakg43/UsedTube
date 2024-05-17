@@ -22,7 +22,10 @@ const LoginForm: React.FC = () => {
     setError,
   } = useForm<UserCredentials>({
     //@ts-ignore
-    resolver: yupResolver<UserCredentials>(schema),
+    resolver: yupResolver<UserCredentials>(schema),defaultValues: {
+      username: "",
+      password: "",
+    },
   });
 
   const onSubmit: SubmitHandler<UserCredentials> = async (
