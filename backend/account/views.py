@@ -61,47 +61,46 @@ class Register(View):
 
 class Login(View):
     pass
-    # def post(self, request: HttpRequest):
-    #     body_dict = convert_body_json_to_dict(request)
-    #     username = body_dict.get('username')
-    #     password = body_dict.get('password')
+    def post(self, request: HttpRequest):
+        body_dict = convert_body_json_to_dict(request)
+        username = body_dict.get('username')
+        password = body_dict.get('password')
+        # Authenticate user
+        if request.user.is_authenticated:
+            return JsonResponse({'error': 'Already logged in'}, status=403)
+        user = authenticate(request, username=username, password=password)
 
-    #     # Authenticate user
-    #     if request.user.is_authenticated:
-    #         return JsonResponse({'error': 'Already logged in'}, status=403)
-    #     user = authenticate(request, username=username, password=password)
-
-    #     # Check if authentication was successful
-    #     if user is not None:
-    #         # Login user
-    #         login(request, user)
-    #         # get user root folder and its children
-    #         root_folder = UserDetails.objects.get(user=user).root_folder
-    #         folder_subitems = select_folder_subitems(user, root_folder.id)
-    #         return JsonResponse({'userId': user.id,})
-    #     else:
-    #         return JsonResponse({ERROR: 'Invalid credentials'}, status=401)
+        # Check if authentication was successful
+        if user is not None:
+            # Login user
+            login(request, user)
+            # get user root folder and its children
+            # root_folder = UserDetails.objects.get(user=user).root_folder
+            # folder_subitems = select_folder_subitems(user, root_folder.id)
+            return JsonResponse({MESSAGE: 'Login successful'}, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({ERROR: 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-# class Logout(View):
-#     def post(self, request: HttpRequest):
-#         # Check if user is authenticated
-#         if request.user.is_authenticated:
-#             # Log out user
-#             logout(request)
-#             return JsonResponse({MESSAGE: 'Logout successful'})
-#         else:
-#             return JsonResponse({ERROR: 'User is not authenticated'}, status=401)
+class Logout(View):
+    def post(self, request: HttpRequest):
+        # Check if user is authenticated
+        if request.user.is_authenticated:
+            # Log out user
+            logout(request)
+            return JsonResponse({MESSAGE: 'Logout successful'})
+        else:
+            return JsonResponse({ERROR: 'User is not authenticated'}, status=401)
 
-class Logout(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        try:
-            request.user.auth_token.delete()
-            return Response(status=status.HTTP_200_OK)
-        except (AttributeError, Token.DoesNotExist):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+# class Logout(APIView):
+#     permission_classes = [IsAuthenticated]
+#
+#     def post(self, request):
+#         try:
+#             request.user.auth_token.delete()
+#             return Response(status=status.HTTP_200_OK)
+#         except (AttributeError, Token.DoesNotExist):
+#             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class Validate(View):
     def post(self, request: HttpRequest):
