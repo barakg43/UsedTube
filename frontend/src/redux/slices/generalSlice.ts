@@ -13,7 +13,7 @@ const initialState: GeneralState = {
 export const loginRequest = createAsyncThunk("account/login", async (userData: UserCredentials, thunkAPI) => {
   const response = await axios.post(`${api_root}/account/login`, userData);
   console.log(response);
-  return response.data;
+  return response.data.token;
 });
 
 export const generalSlice = createSlice({

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { TextField, IconButton, Button } from "@mui/material";
@@ -29,7 +29,11 @@ const LoginForm: React.FC = () => {
     },
   });
 
-
+  useEffect(() => {
+    if (authToken) {
+      router.push("/drive");
+    }
+  }, [authToken, router]);
   
   const onSubmit: SubmitHandler<UserCredentials> = async (
     data: UserCredentials
