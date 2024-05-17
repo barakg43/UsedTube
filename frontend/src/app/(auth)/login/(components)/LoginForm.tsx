@@ -28,12 +28,12 @@ const LoginForm: React.FC = () => {
   const onSubmit: SubmitHandler<UserCredentials> = async (data: UserCredentials) => {
     const response = await dispatch(loginRequest(data)); // Dispatch the loginRequest thunk action creator
     console.log(response);
-    if (response.payload.token) {
-      dispatch(setAuthToken(response.payload.token));
-      router.push("/drive");
-    } else {
-      setError("password", { message: "Invalid username or password" });
-    }
+    // if (response.payload.token) {
+    //   dispatch(setAuthToken(response.payload.token));
+    //   router.push("/drive");
+    // } else {
+    //   setError("password", { message: "Invalid username or password" });
+    // }
   };
   return (
     <>

@@ -6,4 +6,5 @@ function Drive({ params }: { params?: { folderId: string } }) {
   return <MainArea />;
 }
 
-export default WithAuth(Drive);
+// export default WithAuth(Drive);
+export default Drive;
