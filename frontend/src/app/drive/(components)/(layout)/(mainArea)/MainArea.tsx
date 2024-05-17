@@ -6,7 +6,7 @@ import ItemsDisplay from "../../(itemsDisplay)/Display";
 import ItemsDisplayToggle from "../../(itemsDisplay)/ItemsDisplayToggle";
 import CreateNewFolder from "./CreateNewFolder";
 
-const MainArea = ({ folderId }: { folderId: string }) => {
+const MainArea = ({ folderId }: { folderId: string | undefined }) => {
   const activeDirectory = useAppSelector(
     (state: RootState) => state.items.activeDirectory
   );

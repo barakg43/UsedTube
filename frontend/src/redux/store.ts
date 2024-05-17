@@ -1,16 +1,20 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "./slices/userSlice";
 import itemsSlice from "./slices/itemsSlice";
-import generalSlice from "./slices/generalSlice";
+import generalSlice, { generalPersistConfig } from "./slices/generalSlice";
+import { combineReducers } from "@reduxjs/toolkit";
+import { persistReducer } from "redux-persist";
+
+const rootReducer = combineReducers({
+    user: userSlice,
+    items: itemsSlice,
+    general: persistReducer(generalPersistConfig, generalSlice),
+});
 
 export const makeStore = () => {
-  return configureStore({
-    reducer: {
-      user: userSlice,
-      items: itemsSlice,
-      general: generalSlice,
-    },
-  });
+    return configureStore({
+        reducer: rootReducer,
+    });
 };
 
 // Infer the type of makeStore
