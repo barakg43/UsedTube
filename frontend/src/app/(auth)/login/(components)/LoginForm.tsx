@@ -18,7 +18,7 @@ const LoginForm: React.FC = () => {
   const {
     handleSubmit,
     formState: { errors },
-    register,
+    control,
     setError,
   } = useForm<UserCredentials>({
     //@ts-ignore
@@ -40,45 +40,10 @@ const LoginForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className='absolute top-[30%] w-full flex flex-col gap-7 items-center justify-center'>
-        <TextField
-          defaultValue=''
-          label={username}
-          size='small'
-          error={errors.username ? true : false}
-          helperText={errors.username?.message ?? ""}
-          sx={{ width: "200px" }}
-          {...register(username, {
-            required: "username is required",
-          })}
-        />
-        <TextField
-          label='password'
-          size='small'
-          sx={{ width: "200px" }}
-          type={showPassword ? "text" : "password"}
-          helperText={errors[password] ? errors[password]?.message : ""}
-          error={errors.password ? true : false}
-          InputProps={{
-            endAdornment: (
-              <IconButton
-                onClick={() => setShowPassword((showPassword) => !showPassword)}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            ),
-          }}
-          {...register(password, {
-            required: "must enter a password",
-            minLength: 8,
-            maxLength: 32,
-          })}
-        />
-
-        {/* <Controller
+        <Controller
             render={({ field }) => (
               <TextField
                 {...field}
-                defaultValue=''
                 label={username}
                 size='small'
                 error={
@@ -95,7 +60,6 @@ const LoginForm: React.FC = () => {
             name={username}
             control={control}
           />
-
           <Controller
             render={({ field }) => (
               <TextField
@@ -118,7 +82,7 @@ const LoginForm: React.FC = () => {
             )}
             name={password}
             control={control}
-          /> */}
+          />
         <Button variant='contained' className='mb-4' type='submit'>
           Login
         </Button>

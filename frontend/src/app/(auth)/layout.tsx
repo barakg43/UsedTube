@@ -11,7 +11,7 @@ const Layout = ({
 }>) => {
   return (
     <html className="h-full">
-      <body className="h-full" suppressHydrationWarning={true}>
+      <body className="h-full">
         <div>
           <Link href="/">
             <Logo />

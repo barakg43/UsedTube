@@ -36,6 +36,8 @@ export const generalSlice = createSlice({
     builder.addCase(loginRequest.fulfilled, (state, action) => {
       console.log(action);
       state.authToken = action.payload;
+    }).addCase(loginRequest.rejected, (state, action) => {
+      console.log(action);
     });
   },
 });
