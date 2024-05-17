@@ -8,13 +8,14 @@ import { UserCredentials } from "../../../../types";
 import { schema } from "../login-schema";
 import { password, username } from "@/constants";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { loginRequest, setAuthToken } from "@/redux/slices/generalSlice";
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const authToken = useAppSelector((state) => state.general.authToken);
   const {
     handleSubmit,
     formState: { errors },
@@ -28,17 +29,15 @@ const LoginForm: React.FC = () => {
     },
   });
 
+
+  
   const onSubmit: SubmitHandler<UserCredentials> = async (
     data: UserCredentials
   ) => {
     const response = await dispatch(loginRequest(data)); // Dispatch the loginRequest thunk action creator
-    console.log("response", response);
-    // if (response.payload.token) {
-    // dispatch(setAuthToken(response.payload.token));
-    //   router.push("/drive");
-    // } else {
-    //   setError("password", { message: "Invalid username or password" });
-    // }
+    if (response.type === "general/loginRequest/rejected") {
+      setError("password", { message: "Invalid username or password" });
+    }
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
