@@ -12,7 +12,6 @@ const initialState: UserValues = {
     firstName: "",
     lastName: "",
     apiKey: "",
-    authToken: "",
 };
 
 export const registerUserData = createAsyncThunk(

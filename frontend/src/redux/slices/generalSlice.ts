@@ -43,7 +43,7 @@ export const generalSlice = createSlice({
             state.authToken = action.payload;
         },
         removeAuthToken: (state) => {
-            state.authToken = "";
+            state.authToken = null;
         },
     },
     extraReducers: (builder) => {
@@ -61,7 +61,7 @@ export const generalSlice = createSlice({
 
 export const generalPersistConfig = {
     key: "general",
-    storage: storage,
+    storage,
     whitelist: ["authToken"],
 };
 

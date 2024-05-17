@@ -3,7 +3,15 @@ import userSlice from "./slices/userSlice";
 import itemsSlice from "./slices/itemsSlice";
 import generalSlice, { generalPersistConfig } from "./slices/generalSlice";
 import { combineReducers } from "@reduxjs/toolkit";
-import { persistReducer } from "redux-persist";
+import {
+    FLUSH,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER,
+    REHYDRATE,
+    persistReducer,
+} from "redux-persist";
 
 const rootReducer = combineReducers({
     user: userSlice,
@@ -15,7 +23,16 @@ export const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
-            serializableCheck: false,
+            serializableCheck: {
+                ignoredActions: [
+                    FLUSH,
+                    REHYDRATE,
+                    PAUSE,
+                    PERSIST,
+                    PURGE,
+                    REGISTER,
+                ],
+            },
         }),
 });
 
