@@ -2,11 +2,14 @@
 import React, { useEffect } from "react";
 import LoginForm from "./(components)/LoginForm";
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/redux/hooks";
 
 const Login = () => {
   const router = useRouter();
+  const authToken = useAppSelector((state) => state.user.authToken);
   useEffect(() => {
-    if (localStorage.getItem("userId")) {
+    console.log("login use effect authtoken: ", authToken);
+    if (authToken !== "") {
       router.push("/drive");
     }
   }, []);

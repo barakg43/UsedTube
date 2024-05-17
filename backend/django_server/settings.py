@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
     'files',
     'account'
 ]
@@ -54,6 +56,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django_server.middleware.ResponseLoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'django_server.urls'
@@ -155,3 +158,12 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     # Add more origins if needed 
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}

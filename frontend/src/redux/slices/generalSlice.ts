@@ -1,12 +1,20 @@
-import { GeneralState } from "@/types";
-import { createSlice } from "@reduxjs/toolkit";
+import api_root from "@/config";
+import { GeneralState, UserCredentials } from "@/types";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState: GeneralState = {
   showModal: false,
   activeDirectory: null,
-  userId: "",
+  authToken: null,
 };
+
+export const loginRequest = createAsyncThunk("account/login", async (userData: UserCredentials, thunkAPI) => {
+  const response = await axios.post(`${api_root}/account/login`, userData);
+  console.log(response);
+  return response.data;
+});
 
 export const generalSlice = createSlice({
   name: "general",
@@ -16,13 +24,23 @@ export const generalSlice = createSlice({
       state.showModal = action.payload;
     },
 
-    setUserId: (state, action: PayloadAction<string>) => {
-      state.userId = action.payload;
+    setAuthToken: (state, action: PayloadAction<string>) => {
+      state.authToken = action.payload;
     },
+    removeAuthToken: (state) => {
+      state.authToken = "";
+    },
+  },
+  extraReducers: (builder) => {
+    // Add reducers for additional action types here, and handle loading state as needed
+    builder.addCase(loginRequest.fulfilled, (state, action) => {
+      console.log(action);
+      state.authToken = action.payload;
+    });
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setShowModal, setUserId } = generalSlice.actions;
+export const { setShowModal, setAuthToken, removeAuthToken } = generalSlice.actions;
 
 export default generalSlice.reducer;
