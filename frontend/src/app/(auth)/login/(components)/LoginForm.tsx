@@ -9,7 +9,8 @@ import { schema } from "../login-schema";
 import { password, username } from "@/constants";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { loginRequest, setAuthToken } from "@/redux/slices/generalSlice";
+import { loginRequest } from "@/redux/slices/generalSlice";
+import "@/app/globals.css";
 
 const LoginForm: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -46,7 +47,7 @@ const LoginForm: React.FC = () => {
     };
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="absolute top-[30%] w-full flex flex-col gap-7 items-center justify-center">
+            <div className=" w-full flex flex-col gap-7 items-center justify-center">
                 <Controller
                     render={({ field }) => (
                         <TextField

@@ -1,13 +1,12 @@
 import React from "react";
-import AvoutComponent from "./(components)/AboutComponent";
+import AboutComponent from "./(components)/AboutComponent";
 
 const About = () => {
-
-  return (
-    <>
-      <AvoutComponent/>
-    </>
-  );
+    return (
+        <>
+            <AboutComponent />
+        </>
+    );
 };
 
 export default About;
