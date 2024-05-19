@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpRequest, JsonResponse
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from djoser.social.views import ProviderAuthView
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -23,7 +24,7 @@ from utils import convert_body_json_to_dict
 # Create your views here.
 
 class Register(View):
-    permission_classes = [AllowAny]
+    permission_classes = ([])
     def __additional_registration_actions(self, user: User):
         # set used space to 0
 
