@@ -8,12 +8,12 @@ import Sidebar from "./(components)/(layout)/(sideBar)/Sidebar";
 
 function Drive({ params }: { params?: { folderId: string | undefined } }) {
     const router = useRouter();
-    const authToken = useAppSelector((state) => state.general.authToken);
-    useEffect(() => {
-        if (!authToken) {
-            router.push("/login");
-        }
-    }, []);
+    // const authToken = useAppSelector((state) => state.general.authToken);
+    // useEffect(() => {
+    //     if (!authToken) {
+    //         router.push("/login");
+    //     }
+    // }, []);
     return (
         <div className="flex flex-col h-full">
             <TopBar />

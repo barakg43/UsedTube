@@ -23,7 +23,6 @@ export type FSItems = {
 export type GeneralState = {
     showModal: boolean;
     activeDirectory: FSNode | null;
-    authToken: string | null;
 };
 
 export type ItemsState = {

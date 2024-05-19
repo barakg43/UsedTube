@@ -1,8 +1,6 @@
 import "@/app/globals.css";
 import { Metadata } from "next";
 import StoreProvider from "./StoreProvider";
-import Link from "next/link";
-import Logo from "./(common)/Logo";
 
 export const metadata: Metadata = {
     title: "UsedTube",
