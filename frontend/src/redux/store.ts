@@ -4,13 +4,13 @@ import itemsSlice from "./slices/itemsSlice";
 import generalSlice from "./slices/generalSlice";
 
 export const makeStore = () => {
-  return configureStore({
-    reducer: {
-      user: userSlice,
-      items: itemsSlice,
-      general: generalSlice,
-    },
-  });
+    return configureStore({
+        reducer: {
+            user: userSlice,
+            items: itemsSlice,
+            general: generalSlice,
+        },
+    });
 };
 
 // Infer the type of makeStore

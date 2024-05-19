@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { TextField, IconButton, Button } from "@mui/material";
@@ -8,123 +8,106 @@ import { UserCredentials } from "../../../../types";
 import { schema } from "../login-schema";
 import { password, username } from "@/constants";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/redux/hooks";
-import { loginRequest, setAuthToken } from "@/redux/slices/generalSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { loginRequest } from "@/redux/slices/generalSlice";
+import "@/app/globals.css";
 
 const LoginForm: React.FC = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const {
-    handleSubmit,
-    formState: { errors },
-    register,
-    setError,
-  } = useForm<UserCredentials>({
-    //@ts-ignore
-    resolver: yupResolver<UserCredentials>(schema),
-  });
+    const [showPassword, setShowPassword] = useState(false);
+    const dispatch = useAppDispatch();
+    const router = useRouter();
+    const authToken = useAppSelector((state) => state.general.authToken);
+    const {
+        handleSubmit,
+        formState: { errors },
+        control,
+        setError,
+    } = useForm<UserCredentials>({
+        //@ts-ignore
+        resolver: yupResolver<UserCredentials>(schema),
+        defaultValues: {
+            username: "",
+            password: "",
+        },
+    });
 
-  const onSubmit: SubmitHandler<UserCredentials> = async (
-    data: UserCredentials
-  ) => {
-    const response = await dispatch(loginRequest(data)); // Dispatch the loginRequest thunk action creator
-    console.log("response", response);
-    // if (response.payload.token) {
-    // dispatch(setAuthToken(response.payload.token));
-    //   router.push("/drive");
-    // } else {
-    //   setError("password", { message: "Invalid username or password" });
-    // }
-  };
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className='absolute top-[30%] w-full flex flex-col gap-7 items-center justify-center'>
-        <TextField
-          defaultValue=''
-          label={username}
-          size='small'
-          error={errors.username ? true : false}
-          helperText={errors.username?.message ?? ""}
-          sx={{ width: "200px" }}
-          {...register(username, {
-            required: "username is required",
-          })}
-        />
-        <TextField
-          label='password'
-          size='small'
-          sx={{ width: "200px" }}
-          type={showPassword ? "text" : "password"}
-          helperText={errors[password] ? errors[password]?.message : ""}
-          error={errors.password ? true : false}
-          InputProps={{
-            endAdornment: (
-              <IconButton
-                onClick={() => setShowPassword((showPassword) => !showPassword)}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            ),
-          }}
-          {...register(password, {
-            required: "must enter a password",
-            minLength: 8,
-            maxLength: 32,
-          })}
-        />
+    useEffect(() => {
+        if (authToken) {
+            router.push("/drive");
+        }
+    }, [authToken, router]);
 
-        {/* <Controller
-            render={({ field }) => (
-              <TextField
-                {...field}
-                defaultValue=''
-                label={username}
-                size='small'
-                error={
-                  errors[password]
-                    ? true
-                    : false || errors[username]
-                    ? true
-                    : false
-                }
-                helperText={errors[username] ? errors[username].message : ""}
-                sx={{ width: "200px" }}
-              />
-            )}
-            name={username}
-            control={control}
-          />
-
-          <Controller
-            render={({ field }) => (
-              <TextField
-                {...field}
-                defaultValue=''
-                label={password}
-                size='small'
-                sx={{ width: "200px" }}
-                type={showPassword ? "text" : password}
-                helperText={errors[password] ? errors[password].message : ""}
-                error={errors[password] ? true : false}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton onClick={() => setShowPassword(!showPassword)}>
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  ),
-                }}
-              />
-            )}
-            name={password}
-            control={control}
-          /> */}
-        <Button variant='contained' className='mb-4' type='submit'>
-          Login
-        </Button>
-      </div>
-    </form>
-  );
+    const onSubmit: SubmitHandler<UserCredentials> = async (
+        data: UserCredentials
+    ) => {
+        const response = await dispatch(loginRequest(data)); // Dispatch the loginRequest thunk action creator
+        if (response.type === "account/login/rejected") {
+            setError(password, { message: "Invalid username or password" });
+        }
+    };
+    return (
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <div className=" w-full flex flex-col gap-7 items-center justify-center">
+                <Controller
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            label={username}
+                            size="small"
+                            error={
+                                errors[password]
+                                    ? true
+                                    : false || errors[username]
+                                    ? true
+                                    : false
+                            }
+                            helperText={
+                                errors[username] ? errors[username].message : ""
+                            }
+                            sx={{ width: "200px" }}
+                        />
+                    )}
+                    name={username}
+                    control={control}
+                />
+                <Controller
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            label={password}
+                            size="small"
+                            sx={{ width: "200px" }}
+                            type={showPassword ? "text" : password}
+                            helperText={
+                                errors[password] ? errors[password].message : ""
+                            }
+                            error={errors[password] ? true : false}
+                            InputProps={{
+                                endAdornment: (
+                                    <IconButton
+                                        onClick={() =>
+                                            setShowPassword(!showPassword)
+                                        }
+                                    >
+                                        {showPassword ? (
+                                            <VisibilityOff />
+                                        ) : (
+                                            <Visibility />
+                                        )}
+                                    </IconButton>
+                                ),
+                            }}
+                        />
+                    )}
+                    name={password}
+                    control={control}
+                />
+                <Button variant="contained" className="mb-4" type="submit">
+                    Login
+                </Button>
+            </div>
+        </form>
+    );
 };
 
 export default LoginForm;

@@ -1,0 +1,1 @@
+code frontend & code backend & backend\run-postgres.bat

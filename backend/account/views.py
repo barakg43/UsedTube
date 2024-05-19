@@ -65,6 +65,7 @@ class Login(View):
         body_dict = convert_body_json_to_dict(request)
         username = body_dict.get('username')
         password = body_dict.get('password')
+
         # Authenticate user
         if request.user.is_authenticated:
             return JsonResponse({'error': 'Already logged in'}, status=403)
@@ -77,9 +78,9 @@ class Login(View):
             # get user root folder and its children
             # root_folder = UserDetails.objects.get(user=user).root_folder
             # folder_subitems = select_folder_subitems(user, root_folder.id)
-            return JsonResponse({MESSAGE: 'Login successful'}, status=status.HTTP_200_OK)
+            return JsonResponse({'userId': user.id,})
         else:
-            return JsonResponse({ERROR: 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            return JsonResponse({ERROR: 'Invalid credentials'}, status=401)
 
 
 class Logout(View):
@@ -94,7 +95,7 @@ class Logout(View):
 
 # class Logout(APIView):
 #     permission_classes = [IsAuthenticated]
-#
+
 #     def post(self, request):
 #         try:
 #             request.user.auth_token.delete()
@@ -116,4 +117,4 @@ class Validate(View):
             case _:
                 return JsonResponse({ERROR: 'Invalid field'}, status=400)
         return JsonResponse({MESSAGE: 'Field is valid'})
-       
+    

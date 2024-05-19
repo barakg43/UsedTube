@@ -10,7 +10,7 @@ const ItemsDisplayRow: FC<ItemsDisplayProp> = ({ items, onEntryClick }) => {
   ];
 
   return (
-    <div className="h-[60%] w-[1000px] absolute">
+    <div className="h-[100%] w-[100%] relative">
       <DataGrid
         columns={columns}
         rows={items}
