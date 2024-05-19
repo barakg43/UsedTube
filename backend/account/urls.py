@@ -12,7 +12,7 @@ urlpatterns = [
     path("auth/jwt/refresh",CustomTokenRefreshView.as_view()),
     path("auth/jwt/verify",CustomTokenVerifyView.as_view()),
 
-    path('login', Login.as_view(), name='login'),
+    # path('login', Login.as_view(), name='login'),
     path('auth/logout', LogoutView.as_view(), name='logout'),
     path('validate', Validate.as_view()),
 ]
