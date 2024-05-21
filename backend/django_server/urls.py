@@ -22,5 +22,5 @@ import files.urls as file_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('files/', include(file_urls)),
-    path('account/', include(account_urls))
+    path('auth/', include(account_urls))
 ]
