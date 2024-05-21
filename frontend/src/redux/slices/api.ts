@@ -3,7 +3,9 @@ import axios from "axios";
 
 export const validateNotExisting = async (field: string, value: string) => {
   try {
-    const response = await axios.post(`${api_root}/account/validate`, { [field]: value });
+    const response = await axios.post(`${api_root}/validate`, {
+      [field]: value,
+    });
     return { valid: true, message: response.data.message };
   } catch (error: any) {
     return { valid: false, message: error.response.data.error };
@@ -12,9 +14,11 @@ export const validateNotExisting = async (field: string, value: string) => {
 
 export const login = async (username: string, password: string) => {
   try {
-    const response = await axios.post(`${api_root}/account/login`, { username, password }).catch((error) => {
-      return { error: error.response.data };
-    });
+    const response = await axios
+      .post(`${api_root}/login`, { username, password })
+      .catch((error) => {
+        return { error: error.response.data };
+      });
   } catch (error: any) {
     return { error: error.response.data };
   }
