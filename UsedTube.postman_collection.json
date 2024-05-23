@@ -9,19 +9,11 @@
 		{
 			"name": "register",
 			"request": {
-				"method": "GET",
-				"header": []
-			},
-			"response": []
-		},
-		{
-			"name": "login",
-			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "\r\n    \"username\"=\"barak\"&\r\n    \"password\"=\"barak\"\r\n\r\n",
+					"raw": "{\r\n    \"username\":\"barak\",\r\n    \"firstName\":\"Barak\",\r\n    \"lastName\":\"Golan\",\r\n    \"password\":\"barakerwre\",\r\n    \"email\":\"barak@litos.co.il\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -29,7 +21,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:{{port}}/account/login",
+					"raw": "http://localhost:{{port}}/account/register",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -37,7 +29,100 @@
 					"port": "{{port}}",
 					"path": [
 						"account",
-						"login"
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create user JWT",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"usedtube\",\r\n    \"password\":\"q7655410\"\r\n}\r\n   \r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{port}}/account/auth/jwt/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"account",
+						"auth",
+						"jwt",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh USER  JWT",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{port}}/account/auth/jwt/refresh",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"account",
+						"auth",
+						"jwt",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify USER  JWT",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{port}}/account/auth/jwt/verify",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"account",
+						"auth",
+						"jwt",
+						"verify"
 					]
 				}
 			},
@@ -51,7 +136,7 @@
 					{
 						"key": "Content-Type",
 						"value": "application/json",
-						"uuid": "5e139ff3-f5cb-403b-b6c5-68c6d951d56f"
+						"uuid": "8e8ee082-0b58-4779-91ed-91e15e134afc"
 					}
 				],
 				"url": {
@@ -142,8 +227,44 @@
 		{
 			"name": "logout",
 			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:{{port}}/account/auth/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"account",
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrive user data",
+			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "http://localhost:{{port}}/account/auth/users/me/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"account",
+						"auth",
+						"users",
+						"me",
+						""
+					]
+				}
 			},
 			"response": []
 		}

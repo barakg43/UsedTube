@@ -1,6 +1,6 @@
 "use client";
+import { useLogout } from "@/hooks/useLogout";
 import { useAppDispatch } from "@/redux/hooks";
-import { removeAuthToken } from "@/redux/slices/generalSlice";
 import { Logout } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -9,12 +9,13 @@ import React from "react";
 const LogoutButton = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { logout } = useLogout();
   return (
     <div>
       <Button
-        className="top-1 right-1"
+        className='top-1 right-1'
         onClick={() => {
-          dispatch(removeAuthToken());
+          logout();
           router.push("/login");
         }}
       >

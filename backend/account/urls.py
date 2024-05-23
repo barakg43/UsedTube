@@ -1,10 +1,18 @@
+from django.urls import include
 from django.urls import path
-from rest_framework.authtoken.views import obtain_auth_token
+
 from .views import *
 
+#
 urlpatterns = [
     path('register', Register.as_view()),
-    path('login', Login.as_view(), name='login'),
-    path('logout', Logout.as_view(), name='logout'),
+    path('', include('djoser.urls')),
+
+    path("jwt/create",CustomTokenObtainPairView.as_view()),
+    path("jwt/refresh",CustomTokenRefreshView.as_view()),
+    path("jwt/verify",CustomTokenVerifyView.as_view()),
+
+    # path('login', Login.as_view(), name='login'),
+    path('logout', LogoutView.as_view(), name='logout'),
     path('validate', Validate.as_view()),
 ]

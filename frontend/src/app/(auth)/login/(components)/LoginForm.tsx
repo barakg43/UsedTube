@@ -1,113 +1,77 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { TextField, IconButton, Button } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { UserCredentials } from "../../../../types";
-import { schema } from "../login-schema";
+// "use client";
 import { password, username } from "@/constants";
-import { useRouter } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { loginRequest } from "@/redux/slices/generalSlice";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Button, IconButton, TextField } from "@mui/material";
+import React, { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { UserCredentials } from "../../../../types";
+// import { loginRequest } from "@/redux/slices/generalSlice";
 import "@/app/globals.css";
+import useLogin from "../../../../hooks/useLogin";
 
 const LoginForm: React.FC = () => {
-    const [showPassword, setShowPassword] = useState(false);
-    const dispatch = useAppDispatch();
-    const router = useRouter();
-    const authToken = useAppSelector((state) => state.general.authToken);
-    const {
-        handleSubmit,
-        formState: { errors },
-        control,
-        setError,
-    } = useForm<UserCredentials>({
-        //@ts-ignore
-        resolver: yupResolver<UserCredentials>(schema),
-        defaultValues: {
-            username: "",
-            password: "",
-        },
-    });
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, isLoading } = useLogin();
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+    setError,
+  } = useForm<UserCredentials>();
 
-    useEffect(() => {
-        if (authToken) {
-            router.push("/drive");
-        }
-    }, [authToken, router]);
-
-    const onSubmit: SubmitHandler<UserCredentials> = async (
-        data: UserCredentials
-    ) => {
-        const response = await dispatch(loginRequest(data)); // Dispatch the loginRequest thunk action creator
-        if (response.type === "account/login/rejected") {
-            setError(password, { message: "Invalid username or password" });
-        }
-    };
-    return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <div className=" w-full flex flex-col gap-7 items-center justify-center">
-                <Controller
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            label={username}
-                            size="small"
-                            error={
-                                errors[password]
-                                    ? true
-                                    : false || errors[username]
-                                    ? true
-                                    : false
-                            }
-                            helperText={
-                                errors[username] ? errors[username].message : ""
-                            }
-                            sx={{ width: "200px" }}
-                        />
-                    )}
-                    name={username}
-                    control={control}
-                />
-                <Controller
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            label={password}
-                            size="small"
-                            sx={{ width: "200px" }}
-                            type={showPassword ? "text" : password}
-                            helperText={
-                                errors[password] ? errors[password].message : ""
-                            }
-                            error={errors[password] ? true : false}
-                            InputProps={{
-                                endAdornment: (
-                                    <IconButton
-                                        onClick={() =>
-                                            setShowPassword(!showPassword)
-                                        }
-                                    >
-                                        {showPassword ? (
-                                            <VisibilityOff />
-                                        ) : (
-                                            <Visibility />
-                                        )}
-                                    </IconButton>
-                                ),
-                            }}
-                        />
-                    )}
-                    name={password}
-                    control={control}
-                />
-                <Button variant="contained" className="mb-4" type="submit">
-                    Login
-                </Button>
-            </div>
-        </form>
-    );
+  return (
+    <form onSubmit={handleSubmit(login)}>
+      <div className=' w-full flex flex-col gap-7 items-center justify-center'>
+        <TextField
+          defaultValue=''
+          label={username}
+          size='small'
+          error={errors.username ? true : false}
+          helperText={errors.username?.message ?? ""}
+          sx={{ width: "200px" }}
+          {...register(username, {
+            required: "Username is required",
+          })}
+        />
+        <TextField
+          label='password'
+          size='small'
+          sx={{ width: "200px" }}
+          type={showPassword ? "text" : "password"}
+          helperText={errors[password] ? errors[password]?.message : ""}
+          error={errors.password ? true : false}
+          InputProps={{
+            endAdornment: (
+              <IconButton
+                onClick={() => setShowPassword((showPassword) => !showPassword)}
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            ),
+          }}
+          {...register(password, {
+            required: "Password is required",
+            minLength: {
+              value: 8,
+              message: "Password must be at least 8 characters",
+            },
+            maxLength: {
+              value: 32,
+              message: "Password must be at most 32 characters",
+            },
+          })}
+        />
+        <Button
+          variant='contained'
+          className='mb-4'
+          type='submit'
+          disabled={isLoading}
+        >
+          Login
+        </Button>
+      </div>
+    </form>
+  );
 };
 
 export default LoginForm;

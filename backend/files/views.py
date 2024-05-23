@@ -1,16 +1,16 @@
 import json
 import os
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, FileResponse, JsonResponse
 from django.views import View
 
-from constants import FILE, ERROR, JOB_ID, ITEM_TYPE, FOLDER, EXTENSION, NAME, SIZE
+from constants import FILE, ERROR, JOB_ID
 from engine.constants import SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
 from engine.downloader.definition import Downloader
 from engine.downloader.impl import YouTubeDownloader
 from engine.driver import Driver
 from engine.manager import Mr_EngineManager
-from files.models import Folder, File
 from files.query import select_folder_subitems
 
 
