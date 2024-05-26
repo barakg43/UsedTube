@@ -9,7 +9,6 @@ import { Mutex } from "async-mutex";
 
 // create a new mutex
 const mutex = new Mutex();
-console.log("next host", process.env.NEXT_PUBLIC_HOST);
 const baseQuery = fetchBaseQuery({
   baseUrl: `${process.env.NEXT_PUBLIC_HOST}`,
   credentials: "include",
@@ -40,6 +39,7 @@ const baseQueryWithReauth: BaseQueryFn<
           // retry the initial query
           result = await baseQuery(args, api, extraOptions);
         } else {
+          console.log("Failed to refresh token");
           api.dispatch(logout());
         }
       } finally {

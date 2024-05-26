@@ -1,6 +1,5 @@
 "use client";
-
-import { useVerifyToken } from "@/hooks/useVerifyToken";
+import { useVerifyToken } from "@/hooks/auth/useVerifyToken";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
