@@ -2,7 +2,6 @@ import datetime
 from uuid import uuid4
 
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.http import HttpRequest, JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -13,11 +12,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView, TokenRefreshView
 
+from account.models import AppUser
 from constants import ERROR, MESSAGE
 from django_server import settings
 from django_server.settings import AUTH_REFRESH_KEY, AUTH_COOKIE_KEY
-from files.models import UserDetails, Folder
-from utils import already_exists
+from files.models import Folder
+from utils import already_exists, get_user_object
 from utils import convert_body_json_to_dict
 
 
@@ -25,14 +25,16 @@ from utils import convert_body_json_to_dict
 
 class Register(View):
     permission_classes = ([])
-    def __additional_registration_actions(self, user: User):
+    def __additional_registration_actions(self, user: AppUser):
         # set used space to 0
 
         # create root folder
         now = datetime.datetime.now()
         root_folder = Folder.objects.create(id=uuid4(), name='My Drive', parent=None, owner=user, created_at=now,
                                             updated_at=now)
-        UserDetails.objects.create(user=user, storage_usage=0, root_folder=root_folder)
+        # create user details
+        user.root_folder = root_folder
+        user.save()
 
     def post(self, request: HttpRequest):
         body_dict = convert_body_json_to_dict(request)
@@ -42,15 +44,15 @@ class Register(View):
         email = body_dict.get('email')
         # add empty cases handle
         # Check if username or email already exists
-        if User.objects.filter(username=username).exists():
+        if AppUser.objects.filter(username=username).exists():
             return JsonResponse({ERROR: already_exists('Username')}, status=400)
-        if User.objects.filter(email=email).exists():
+        if AppUser.objects.filter(email=email).exists():
             return JsonResponse({ERROR: already_exists('Email')}, status=400)
 
         # Create user
-        user = User.objects.create_user(username=username, email=email, password=password,
+        user = AppUser.objects.create_user(username=username, email=email, password=password,
                                         first_name=body_dict.get('firstName'),
-                                        last_name=body_dict.get('lastName'))
+                                        last_name=body_dict.get('lastName'),storage_usage=0)
 
         self.__additional_registration_actions(user)
 
@@ -226,8 +228,8 @@ class CustomTokenVerifyView(TokenVerifyView):
         return super().post(request, *args, **kwargs)
 
 
-class LogoutView(APIView):
-    permission_classes = ([])
+class LogoutView(View):
+    # permission_classes = ([])
     def post(self, request, *args, **kwargs):
         response = Response(status=status.HTTP_204_NO_CONTENT)
         response.delete_cookie(AUTH_COOKIE_KEY)
