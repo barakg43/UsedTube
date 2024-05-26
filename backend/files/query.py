@@ -1,7 +1,7 @@
 from files.models import Folder, File
 
 
-def select_folder_subitems(user, folder_id) -> dict:
+def select_folder_subitems(user, folder_id: str) -> dict:
         parent_folder = Folder.objects.get(id=folder_id)
         sub_folders = Folder.objects.filter(owner=user, parent=parent_folder)
         files = File.objects.filter(owner=user, folder=parent_folder)
