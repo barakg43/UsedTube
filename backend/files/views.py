@@ -3,7 +3,7 @@ import os
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, FileResponse, JsonResponse
-from django.views import View
+from rest_framework.views import APIView
 
 from constants import FILE, ERROR, JOB_ID
 from engine.constants import SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
@@ -12,9 +12,10 @@ from engine.downloader.impl import YouTubeDownloader
 from engine.driver import Driver
 from engine.manager import Mr_EngineManager
 from files.query import select_folder_subitems
+from utils import get_user_object
 
 
-class DownloadView(View):
+class DownloadView(APIView):
     @login_required
     def get(self, request: HttpRequest):
         user = request.user
@@ -47,7 +48,7 @@ class DownloadView(View):
                             content_type=None)
 
 
-class UploadView(View):
+class UploadView(APIView):
     @login_required
     def post(self, request: HttpRequest):
         # Check if file was uploaded
@@ -78,22 +79,22 @@ class UploadView(View):
             return JsonResponse({})
 
 
-class UsedSpaceView(View):  #
+class UsedSpaceView(APIView):  #
     def get(self, request: HttpRequest):
         used_space = request.user.used_space.first()
         return JsonResponse({'value': used_space.value})
 
 
-class DirectoryContentView(View):
-
+class DirectoryContentView(APIView):
     # @login_required
-    def get(self, request: HttpRequest, folder_id: int):
+    def get(self, request, folder_id: str=None):
         # create a json listing all files and their size of the requested folder
+        user = get_user_object(request)
+        if folder_id is None:
+            folder_id = user.root_folder.id
         if request.content_type == 'application/json':
-            folder_subitems = select_folder_subitems(request.user, folder_id)
+            folder_subitems = select_folder_subitems(user, folder_id)
             return JsonResponse(folder_subitems)
         else:
 
             return JsonResponse({ERROR: 'bad request'}, status=400)
-
-    
