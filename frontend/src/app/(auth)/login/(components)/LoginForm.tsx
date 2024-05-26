@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 import { password, username } from "@/constants";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Button, IconButton, TextField } from "@mui/material";
@@ -7,7 +7,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { UserCredentials } from "../../../../types";
 // import { loginRequest } from "@/redux/slices/generalSlice";
 import "@/app/globals.css";
-import useLogin from "../../../../hooks/useLogin";
+import useLogin from "@/hooks/auth/useLogin";
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
