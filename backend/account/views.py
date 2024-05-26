@@ -60,7 +60,7 @@ class Register(View):
 
     def delete(self, request: HttpRequest):
         # Get current user
-        user = request.user
+        user =get_user_object(request)
 
         if not user.is_authenticated:
             return JsonResponse({ERROR: 'User is not authenticated'}, status=401)
