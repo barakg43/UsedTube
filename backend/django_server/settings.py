@@ -176,7 +176,7 @@ DJOSER = {
 
 CORS_ALLOWED_ORIGINS = getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",")
 CORS_ALLOW_CREDENTIALS = True
-# AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'account.AppUser'
 
 
 AUTH_COOKIE_KEY = "access"
