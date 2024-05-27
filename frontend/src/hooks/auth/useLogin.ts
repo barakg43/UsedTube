@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 export default function useLogin() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [loginApi, { isLoading }] = useLoginMutation();
+  const [loginApi, { isLoading, error }] = useLoginMutation();
 
   //   const [formData, setFormData] = useState({
   //     username: "",
@@ -40,6 +40,7 @@ export default function useLogin() {
 
   return {
     login,
+    error,
     isLoading,
   };
 }
