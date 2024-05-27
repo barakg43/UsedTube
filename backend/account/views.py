@@ -117,16 +117,15 @@ class Register(View):
 #             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class Validate(View):
-    permission_classes = [AllowAny]
     def post(self, request: HttpRequest):
         body = convert_body_json_to_dict(request)
         field, value = next(iter(body.items()))
         match field:
             case 'username':
-                if User.objects.filter(username=value).exists():
+                if AppUser.objects.filter(username=value).exists():
                     return JsonResponse({ERROR: already_exists('Username')}, status=400)
             case 'email':
-                if User.objects.filter(email=value).exists():
+                if AppUser.objects.filter(email=value).exists():
                     return JsonResponse({ERROR: already_exists('Email')}, status=400)
             case _:
                 return JsonResponse({ERROR: 'Invalid field'}, status=400)
