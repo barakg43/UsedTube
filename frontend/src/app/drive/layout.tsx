@@ -1,3 +1,5 @@
+"use client";
+import { useVerifyToken } from "@/hooks/auth/useVerifyToken";
 import RequireAuth from "../(common)/RequireAuth";
 
 interface Props {

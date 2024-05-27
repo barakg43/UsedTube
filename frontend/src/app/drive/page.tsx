@@ -3,8 +3,9 @@ import { useRouter } from "next/navigation";
 import TopBar from "./(components)/(layout)/(topBar)/TopBar";
 import Sidebar from "./(components)/(layout)/(sideBar)/Sidebar";
 import MainArea from "./(components)/(layout)/(mainArea)/MainArea";
+import { useVerifyToken } from "@/hooks/auth/useVerifyToken";
 
-function Drive({ params }: { params?: { folderId: string | undefined } }) {
+function Drive() {
   // const router = useRouter();
   // const authToken = useAppSelector((state) => state.general.authToken);
   // useEffect(() => {
@@ -12,13 +13,12 @@ function Drive({ params }: { params?: { folderId: string | undefined } }) {
   //         router.push("/login");
   //     }
   // }, []);
-  console.log(params?.folderId);
   return (
     <div className='flex flex-col h-full'>
       <TopBar />
       <div className='flex flex-row flex-grow bg-paper w-full h-full'>
         <Sidebar />
-        <MainArea folderId={params?.folderId} />;
+        <MainArea folderId={""} />;
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import "@/app/globals.css";
 import { Metadata } from "next";
 import StoreProvider from "./StoreProvider";
 import Setup from "./Setup";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "UsedTube",
@@ -17,7 +18,7 @@ export default function RootLayout({
     <html lang='en' className='h-full w-full'>
       <body className='h-full w-full'>
         <StoreProvider>
-          <Setup />
+          {/* <ToastContainer /> */}
           {children}
         </StoreProvider>
       </body>
