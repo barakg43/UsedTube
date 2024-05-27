@@ -1,5 +1,5 @@
 "use client";
-import { useLogout } from "@/hooks/useLogout";
+import { useLogout } from "@/hooks/auth/useLogout";
 import { useAppDispatch } from "@/redux/hooks";
 import { Logout } from "@mui/icons-material";
 import { Button } from "@mui/material";

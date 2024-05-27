@@ -1,8 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
-import TopBar from "./(components)/(layout)/(topBar)/TopBar";
-import Sidebar from "./(components)/(layout)/(sideBar)/Sidebar";
-import MainArea from "./(components)/(layout)/(mainArea)/MainArea";
+import MainArea from "../(components)/(layout)/(mainArea)/MainArea";
+import Sidebar from "../(components)/(layout)/(sideBar)/Sidebar";
+import TopBar from "../(components)/(layout)/(topBar)/TopBar";
 
 function Drive({ params }: { params?: { folderId: string | undefined } }) {
   // const router = useRouter();

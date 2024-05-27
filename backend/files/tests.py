@@ -1,10 +1,9 @@
 # Create your tests here.
-from django.contrib.auth.models import User
-
+from account.models import AppUser
 from .models import Folder, File, SharedItem
 
 # Create a user
-user1 = User.objects.create_user(username='john_doe', password='password123')
+user1 = AppUser.objects.create_user(username='john_doe', password='password123')
 user1.save()
 
 # Create a folder hierarchy

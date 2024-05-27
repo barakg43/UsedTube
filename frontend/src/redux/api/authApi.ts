@@ -1,7 +1,4 @@
 import { baseApi } from "../baseApi";
-import authSlice from "../slices/authSlice";
-import { username } from "../../constants";
-import { login } from "../slices/api";
 
 interface User {
   first_name: string;

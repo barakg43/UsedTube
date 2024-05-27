@@ -1,11 +1,9 @@
-import { useState, ChangeEvent, FormEvent } from "react";
-import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/redux/hooks";
+import { useToaster } from "@/app/(common)/useToaster";
 import { useLoginMutation } from "@/redux/api/authApi";
+import { useAppDispatch } from "@/redux/hooks";
 import { setAuth } from "@/redux/slices/authSlice";
 import { UserCredentials } from "@/types";
-import Drive from "../app/drive/page";
-import { useToaster } from "@/app/(common)/useToaster";
+import { useRouter } from "next/navigation";
 
 export default function useLogin() {
   const router = useRouter();
@@ -33,7 +31,7 @@ export default function useLogin() {
         dispatch(setAuth());
         toaster("Logged in successfully", "success");
 
-        router.push("/drive");
+        router.push("/drive/");
       })
       .catch(() => {
         toaster("Failed to log in", "error");
