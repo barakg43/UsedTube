@@ -6,14 +6,19 @@ import ItemsDisplay from "../../(itemsDisplay)/Display";
 import ItemsDisplayToggle from "../../(itemsDisplay)/ItemsDisplayToggle";
 import CreateNewFolder from "./CreateNewFolder";
 import { Suspense } from "react";
+import { useToaster } from "@/app/(common)/useToaster";
 
 const MainArea = ({ folderId }: { folderId: string | undefined }) => {
   console.log("folderId", folderId);
+  const toaster = useToaster();
   const { data, error, isLoading } = {
     data: { folders: [], files: [] },
     error: null,
     isLoading: false,
   };
+  if (error) {
+    // toaster(error, "error");
+  }
   //   useFolderContentQuery({ folderId });
   console.log(data);
   const { files, folders } = data || {};
