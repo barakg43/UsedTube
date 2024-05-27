@@ -5,10 +5,9 @@ import styles from "../about.module.css"; // Import CSS module
 import Logo from "@/app/(common)/Logo";
 import "@/app/globals.css";
 
-const AvoutComponent: React.FC = () => {
+const AboutComponent: React.FC = () => {
     return (
         <div className={styles.container}>
-            {/* <h1 className={styles.title}>About UsedTube</h1> */}
             <div className="mb-[3%]">
                 <Logo />
             </div>
@@ -19,10 +18,10 @@ const AvoutComponent: React.FC = () => {
                 to YouTube.
             </p>
             <div className={styles.buttons}>
-                <Link href="/login" passHref>
+                <Link href="/login">
                     <button className={styles.log}>Login</button>
                 </Link>
-                <Link href="/register" passHref>
+                <Link href="/register">
                     <button className={styles.reg}>Register</button>
                 </Link>
             </div>
@@ -30,4 +29,4 @@ const AvoutComponent: React.FC = () => {
     );
 };
 
-export default AvoutComponent;
+export default AboutComponent;
