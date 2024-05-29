@@ -44,7 +44,7 @@ const SelectedFile: FC<{
     return (
         <div className="flex flex-col justify-between items-center">
             <p>{file.name}</p>
-            <p>{file.size} bytes</p>
+            <p>{compactFileSize(file.size)}</p>
             {isUploading ? (
                 <CircularProgress color="inherit" value={progress} />
             ) : (
@@ -80,3 +80,14 @@ const SelectedFile: FC<{
 };
 
 export default SelectedFile;
+
+function compactFileSize(sizeInBytes: number): string {
+    let size = sizeInBytes;
+    const units = ["B", "KiB", "MiB", "GiB", "TiB"];
+    let unitIndex = 0;
+    while (size >= 1024 && unitIndex < units.length - 1) {
+        size /= 1024;
+        unitIndex++;
+    }
+    return `${size.toFixed(2)} ${units[unitIndex]}`;
+}
