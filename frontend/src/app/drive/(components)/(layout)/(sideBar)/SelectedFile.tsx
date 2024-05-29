@@ -13,12 +13,17 @@ const SelectedFile: FC<{
     file: File;
 }> = ({ file }) => {
     const [isUploading, setIsUploading] = useState(false);
-    const [progress, setProgress] = useState(0);
     const [uploadFile] = useUploadFileMutation();
     const dispatch = useAppDispatch();
     const activeDirectory = useAppSelector(
         (state: RootState) => state.items.activeDirectory
     );
+    const progress = useAppSelector(
+        (state: RootState) => state.fileUpload.progress
+    );
+    const setProgress = (progress: number) => {
+        dispatch(setFile(progress));
+    };
     const handleUploadClick = async () => {
         try {
             setIsUploading(true);
@@ -29,17 +34,12 @@ const SelectedFile: FC<{
             setIsUploading(false);
         }
     };
-    // const timer = setInterval(() => {
-    //     setProgress((oldProgress) => {
-    //         if (oldProgress === 100) {
-    //             clearInterval(timer);
-    //             setIsUploading(false);
-    //             return 0;
-    //         }
-    //         const diff = Math.random() * 10;
-    //         return Math.min(oldProgress + diff, 100);
-    //     });
-    // }, 500);
+
+    // set a timer to poll the progress after upload starts
+    // the timer will be cleared when the upload is complete
+    // or when the component is unmounted
+    // the server will reply with progress and when its done it will reply with the file itself
+    // then the client will download the file and upload it to youtube
 
     return (
         <div className="flex flex-col justify-between items-center">

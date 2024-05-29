@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { set } from "react-hook-form";
 
 interface FileUploadState {
     file: File | null;
     progress: number;
     error: string | null;
     success: boolean;
+    jobId: string | null;
 }
 
 const initialState = {
@@ -29,6 +31,9 @@ const fileUploadSlice = createSlice({
         },
         setSuccess: (state, action) => {
             state.success = action.payload;
+        },
+        setJobId: (state, action) => {
+            state.jobId = action.payload;
         },
     },
 });
