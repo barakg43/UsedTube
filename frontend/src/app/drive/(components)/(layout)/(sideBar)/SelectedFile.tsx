@@ -9,10 +9,13 @@ import { useUploadFileMutation } from "@/redux/api/driveApi";
 import { RootState } from "@/redux/store";
 import { CircularProgress } from "@mui/material";
 
-const SelectedFile: FC<{ file: File }> = ({ file }) => {
-    const dispatch = useAppDispatch();
+const SelectedFile: FC<{
+    file: File;
+}> = ({ file }) => {
     const [isUploading, setIsUploading] = useState(false);
+    const [progress, setProgress] = useState(0);
     const [uploadFile] = useUploadFileMutation();
+    const dispatch = useAppDispatch();
     const activeDirectory = useAppSelector(
         (state: RootState) => state.items.activeDirectory
     );
@@ -26,12 +29,24 @@ const SelectedFile: FC<{ file: File }> = ({ file }) => {
             setIsUploading(false);
         }
     };
+    // const timer = setInterval(() => {
+    //     setProgress((oldProgress) => {
+    //         if (oldProgress === 100) {
+    //             clearInterval(timer);
+    //             setIsUploading(false);
+    //             return 0;
+    //         }
+    //         const diff = Math.random() * 10;
+    //         return Math.min(oldProgress + diff, 100);
+    //     });
+    // }, 500);
+
     return (
         <div className="flex flex-col justify-between items-center">
             <p>{file.name}</p>
             <p>{file.size} bytes</p>
             {isUploading ? (
-                <CircularProgress />
+                <CircularProgress color="inherit" value={progress} />
             ) : (
                 <div className="flex flex-row justify-center w-full">
                     <div className="items-center flex-grow">

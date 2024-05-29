@@ -17,7 +17,13 @@ export const makeStore = () => {
             fileUpload: fileUploadSlice,
         },
         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware().concat(baseApi.middleware),
+            getDefaultMiddleware({
+                serializableCheck: {
+                    ignoredActions: ["fileUpload/setFile"],
+                    ignoredPaths: ["fileUpload.file"],
+                },
+            }).concat(baseApi.middleware),
+
         devTools: process.env.NODE_ENV !== "production",
     });
 };

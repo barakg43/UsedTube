@@ -1,18 +1,23 @@
 "use client";
 import { Button, Typography } from "@mui/material";
-import React from "react";
+import React, { useRef } from "react";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "./theme";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setFile } from "@/redux/slices/fileUploadSlice";
 
 const FileUpload = () => {
     const dispatch = useAppDispatch();
-    const onFileBrowserClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            dispatch(setFile(file));
+    const fileInputRef = useRef(null);
+
+    //@ts-ignore
+    const onFileBrowserClick = (e) => {
+        const _file = e.target.files?.[0];
+        dispatch(setFile(_file));
+        if (fileInputRef.current) {
+            //@ts-ignore
+            fileInputRef.current.value = "";
         }
     };
     return (
@@ -29,7 +34,12 @@ const FileUpload = () => {
             >
                 <UploadFileIcon />
                 <Typography>Upload File</Typography>
-                <input type="file" hidden onChange={onFileBrowserClick} />
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    hidden
+                    onChange={onFileBrowserClick}
+                />
             </Button>
         </ThemeProvider>
     );

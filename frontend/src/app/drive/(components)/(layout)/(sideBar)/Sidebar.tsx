@@ -25,10 +25,10 @@ const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
 };
 
 const Sidebar = () => {
-    const file = useAppSelector((state: RootState) => state.fileUpload.file);
     const tree = useAppSelector(
         (state: RootState) => state.items.items.myItems
     );
+    const file = useAppSelector((state: RootState) => state.fileUpload.file);
     return (
         <nav className="h-full w-[200px] flex flex-col px-2">
             <SideBarItem>

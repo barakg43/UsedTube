@@ -15,14 +15,16 @@ const driveApiSlice = baseApi.injectEndpoints({
             ) => response.data,
         }),
         uploadFile: builder.mutation({
-            query: ({ file, folderId }: { file: File; folderId: string }) => ({
-                url: `/files/upload/${folderId}`,
-                method: "POST",
-                body: file,
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            }),
+            query: ({ file, folderId }: { file: File; folderId: string }) => {
+                const formData = new FormData();
+                formData.append("file", file);
+
+                return {
+                    url: `/files/upload/${folderId}`,
+                    method: "POST",
+                    body: formData,
+                };
+            },
         }),
     }),
 });
