@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setFile } from "@/redux/slices/fileUploadSlice";
 import { useUploadFileMutation } from "@/redux/api/driveApi";
 import { RootState } from "@/redux/store";
-import { CircularProgress } from "@mui/material";
+import UploadProgressInfo from "./UploadProgressInfo";
 
 const SelectedFile: FC<{
     file: File;
@@ -18,12 +18,7 @@ const SelectedFile: FC<{
     const activeDirectory = useAppSelector(
         (state: RootState) => state.items.activeDirectory
     );
-    // const progress = useAppSelector(
-    //     (state: RootState) => state.fileUpload.progress
-    // );
-    // const setProgress = (progress: number) => {
-    //     dispatch(setFile(progress));
-    // };
+
     const handleUploadClick = async () => {
         try {
             setIsUploading(true);
@@ -35,19 +30,12 @@ const SelectedFile: FC<{
         }
     };
 
-    // set a timer to poll the progress after upload starts
-    // the timer will be cleared when the upload is complete
-    // or when the component is unmounted
-    // the server will reply with progress and when its done it will reply with the file itself
-    // then the client will download the file and upload it to youtube
-
     return (
         <div className="flex flex-col justify-between items-center">
             <p>{file.name}</p>
             <p>{compactFileSize(file.size)}</p>
             {isUploading ? (
-                // <CircularProgress color="inherit" value={progress} />
-                <CircularProgress color="inherit" />
+                <UploadProgressInfo />
             ) : (
                 <div className="flex flex-row justify-center w-full">
                     <div className="items-center flex-grow">
