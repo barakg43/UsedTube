@@ -15,7 +15,7 @@ const UploadProgressInfo = () => {
             setProgressLabel((prevProgressLabel) =>
                 prevProgressLabel === stepDisplay ? progress : stepDisplay
             );
-        }, 2500);
+        }, 1000);
         return () => {
             clearInterval(interval);
         };

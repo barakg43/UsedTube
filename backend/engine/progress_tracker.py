@@ -1,17 +1,18 @@
 from collections import defaultdict
 from threading import Lock
+import uuid
 
 class ProgressTracker:
     _lock = Lock()
     def __init__(self):
         self._progress = defaultdict(float)
 
-    def update(self, key, value):
+    def set_progress(self, key: uuid, value):
         ProgressTracker._lock.acquire()
-        self._progress[key] = value
+        self._progress[str(key)] = value
         ProgressTracker._lock.release()
 
-    def get(self, key):
+    def get_progress(self, key):
         return self._progress[key]
 
     def delete(self, key):

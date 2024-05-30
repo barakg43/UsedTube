@@ -1,6 +1,11 @@
 import { FSNode, FileNode } from "@/types";
 import { baseApi } from "../baseApi";
-import { setError, setIsUploading, setJobId } from "../slices/fileUploadSlice";
+import {
+    setError,
+    setIsUploading,
+    setJobId,
+    setProgress,
+} from "../slices/fileUploadSlice";
 
 const driveApiSlice = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -48,8 +53,12 @@ const driveApiSlice = baseApi.injectEndpoints({
                 url: `/files/upload/progress/${jobId}`,
                 method: "GET",
             }),
-            transformResponse: (response: { data: { progress: number } }) =>
-                response.data.progress * 100,
+            transformResponse: (response: { progress: number }) =>
+                response.progress * 100,
+            async onQueryStarted({ jobId }, { dispatch, queryFulfilled }) {
+                const { data } = await queryFulfilled;
+                dispatch(setProgress(data));
+            },
         }),
     }),
 });

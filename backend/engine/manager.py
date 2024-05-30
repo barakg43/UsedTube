@@ -12,14 +12,9 @@ class EngineManager:
     _instance = None
     _lock = Lock()
 
-    @staticmethod
-    def get_progress(uuid: uuid1) -> float:
-        EngineManager._progress_tracker.get(uuid)
+    def get_progress(self, uuid) -> float:
+        return self._progress_tracker.get_progress(uuid)
     
-    @staticmethod
-    def set_progress(uuid: uuid1, progress: float):
-        EngineManager._progress_tracker.update(uuid, progress)
-
     def __new__(cls):
         with cls._lock:
             if cls._instance is None:
