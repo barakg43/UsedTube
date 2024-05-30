@@ -1,8 +1,6 @@
 import "@/app/globals.css";
 import { Metadata } from "next";
 import StoreProvider from "./StoreProvider";
-import Setup from "./Setup";
-import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "UsedTube",
