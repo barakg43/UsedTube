@@ -47,13 +47,20 @@ class DownloadView(APIView):
                             content_type=None)
 
 class ProgressView(APIView):
-    def get(self, request: HttpRequest):
-        job_id = json.loads(request.body)[JOB_ID]
+    def get(self, request: HttpRequest, job_id: str):
+        # if Mr_EngineManager.is_processing_done(job_id):
+        #     processed_item_path = Mr_EngineManager.get_processed_item_path(job_id)
+        #     return FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
+        # else:
+        return JsonResponse({"progress": Mr_EngineManager.get_progress(job_id)})
+    
+class RetrieveProcessedItemView(APIView):
+    def get(self, request: HttpRequest, job_id: str):
         if Mr_EngineManager.is_processing_done(job_id):
             processed_item_path = Mr_EngineManager.get_processed_item_path(job_id)
             return FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
         else:
-            return JsonResponse({"progress": Mr_EngineManager.get_progress(job_id)})
+            return JsonResponse({ERROR: 'processing not done yet'}, status=400)
 
 
 class UploadView(APIView):
