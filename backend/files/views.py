@@ -87,14 +87,11 @@ class UsedSpaceView(APIView):  #
 
 class DirectoryContentView(APIView):
     # @login_required
-    def get(self, request, folder_id: str=None):
+    def get(self, request, folder_id: str = None):
         # create a json listing all files and their size of the requested folder
         user = get_user_object(request)
         if folder_id is None:
             folder_id = user.root_folder.id
-        if request.content_type == 'application/json':
-            folder_subitems = select_folder_subitems(user, folder_id)
-            return JsonResponse(folder_subitems)
-        else:
 
-            return JsonResponse({ERROR: 'bad request'}, status=400)
+        folder_subitems = select_folder_subitems(user, folder_id)
+        return JsonResponse(folder_subitems)
