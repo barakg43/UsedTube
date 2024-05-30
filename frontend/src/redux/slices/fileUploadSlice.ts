@@ -43,6 +43,12 @@ const fileUploadSlice = createSlice({
     },
 });
 
-export const { setFile, setProgress, setError, setSuccess, setIsUploading } =
-    fileUploadSlice.actions;
+export const {
+    setFile,
+    setProgress,
+    setError,
+    setSuccess,
+    setJobId,
+    setIsUploading,
+} = fileUploadSlice.actions;
 export default fileUploadSlice.reducer;

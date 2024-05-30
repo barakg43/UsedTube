@@ -4,7 +4,6 @@ import TreeFragment from "./FolderTree";
 import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import FileUpload from "./FileUpload";
-
 import SelectedFile from "./SelectedFile";
 
 const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({

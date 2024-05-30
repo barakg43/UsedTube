@@ -25,6 +25,8 @@ const driveApiSlice = baseApi.injectEndpoints({
                     body: formData,
                 };
             },
+            transformResponse: (response: { data: { jobId: string } }) =>
+                response.data,
         }),
     }),
 });

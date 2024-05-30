@@ -4,10 +4,15 @@ import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
 import { grey } from "@mui/material/colors";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setFile, setIsUploading } from "@/redux/slices/fileUploadSlice";
+import {
+    setFile,
+    setIsUploading,
+    setJobId,
+} from "@/redux/slices/fileUploadSlice";
 import { useUploadFileMutation } from "@/redux/api/driveApi";
 import { RootState } from "@/redux/store";
 import UploadProgressInfo from "./UploadProgressInfo";
+import { compactFileSize } from "@/redux/slices/utils";
 
 const SelectedFile: FC<{
     file: File;
@@ -22,7 +27,12 @@ const SelectedFile: FC<{
     const handleUploadClick = async () => {
         try {
             dispatch(setIsUploading(true));
-            await uploadFile({ file, folderId: activeDirectory.id }).unwrap();
+            const jobIdPromise = await uploadFile({
+                file,
+                folderId: activeDirectory.id,
+            }).unwrap();
+            dispatch(setJobId(jobIdPromise.jobId));
+            // intialize polling for progress
         } catch (error) {
             // Handle error
             console.error("Failed to upload file", error);
@@ -69,14 +79,3 @@ const SelectedFile: FC<{
 };
 
 export default SelectedFile;
-
-function compactFileSize(sizeInBytes: number): string {
-    let size = sizeInBytes;
-    const units = ["B", "KiB", "MiB", "GiB", "TiB"];
-    let unitIndex = 0;
-    while (size >= 1024 && unitIndex < units.length - 1) {
-        size /= 1024;
-        unitIndex++;
-    }
-    return `${size.toFixed(2)} ${units[unitIndex]}`;
-}
