@@ -17,7 +17,6 @@ import {
 import { RootState } from "@/redux/store";
 import UploadProgressInfo from "./UploadProgressInfo";
 import { compactFileSize } from "@/redux/slices/utils";
-import { set } from "react-hook-form";
 
 const SelectedFile: FC<{
     file: File;
@@ -29,32 +28,29 @@ const SelectedFile: FC<{
     const activeDirectory = useAppSelector(
         (state: RootState) => state.items.activeDirectory
     );
-    const [serverPartDone, setServerPartDone] = useState(false);
 
     const [uploadFile] = useUploadFileMutation();
-    const {
-        data: progress,
-        refetch,
-        isFetching,
-    } = useGetUploadProgressQuery({ jobId }, { skip: !jobId });
+    const { data: progress, refetch } = useGetUploadProgressQuery(
+        { jobId },
+        { skip: !jobId }
+    );
 
+    // REPLACE WITH WEBSOCKET
     useEffect(() => {
         if (progress === 100 && timer) {
             clearInterval(timer);
             dispatch(setTimer(null));
             dispatch(setProgress(0));
-            setServerPartDone(true);
         }
     }, [progress, timer, dispatch]);
 
     useEffect(() => {
-        if (isUploading && jobId && !timer && !serverPartDone) {
-            const interval = setInterval(() => {
-                refetch();
-            }, 1000);
-            dispatch(setTimer(interval));
-        }
-    }, [isUploading, jobId, refetch, dispatch, timer, serverPartDone]);
+        const interval = setInterval(() => {
+            refetch();
+        }, 1000);
+        dispatch(setTimer(interval));
+    }, [jobId]);
+    // REPLACE WITH WEBSOCKET
 
     const handleUploadClick = async () => {
         try {
