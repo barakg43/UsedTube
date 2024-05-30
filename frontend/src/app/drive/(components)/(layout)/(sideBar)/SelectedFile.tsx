@@ -36,12 +36,15 @@ const SelectedFile: FC<{
         refetch,
     } = useGetUploadProgressQuery({ jobId }, { skip: !jobId });
 
+    // useGetSerializedVideoQuery({ jobId }, { skip: !jobId && progress !== 100});
+
     // REPLACE WITH WEBSOCKET
     useEffect(() => {
         if (progress === 100 && timer) {
             clearInterval(timer);
             dispatch(setTimer(null));
             dispatch(setProgress(0));
+            // request the video from server
         }
     }, [progress]);
 
