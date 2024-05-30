@@ -1,5 +1,6 @@
 import { FSNode, FileNode } from "@/types";
 import { baseApi } from "../baseApi";
+import { setError, setIsUploading, setJobId } from "../slices/fileUploadSlice";
 
 const driveApiSlice = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -25,12 +26,26 @@ const driveApiSlice = baseApi.injectEndpoints({
                     body: formData,
                 };
             },
-            transformResponse: (response: { data: { jobId: string } }) =>
-                response.data,
+            transformResponse: (response: { job_id: string }) =>
+                response.job_id,
+            async onQueryStarted(
+                { file, folderId },
+                { dispatch, queryFulfilled }
+            ) {
+                try {
+                    dispatch(setIsUploading(true));
+                    const { data } = await queryFulfilled;
+                    //@ts-ignore
+                    dispatch(setJobId(data));
+                } catch (error) {
+                    dispatch(setError("Failed to upload file"));
+                    dispatch(setIsUploading(false));
+                }
+            },
         }),
-        pollUploadProgress: builder.query({
-            query: ({ jobId }: { jobId: string }) => ({
-                url: `/files/progress/${jobId}`,
+        getUploadProgress: builder.query({
+            query: ({ jobId }: { jobId: string | null }) => ({
+                url: `/files/upload/progress/${jobId}`,
                 method: "GET",
             }),
             transformResponse: (response: { data: { progress: number } }) =>
@@ -42,5 +57,5 @@ const driveApiSlice = baseApi.injectEndpoints({
 export const {
     useFolderContentQuery,
     useUploadFileMutation,
-    usePollUploadProgressQuery,
+    useGetUploadProgressQuery,
 } = driveApiSlice;

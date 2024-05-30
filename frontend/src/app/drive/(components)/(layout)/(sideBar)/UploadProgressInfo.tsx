@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import CircularProgressWithLabel from "./CircularProgressWithLabel";
+import { useAppSelector } from "@/redux/hooks";
 
 const UploadProgressInfo = () => {
     const [step, setStep] = useState(1);
-    const [progress, setProgress] = useState(50);
+    const progress = useAppSelector((state) => state.fileUpload.progress);
     const stepDisplay = `${step}/2`;
     const [progressLabel, setProgressLabel] = useState<number | string>(
         stepDisplay
@@ -19,6 +20,12 @@ const UploadProgressInfo = () => {
             clearInterval(interval);
         };
     }, [stepDisplay, progress]);
+
+    useEffect(() => {
+        if (progress === 100) {
+            setStep(2);
+        }
+    }, [progress]);
 
     return (
         <>

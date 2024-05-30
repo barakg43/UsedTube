@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { set } from "react-hook-form";
+// fileUploadSlice.ts
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface FileUploadState {
     file: File | null;
@@ -11,38 +11,39 @@ interface FileUploadState {
     timer: NodeJS.Timeout | null;
 }
 
-const initialState = {
+const initialState: FileUploadState = {
     file: null,
     progress: 0,
     error: null,
     success: false,
+    jobId: null,
     isUploading: false,
     timer: null,
-} as FileUploadState;
+};
 
 const fileUploadSlice = createSlice({
     name: "fileUpload",
     initialState,
     reducers: {
-        setFile: (state, action) => {
+        setFile: (state, action: PayloadAction<File | null>) => {
             state.file = action.payload;
         },
-        setProgress: (state, action) => {
+        setProgress: (state, action: PayloadAction<number>) => {
             state.progress = action.payload;
         },
-        setError: (state, action) => {
+        setError: (state, action: PayloadAction<string | null>) => {
             state.error = action.payload;
         },
-        setSuccess: (state, action) => {
+        setSuccess: (state, action: PayloadAction<boolean>) => {
             state.success = action.payload;
         },
-        setJobId: (state, action) => {
+        setJobId: (state, action: PayloadAction<string | null>) => {
             state.jobId = action.payload;
         },
-        setIsUploading: (state, action) => {
+        setIsUploading: (state, action: PayloadAction<boolean>) => {
             state.isUploading = action.payload;
         },
-        setTimer: (state, action) => {
+        setTimer: (state, action: PayloadAction<NodeJS.Timeout | null>) => {
             state.timer = action.payload;
         },
     },
