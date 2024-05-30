@@ -12,7 +12,11 @@ class ResponseLoggingMiddleware:
             print(f"{header}: {value}")
 
         # Print the response content
-        print("[Response Content:]\n#################")
-        print(response.content)
+        if hasattr(response, 'content'):
+            print("[Response Content:]\n#################")
+            print(response.content)
+        elif hasattr(response, 'streaming_content'):
+            print("[Response Content:]\n#################")
+            print("ITS A STREAMING CONTENT!")
 
         return response

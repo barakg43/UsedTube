@@ -1,10 +1,8 @@
 import json
 import os
-
-from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, FileResponse, JsonResponse
+from django.views import View
 from rest_framework.views import APIView
-
 from constants import FILE, ERROR, JOB_ID
 from engine.constants import SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
 from engine.downloader.definition import Downloader
@@ -14,10 +12,9 @@ from engine.manager import Mr_EngineManager
 from files.query import select_folder_subitems
 from utils import get_user_object
 
-
-class DownloadView(APIView):
-    @login_required
-    def get(self, request: HttpRequest):
+# change to APIView
+class DownloadView(View):
+    def get(self, request: HttpRequest, file_id: str):
         user = request.user
         # you get in request: user id, file_name
         # The `file_name` variable in the `DownloadView` class is being set to 'sample-file2.pdf'.
@@ -44,8 +41,7 @@ class DownloadView(APIView):
         os.remove(downloaded_video_path)
         return FileResponse(open(restored_file_path, 'rb'),
                             filename=file_name,
-                            as_attachment=True,
-                            content_type=None)
+                            as_attachment=True)
 
 
 class UploadView(APIView):
