@@ -9,18 +9,11 @@ import { Suspense } from "react";
 import { useToaster } from "@/app/(common)/useToaster";
 
 const MainArea = ({ folderId }: { folderId: string | undefined }) => {
-  console.log("folderId", folderId);
   const toaster = useToaster();
-  const { data, error, isLoading } = {
-    data: { folders: [], files: [] },
-    error: null,
-    isLoading: false,
-  };
+  const { data, error, isLoading } = useFolderContentQuery({ folderId });
   if (error) {
-    // toaster(error, "error");
+    toaster(error.message, "error");
   }
-  //   useFolderContentQuery({ folderId });
-  console.log(data);
   const { files, folders } = data || {};
   const activeDirectory = useAppSelector(
     (state: RootState) => state.items.activeDirectory
@@ -28,6 +21,7 @@ const MainArea = ({ folderId }: { folderId: string | undefined }) => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
   return (
     <div className='flex flex-col flex-grow px-4 py-4 mb-4 mr-4 bg-dustyPaper rounded-3xl'>
       <div className='flex flex-row justify-between w-full'>
