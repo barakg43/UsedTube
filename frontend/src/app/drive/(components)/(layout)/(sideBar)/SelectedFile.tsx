@@ -30,10 +30,11 @@ const SelectedFile: FC<{
     );
 
     const [uploadFile] = useUploadFileMutation();
-    const { data: progress, refetch } = useGetUploadProgressQuery(
-        { jobId },
-        { skip: !jobId }
-    );
+    const {
+        data: progress,
+        isUninitialized,
+        refetch,
+    } = useGetUploadProgressQuery({ jobId }, { skip: !jobId });
 
     // REPLACE WITH WEBSOCKET
     useEffect(() => {
@@ -42,13 +43,13 @@ const SelectedFile: FC<{
             dispatch(setTimer(null));
             dispatch(setProgress(0));
         }
-    }, [progress, timer, dispatch]);
+    }, [progress]);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            refetch();
+        const timer = setInterval(() => {
+            if (!isUninitialized) refetch();
         }, 1000);
-        dispatch(setTimer(interval));
+        dispatch(setTimer(timer));
     }, [jobId]);
     // REPLACE WITH WEBSOCKET
 
