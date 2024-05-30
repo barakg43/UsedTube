@@ -16,7 +16,6 @@ from utils import get_user_object
 
 
 class DownloadView(APIView):
-    @login_required
     def get(self, request: HttpRequest):
         user = request.user
         # you get in request: user id, file_name
@@ -46,6 +45,15 @@ class DownloadView(APIView):
                             filename=file_name,
                             as_attachment=True,
                             content_type=None)
+
+class ProgressView(APIView):
+    def get(self, request: HttpRequest):
+        job_id = json.loads(request.body)[JOB_ID]
+        if Mr_EngineManager.is_processing_done(job_id):
+            processed_item_path = Mr_EngineManager.get_processed_item_path(job_id)
+            return FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
+        else:
+            return JsonResponse({"progress": Mr_EngineManager.get_progress(job_id)})
 
 
 class UploadView(APIView):

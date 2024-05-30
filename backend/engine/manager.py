@@ -48,7 +48,7 @@ class EngineManager:
                                                         compressed_file_size, uuid)
         return uuid
 
-    def get_processing_result(self, uuid) -> Tuple[str, int] | str:
+    def get_processed_item_path(self, uuid) -> Tuple[str, int] | str:
         future = self.uuid_to_future[uuid]
         results = future.result()
         del self.uuid_to_future[uuid]
