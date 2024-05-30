@@ -28,7 +28,19 @@ const driveApiSlice = baseApi.injectEndpoints({
             transformResponse: (response: { data: { jobId: string } }) =>
                 response.data,
         }),
+        pollUploadProgress: builder.query({
+            query: ({ jobId }: { jobId: string }) => ({
+                url: `/files/progress/${jobId}`,
+                method: "GET",
+            }),
+            transformResponse: (response: { data: { progress: number } }) =>
+                response.data.progress * 100,
+        }),
     }),
 });
 
-export const { useFolderContentQuery, useUploadFileMutation } = driveApiSlice;
+export const {
+    useFolderContentQuery,
+    useUploadFileMutation,
+    usePollUploadProgressQuery,
+} = driveApiSlice;
