@@ -1,9 +1,11 @@
+"use client";
 import { useToaster } from "@/app/(common)/useToaster";
 import { useLoginMutation } from "@/redux/api/authApi";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setAuth } from "@/redux/slices/authSlice";
 import { UserCredentials } from "@/types";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function useLogin() {
   const router = useRouter();
@@ -23,14 +25,17 @@ export default function useLogin() {
   //     setFormData({ ...formData, [name]: value });
   //   };
   const toaster = useToaster();
-
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  useEffect(() => {
+    if (isAuthenticated) router.push("/drive/");
+  }, [isAuthenticated, router]);
   const login = ({ username, password }: UserCredentials) => {
     loginApi({ username, password })
       .unwrap()
       .then(() => {
+        console.log("Logged");
         dispatch(setAuth());
         toaster("Logged in successfully", "success");
-
         router.push("/drive/");
       })
       .catch(() => {
