@@ -18,12 +18,12 @@ const SelectedFile: FC<{
     const activeDirectory = useAppSelector(
         (state: RootState) => state.items.activeDirectory
     );
-    const progress = useAppSelector(
-        (state: RootState) => state.fileUpload.progress
-    );
-    const setProgress = (progress: number) => {
-        dispatch(setFile(progress));
-    };
+    // const progress = useAppSelector(
+    //     (state: RootState) => state.fileUpload.progress
+    // );
+    // const setProgress = (progress: number) => {
+    //     dispatch(setFile(progress));
+    // };
     const handleUploadClick = async () => {
         try {
             setIsUploading(true);
@@ -46,7 +46,8 @@ const SelectedFile: FC<{
             <p>{file.name}</p>
             <p>{compactFileSize(file.size)}</p>
             {isUploading ? (
-                <CircularProgress color="inherit" value={progress} />
+                // <CircularProgress color="inherit" value={progress} />
+                <CircularProgress color="inherit" />
             ) : (
                 <div className="flex flex-row justify-center w-full">
                     <div className="items-center flex-grow">
