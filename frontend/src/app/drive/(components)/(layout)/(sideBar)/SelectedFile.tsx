@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
 import { grey } from "@mui/material/colors";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setFile } from "@/redux/slices/fileUploadSlice";
+import { setFile, setIsUploading } from "@/redux/slices/fileUploadSlice";
 import { useUploadFileMutation } from "@/redux/api/driveApi";
 import { RootState } from "@/redux/store";
 import UploadProgressInfo from "./UploadProgressInfo";
@@ -12,7 +12,7 @@ import UploadProgressInfo from "./UploadProgressInfo";
 const SelectedFile: FC<{
     file: File;
 }> = ({ file }) => {
-    const [isUploading, setIsUploading] = useState(false);
+    const isUploading = useAppSelector((state) => state.fileUpload.isUploading);
     const [uploadFile] = useUploadFileMutation();
     const dispatch = useAppDispatch();
     const activeDirectory = useAppSelector(
@@ -21,12 +21,12 @@ const SelectedFile: FC<{
 
     const handleUploadClick = async () => {
         try {
-            setIsUploading(true);
+            dispatch(setIsUploading(true));
             await uploadFile({ file, folderId: activeDirectory.id }).unwrap();
         } catch (error) {
             // Handle error
             console.error("Failed to upload file", error);
-            setIsUploading(false);
+            dispatch(setIsUploading(false));
         }
     };
 

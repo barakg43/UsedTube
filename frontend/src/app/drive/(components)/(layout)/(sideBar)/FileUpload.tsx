@@ -10,7 +10,7 @@ import { setFile } from "@/redux/slices/fileUploadSlice";
 const FileUpload = () => {
     const dispatch = useAppDispatch();
     const fileInputRef = useRef(null);
-
+    const isUploading = useAppSelector((state) => state.fileUpload.isUploading);
     //@ts-ignore
     const onFileBrowserClick = (e) => {
         const _file = e.target.files?.[0];
@@ -27,13 +27,16 @@ const FileUpload = () => {
     return (
         <ThemeProvider theme={theme}>
             <Button
-                className="hover:bg-transparent text-black flex flex-row justify-left"
+                className="hover:bg-transparent normal-case text-black flex flex-row justify-left"
                 component="label"
                 variant="text"
                 size="small"
+                disabled={isUploading}
                 sx={{
-                    textTransform: "none",
-                    hoverBackgroundColor: "transparent",
+                    "&:disabled": {
+                        background: "transparent !important",
+                        cursor: "default !important",
+                    },
                 }}
             >
                 <UploadFileIcon />
