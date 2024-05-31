@@ -16,7 +16,6 @@ const LogoutButton = () => {
         className='top-1 right-1'
         onClick={() => {
           logout();
-          router.push("/login");
         }}
       >
         <Logout />
