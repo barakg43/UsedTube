@@ -1,4 +1,4 @@
-import { FSNode, ItemsDisplayProp, NodeType } from "@/types";
+import { FSNode, FileNode, ItemsDisplayProp, NodeType } from "@/types";
 import { DataGrid, GridColDef, GridColTypeDef } from "@mui/x-data-grid";
 import { FC } from "react";
 import ItemIcon from "./ItemIcon";
@@ -14,7 +14,10 @@ const NodeIconType: GridColTypeDef<FSNode> = {
   valueGetter: (value, row) => row,
   renderCell: (params) => <ItemIcon type={params.value?.type} />,
 };
-const ItemsDisplayRow: FC<ItemsDisplayProp> = ({ items, onEntryClick }) => {
+const ItemsDisplayRow: FC<ItemsDisplayProp<FSNode | FileNode>> = ({
+  items,
+  onEntryClick,
+}) => {
   const columns: GridColDef[] = [
     { field: "icon", headerName: "", width: 30, ...NodeIconType },
     { field: "name", headerName: "Name", width: 200 },
