@@ -83,13 +83,6 @@ class UploadView(APIView):
 
         return JsonResponse({JOB_ID: Mr_EngineManager.process_file_to_video_async(str(file_path))})
 
-    def get(self, request: HttpRequest):
-        job_id = json.loads(request.body)[JOB_ID]
-        if Mr_EngineManager.is_processing_done(job_id):
-            # return the video to upload
-            pass
-        else:
-            return JsonResponse({"progress": Mr_EngineManager.get_progress(job_id)})
 
 
 class UsedSpaceView(APIView):  #

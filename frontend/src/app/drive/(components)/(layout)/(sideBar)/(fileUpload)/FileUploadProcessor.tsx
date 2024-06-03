@@ -12,6 +12,7 @@ const FileUploadProcessor: FC<{
     file: File;
 }> = ({ file }) => {
     const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+    const [isVideoReady, setIsVideoReady] = useState(false);
     const dispatch = useAppDispatch();
     const activeDirectory = useAppSelector(
         (state: RootState) => state.items.activeDirectory
@@ -27,7 +28,7 @@ const FileUploadProcessor: FC<{
 
     const { data: video } = useGetSerializedVideoQuery(
         { jobId },
-        { skip: progress === undefined || progress < 100 || jobId === null }
+        { skip: !isVideoReady }
     );
 
     useEffect(() => {
@@ -42,15 +43,17 @@ const FileUploadProcessor: FC<{
     }, []);
 
     useEffect(() => {
-        const timer = setInterval(() => {
-            if (!isUninitialized) {
-                refetch();
-            }
-            if (progress) {
-                dispatch(setProgress(progress));
-            }
-        }, 1000);
-        setTimer(timer);
+        if (!timer) {
+            const _timer = setInterval(() => {
+                if (!isUninitialized) {
+                    refetch();
+                }
+                if (progress) {
+                    dispatch(setProgress(progress));
+                }
+            }, 1000);
+            setTimer(_timer);
+        }
     }, [jobId]);
 
     useEffect(() => {
@@ -59,7 +62,8 @@ const FileUploadProcessor: FC<{
                 clearInterval(timer);
                 setTimer(null);
             }
-            alert(video);
+            setIsVideoReady(true);
+            alert(jobId);
         }
     }, [progress]);
 

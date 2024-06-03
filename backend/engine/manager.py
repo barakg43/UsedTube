@@ -49,7 +49,7 @@ class EngineManager:
         del self.uuid_to_future[uuid]
         Tracker.delete(uuid)
         
-        return results
+        return results[0]
 
     def is_processing_done(self, uuid) -> bool:
         return self.uuid_to_future[uuid].done()
