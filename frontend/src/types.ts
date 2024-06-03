@@ -40,29 +40,14 @@ export interface FileNode extends FSNode {
   size: number;
   folder: string;
 }
-// {
-//     "name": "11",
-//     "id": "40c45a46-04fa-48e9-8503-2390d2f23baa",
-//     "parent_id": "f65077f4-3ce4-4140-ac22-58ea177b08b7",
-//     "owner_id": 5,
-//     "created_at": "2024-05-26T10:35:49.067Z",
-//     "updated_at": "2024-05-26T10:35:49.067Z"
-// }
 
-// "id": "9d4d9708-295d-4373-8551-b45ed0381be5",
-// "name": "root1",
-// "extension": "pdf",
-// "size": 324234,
-// "folder": "f65077f4-3ce4-4140-ac22-58ea177b08b7",
-// "created_at": "2024-05-26T10:37:31.760Z",
-// "updated_at": "2024-05-26T10:37:31.760Z"
 export interface FSNode {
   id: string;
   name: string;
   createdAt?: string;
   updatedAt?: string;
-  type: NodeType;
-  isOpened: boolean;
+  type?: NodeType;
+  isOpened?: boolean;
   children?: FSNode[];
   context?: any;
 }
@@ -82,7 +67,7 @@ export function gotFolderChildren(node: FSNode) {
 
 export type DisplayType = "grid" | "row";
 
-export type ItemsDisplayProp = {
+export type ItemsDisplayProp<T extends FSNode> = {
   onEntryClick: Function;
-  items: FSNode[];
+  items: T[];
 };
