@@ -14,7 +14,8 @@ const MainArea = ({ folderId }: { folderId: string | undefined }) => {
   if (error) {
     toaster(error.data, "error");
   }
-  const { files, folders } = data || {};
+  const { files, folders, parents } = data || {};
+  console.log(data);
   const activeDirectory = useAppSelector(
     (state: RootState) => state.items.activeDirectory
   );
@@ -31,7 +32,11 @@ const MainArea = ({ folderId }: { folderId: string | undefined }) => {
           <ItemsDisplayToggle />
         </div>
       </div>
-      <ItemsDisplay folders={folders || []} files={files || []} />
+      <ItemsDisplay
+        parent={parents[0]}
+        folders={folders || []}
+        files={files || []}
+      />
     </div>
   );
 };

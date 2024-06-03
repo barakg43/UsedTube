@@ -10,8 +10,9 @@ import ItemsDisplayRow from "./RowDisplay";
 type ItemsDisplayProp = {
   folders: FSNode[];
   files: FileNode[];
+  parent: FSNode;
 };
-function ItemsDisplay({ files, folders }: ItemsDisplayProp) {
+function ItemsDisplay({ files, folders, parent }: ItemsDisplayProp) {
   const router = useRouter();
   const filesWithType: FSNode[] = files.map((fileItem) => ({
     ...fileItem,
@@ -21,7 +22,11 @@ function ItemsDisplay({ files, folders }: ItemsDisplayProp) {
     ...folderItem,
     type: "folder",
   }));
-  const items = [...folderWithType, ...filesWithType];
+  const items = [
+    parent ? { name: "..", id: parent?.id || "", type: "folder" } : null,
+    ...folderWithType,
+    ...filesWithType,
+  ].filter(Boolean);
   const displayType = useAppSelector((state) => state.items.displayType);
   const dispatch = useAppDispatch();
   // const router = useRouter();
