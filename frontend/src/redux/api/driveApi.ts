@@ -38,7 +38,6 @@ const driveApiSlice = baseApi.injectEndpoints({
                 { dispatch, queryFulfilled }
             ) {
                 try {
-                    dispatch(setIsUploading(true));
                     const { data } = await queryFulfilled;
                     //@ts-ignore
                     dispatch(setJobId(data));
@@ -60,6 +59,13 @@ const driveApiSlice = baseApi.injectEndpoints({
                 dispatch(setProgress(data));
             },
         }),
+        getSerializedVideo: builder.query({
+            query: ({ jobId }: { jobId: string | null }) => ({
+                url: `/files/retrieve/${jobId}`,
+                method: "GET",
+            }),
+            transformResponse: (response: { video: string }) => response.video,
+        }),
     }),
 });
 
@@ -67,4 +73,5 @@ export const {
     useFolderContentQuery,
     useUploadFileMutation,
     useGetUploadProgressQuery,
+    useGetSerializedVideoQuery,
 } = driveApiSlice;

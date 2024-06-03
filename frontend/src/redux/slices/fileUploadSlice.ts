@@ -8,7 +8,6 @@ interface FileUploadState {
     success: boolean;
     jobId: string | null;
     isUploading: boolean;
-    timer: NodeJS.Timeout | null;
 }
 
 const initialState: FileUploadState = {
@@ -18,7 +17,6 @@ const initialState: FileUploadState = {
     success: false,
     jobId: null,
     isUploading: false,
-    timer: null,
 };
 
 const fileUploadSlice = createSlice({
@@ -43,9 +41,6 @@ const fileUploadSlice = createSlice({
         setIsUploading: (state, action: PayloadAction<boolean>) => {
             state.isUploading = action.payload;
         },
-        setTimer: (state, action: PayloadAction<NodeJS.Timeout | null>) => {
-            state.timer = action.payload;
-        },
     },
 });
 
@@ -56,6 +51,5 @@ export const {
     setSuccess,
     setJobId,
     setIsUploading,
-    setTimer,
 } = fileUploadSlice.actions;
 export default fileUploadSlice.reducer;
