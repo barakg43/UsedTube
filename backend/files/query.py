@@ -18,7 +18,7 @@ def get_parent_tree_array(user, folder_id: str):
     current_folder: Folder = Folder.objects.get(id=folder_id)
     if current_folder is None:
         raise ObjectDoesNotExist("Folder not found")
-    if current_folder.owner is not user:
+    if current_folder.owner != user:
         raise PermissionDenied("Not authorized to access this folder")
     parent_array = []
     while current_folder:
