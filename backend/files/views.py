@@ -2,6 +2,7 @@ import json
 import os
 
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 from django.http import HttpRequest, FileResponse, JsonResponse
 from rest_framework.views import APIView
 
@@ -11,6 +12,7 @@ from engine.downloader.definition import Downloader
 from engine.downloader.impl import YouTubeDownloader
 from engine.driver import Driver
 from engine.manager import Mr_EngineManager
+from files.models import Folder
 from files.query import select_folder_subitems
 from utils import get_user_object
 
@@ -98,3 +100,22 @@ class DirectoryContentView(APIView):
         else:
 
             return JsonResponse({ERROR: 'bad request'}, status=400)
+
+
+class CreateNewFolderView(APIView):
+    def post(self, request: HttpRequest):
+        folder_name = request.data.get('folderName')
+        active_directory_id = request.data.get('activeDirectoryID')
+        
+        if not folder_name:
+            return JsonResponse({'error': 'Folder name is required'}, status=400)
+        if not active_directory_id:
+            return JsonResponse({'error': 'active directory is required'}, status=400)
+        
+        try:
+            parent_folder = Folder.objects.filter(id=active_directory_id)
+            new_folder = Folder.objects.create(name=folder_name,parent=parent_folder,owner=get_user_object())
+            return JsonResponse({'new folder': json.dumps(new_folder), 'parent id': active_directory_id}, status=201)
+        except IntegrityError as e:
+            return JsonResponse({'error': str(e)}, status=400)
+        

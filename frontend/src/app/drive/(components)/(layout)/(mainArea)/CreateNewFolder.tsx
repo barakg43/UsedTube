@@ -8,11 +8,12 @@ import { ThemeProvider } from "@emotion/react";
 import { theme } from "./theme";
 import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
+import api_root from "@/config";
 
 function CreateNewFolder() {
   const [isInputVisible, setInputVisible] = useState(false);
   const [folderName, setFolderName] = useState('');
-  const activeDirectory = useAppSelector((state:RootState)=>  state.items.activeDirectory)
+  const activeDirectoryID = useAppSelector((state:RootState)=>  state.items.activeDirectory.id)
   const handleCreateFolder = () => {
     setInputVisible(true);
   };
@@ -21,9 +22,11 @@ function CreateNewFolder() {
     // TODO: update valid server endpoint when ready
     try {
       // Make the HTTP request to the server
-      const response = await axios.post('/api/create-folder', {
+
+      // TODO: change to original way!!
+      const response = await axios.post(`${api_root}/files/create-folder`, {
         folderName,
-        activeDirectory,
+        activeDirectoryID,
       });
 
       // Handle the response as needed
@@ -44,7 +47,7 @@ function CreateNewFolder() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="flex items-center space-x-2 px-8">
+      <div className="flex items-center space-x-2 mx-8">
         {isInputVisible ? (
           <div className="flex items-center space-x-2">
             <TextField
