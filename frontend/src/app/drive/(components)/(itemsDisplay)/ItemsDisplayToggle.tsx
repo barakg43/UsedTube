@@ -17,7 +17,7 @@ const ItemsDisplayToggle = () => {
   };
 
   return (
-    <ToggleButtonGroup className="mb-4" value={displayType} exclusive onChange={handleToggle}>
+    <ToggleButtonGroup value={displayType} exclusive onChange={handleToggle}>
       <ToggleButton value={row}>
         <ViewHeadlineSharpIcon />
       </ToggleButton>
