@@ -1,10 +1,7 @@
-"use client";
-import React, { useEffect } from "react";
-import LoginForm from "./(components)/LoginForm";
-import { useRouter } from "next/navigation";
-import { useAppSelector } from "@/redux/hooks";
+// "use client";
 import Logo from "@/app/(common)/Logo";
 import Link from "next/link";
+import LoginForm from "./(components)/LoginForm";
 
 const Login = () => {
   return (

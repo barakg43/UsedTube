@@ -1,3 +1,5 @@
+"use client";
+import { useToaster } from "@/app/(common)/useToaster";
 import { useFolderContentQuery } from "@/redux/api/driveApi";
 import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
@@ -5,14 +7,12 @@ import { Typography } from "@mui/material";
 import ItemsDisplay from "../../(itemsDisplay)/Display";
 import ItemsDisplayToggle from "../../(itemsDisplay)/ItemsDisplayToggle";
 import CreateNewFolder from "./CreateNewFolder";
-import { Suspense } from "react";
-import { useToaster } from "@/app/(common)/useToaster";
 
 const MainArea = ({ folderId }: { folderId: string | undefined }) => {
   const toaster = useToaster();
   const { data, error, isLoading } = useFolderContentQuery({ folderId });
   if (error) {
-    toaster(error.message, "error");
+    toaster(error.data, "error");
   }
   const { files, folders } = data || {};
   const activeDirectory = useAppSelector(

@@ -33,15 +33,12 @@ export type ItemsState = {
 
 export type NodeType = "file" | "folder";
 
-
-
 export interface FileNode extends FSNode {
   type: "file";
   owner_id: number;
   extension: string;
   size: number;
   folder: string;
-
 }
 // {
 //     "name": "11",
@@ -51,8 +48,6 @@ export interface FileNode extends FSNode {
 //     "created_at": "2024-05-26T10:35:49.067Z",
 //     "updated_at": "2024-05-26T10:35:49.067Z"
 // }
-
-
 
 // "id": "9d4d9708-295d-4373-8551-b45ed0381be5",
 // "name": "root1",

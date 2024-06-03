@@ -1,12 +1,15 @@
+"use client";
 import { file, folder } from "@/constants";
 import { FSNode } from "@/types";
-import FolderIcon from "@mui/icons-material/Folder";
-import DescriptionIcon from "@mui/icons-material/Description";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Menu, MenuItem, Typography } from "@mui/material";
 import { FC, useState } from "react";
+import ItemIcon from "./ItemIcon";
 
-const ItemsDisplayNode: FC<{ node: FSNode; onEntryClick: Function }> = ({ node, onEntryClick }) => {
+const ItemsDisplayNode: FC<{ node: FSNode; onEntryClick: Function }> = ({
+  node,
+  onEntryClick,
+}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

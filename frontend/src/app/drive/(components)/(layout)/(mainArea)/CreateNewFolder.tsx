@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import { Button, Typography } from "@mui/material";
@@ -9,10 +10,10 @@ function CreateNewFolder() {
   return (
     <ThemeProvider theme={theme}>
       <Button
-        className="hover:bg-dustyPaperDark text-black flex flex-row justify-left h-[47.33px]"
-        component="label"
-        variant="outlined"
-        size="small"
+        className='hover:bg-dustyPaperDark text-black flex flex-row justify-left h-[47.33px]'
+        component='label'
+        variant='outlined'
+        size='small'
         sx={{ textTransform: "none" }}
         onClick={handleCreateFolder}
       >
