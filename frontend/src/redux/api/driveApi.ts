@@ -8,7 +8,13 @@ const driveApiSlice = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    directoryTree: builder.query({
+      query: () => ({
+        url: `/files/dir-tree/`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useFolderContentQuery } = driveApiSlice;
+export const { useFolderContentQuery, useDirectoryTreeQuery } = driveApiSlice;
