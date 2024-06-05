@@ -1,11 +1,15 @@
 "use client";
 import React, { FC, ReactNode } from "react";
-import TreeFragment from "./FolderTree";
+import TreeFragment from "./TreeFragment";
 import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import FileUpload from "./FileUpload";
+import FolderTree from "./FolderTree";
 
-const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({ children, hoverStyle = true }) => {
+const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
+  children,
+  hoverStyle = true,
+}) => {
   return (
     <div
       className={`rounded-2xl bg-dustyPaper ${
@@ -18,14 +22,13 @@ const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({ childr
 };
 
 const Sidebar = () => {
-  const tree = useAppSelector((state: RootState) => state.items.items.myItems);
   return (
-    <nav className="h-full w-[200px] flex flex-col px-2">
+    <nav className='h-full w-[200px] flex flex-col px-2'>
       <SideBarItem>
         <FileUpload />
       </SideBarItem>
       <SideBarItem hoverStyle={false}>
-        <TreeFragment node={tree} spaces={0} />
+        <FolderTree />
       </SideBarItem>
       <SideBarItem>Shared with me</SideBarItem>
       <SideBarItem>Quota and storage left</SideBarItem>
