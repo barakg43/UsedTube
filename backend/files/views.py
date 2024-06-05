@@ -13,7 +13,7 @@ from engine.downloader.definition import Downloader
 from engine.downloader.impl import YouTubeDownloader
 from engine.driver import Driver
 from engine.manager import Mr_EngineManager
-from files.query import select_folder_subitems, get_parent_tree_array
+from files.query import select_folder_subitems, get_parent_tree_array, get_folder_tree
 from utils import get_user_object
 
 
@@ -85,6 +85,17 @@ class UsedSpaceView(APIView):  #
     def get(self, request: HttpRequest):
         used_space = request.user.used_space.first()
         return JsonResponse({'value': used_space.value})
+
+
+class DirectoryTree(APIView):
+    def get(self,request):
+        try:
+            user = get_user_object(request)
+            folder_tree=get_folder_tree(user)
+        except ObjectDoesNotExist as e:
+            return JsonResponse({ERROR:e.args[0] }, status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse(folder_tree)
+
 
 
 class DirectoryContentView(APIView):
