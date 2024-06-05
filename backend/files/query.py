@@ -43,8 +43,7 @@ def __get_folder_tree_rec(root_folder: Folder):
     for children in folder_children:
         children_array.append(__get_folder_tree_rec(children))
     return {
-        "root": {
-            "id": root_folder.id, "name": root_folder.name
-        },
+        "id": root_folder.id,
+        "name": root_folder.name,
         "children": children_array
     }
