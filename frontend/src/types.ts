@@ -1,4 +1,4 @@
-import { file, folder } from "./constants";
+import { FILE, FOLDER } from "./constants";
 
 export type UserValues = {
     username: string;
@@ -68,11 +68,11 @@ export interface FSNode {
 }
 
 export function gotFolderChildren(node: FSNode) {
-    if (node.type === file) {
+    if (node.type === FILE) {
         return false;
     } else if (node.children) {
         for (const child of node.children) {
-            if (child.type === folder) {
+            if (child.type === FOLDER) {
                 return true;
             }
         }

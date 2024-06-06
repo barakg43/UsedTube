@@ -1,5 +1,5 @@
 "use client";
-import { password, username } from "@/constants";
+import { PASSWORD, USERNAME } from "@/constants";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Button, IconButton, TextField } from "@mui/material";
 import React, { useState } from "react";
@@ -23,12 +23,12 @@ const LoginForm: React.FC = () => {
             <div className=" w-full flex flex-col gap-7 items-center justify-center">
                 <TextField
                     defaultValue=""
-                    label={username}
+                    label={USERNAME}
                     size="small"
                     error={errors.username ? true : false}
                     helperText={errors.username?.message ?? ""}
                     sx={{ width: "200px" }}
-                    {...register(username, {
+                    {...register(USERNAME, {
                         required: "Username is required",
                     })}
                 />
@@ -38,7 +38,7 @@ const LoginForm: React.FC = () => {
                     sx={{ width: "200px" }}
                     type={showPassword ? "text" : "password"}
                     helperText={
-                        errors[password] ? errors[password]?.message : ""
+                        errors[PASSWORD] ? errors[PASSWORD]?.message : ""
                     }
                     error={errors.password ? true : false}
                     InputProps={{
@@ -58,7 +58,7 @@ const LoginForm: React.FC = () => {
                             </IconButton>
                         ),
                     }}
-                    {...register(password, {
+                    {...register(PASSWORD, {
                         required: "Password is required",
                         minLength: {
                             value: 8,

@@ -1,4 +1,4 @@
-import { file, folder } from "@/constants";
+import { FILE, FOLDER } from "@/constants";
 import { FSNode } from "@/types";
 
 // get writable draft a given node from the tree
@@ -19,11 +19,11 @@ export function getWritableDraft(node: FSNode, tree: FSNode) {
 }
 
 export function gotFolderChildren(node: FSNode) {
-    if (node.type === file) {
+    if (node.type === FILE) {
         return false;
     } else if (node.children) {
         for (const child of node.children) {
-            if (child.type === folder) {
+            if (child.type === FOLDER) {
                 return true;
             }
         }
