@@ -7,9 +7,9 @@ import api_root from "@/config";
 const DeserializedVideoDownloader = () => {
     const dispatch = useAppDispatch();
     const jobId = useAppSelector((state) => state.fileUpload.jobId);
-    dispatch(setProgress(0));
 
     useEffect(() => {
+        dispatch(setProgress(0));
         const downloadFile = async () => {
             try {
                 const response = await axios.get(
@@ -24,8 +24,12 @@ const DeserializedVideoDownloader = () => {
                             );
                             dispatch(setProgress(progress));
                         },
+                        headers: {
+                            // Authorization: `Bearer ${}`
+                        },
                     }
                 );
+
                 const url = window.URL.createObjectURL(
                     new Blob([response.data])
                 );
