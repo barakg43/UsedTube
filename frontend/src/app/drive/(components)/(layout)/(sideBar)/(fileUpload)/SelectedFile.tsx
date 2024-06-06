@@ -5,25 +5,24 @@ import CheckIcon from "@mui/icons-material/Check";
 import { grey } from "@mui/material/colors";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setFile, setIsUploading } from "@/redux/slices/fileUploadSlice";
-
 import UploadProgressInfo from "./UploadProgressInfo";
 import { compactFileSize } from "@/redux/slices/utils";
-import FileUploadProcessor from "./FileUploadProcessor";
+import FileUploadProcessor from "./(processor)/FileUploadProcessor";
 
-const SelectedFile: FC<{
-    file: File;
-}> = ({ file }) => {
+const SelectedFile = () => {
     const dispatch = useAppDispatch();
     const isUploading = useAppSelector((state) => state.fileUpload.isUploading);
+    const selectedFile = useAppSelector((state) => state.fileUpload.file);
+    if (!selectedFile) return null;
 
     return (
         <div className="flex flex-col justify-between items-center">
-            <p className="truncate max-w-full">{file.name}</p>
-            <p>{compactFileSize(file.size)}</p>
+            <p className="truncate max-w-full">{selectedFile.name}</p>
+            <p>{compactFileSize(selectedFile.size)}</p>
             {isUploading ? (
                 <>
                     <UploadProgressInfo />
-                    <FileUploadProcessor file={file} />
+                    <FileUploadProcessor />
                 </>
             ) : (
                 <div className="flex flex-row justify-center w-full">

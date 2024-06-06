@@ -1,6 +1,7 @@
 import { FSNode, FileNode } from "@/types";
 import { baseApi } from "../baseApi";
 import {
+    nextPhase,
     setError,
     setIsUploading,
     setJobId,
@@ -57,14 +58,8 @@ const driveApiSlice = baseApi.injectEndpoints({
             async onQueryStarted({ jobId }, { dispatch, queryFulfilled }) {
                 const { data } = await queryFulfilled;
                 dispatch(setProgress(data));
+                if (data === 100) dispatch(nextPhase());
             },
-        }),
-        getSerializedVideo: builder.query({
-            query: ({ jobId }: { jobId: string | null }) => ({
-                url: `/files/retrieve/${jobId}`,
-                method: "GET",
-            }),
-            transformResponse: (response: { video: string }) => response.video,
         }),
     }),
 });
@@ -73,5 +68,4 @@ export const {
     useFolderContentQuery,
     useUploadFileMutation,
     useGetUploadProgressQuery,
-    useGetSerializedVideoQuery,
 } = driveApiSlice;

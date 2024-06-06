@@ -8,6 +8,7 @@ interface FileUploadState {
     success: boolean;
     jobId: string | null;
     isUploading: boolean;
+    uploadPhase: number;
 }
 
 const initialState: FileUploadState = {
@@ -17,6 +18,7 @@ const initialState: FileUploadState = {
     success: false,
     jobId: null,
     isUploading: false,
+    uploadPhase: 0,
 };
 
 const fileUploadSlice = createSlice({
@@ -41,6 +43,10 @@ const fileUploadSlice = createSlice({
         setIsUploading: (state, action: PayloadAction<boolean>) => {
             state.isUploading = action.payload;
         },
+        nextPhase: (state) => {
+            state.uploadPhase = (state.uploadPhase + 1) % 3;
+            console.log(state.uploadPhase);
+        },
     },
 });
 
@@ -51,5 +57,6 @@ export const {
     setSuccess,
     setJobId,
     setIsUploading,
+    nextPhase,
 } = fileUploadSlice.actions;
 export default fileUploadSlice.reducer;

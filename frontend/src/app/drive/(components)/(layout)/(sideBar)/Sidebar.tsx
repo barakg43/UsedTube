@@ -35,7 +35,7 @@ const Sidebar = () => {
             </SideBarItem>
             {file && (
                 <SideBarItem hoverStyle={false}>
-                    <SelectedFile file={file} />
+                    <SelectedFile />
                 </SideBarItem>
             )}
             <SideBarItem hoverStyle={false}>
