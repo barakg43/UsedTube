@@ -26,7 +26,8 @@ export type GeneralState = {
 };
 
 export type ItemsState = {
-  items: FSItems;
+  myItems: FSNode;
+  sharedItems: FSNode[] | null;
   activeDirectory: FSNode;
   displayType: DisplayType;
 };
@@ -53,10 +54,11 @@ export interface FSNode {
 }
 
 export function gotFolderChildren(node: FSNode) {
+  return true;
   if (node.type === file) {
     return false;
   } else if (node.children) {
-    for (const child of node.children) {
+    for (const child of node.children ?? []) {
       if (child.type === folder) {
         return true;
       }

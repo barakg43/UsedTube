@@ -7,22 +7,26 @@ import axios from "axios";
 import api_root from "@/config";
 
 const initialState: ItemsState = {
-  items: fakeData,
+  myItems: { id: "", name: "" },
+  sharedItems: null,
   activeDirectory: fakeData.myItems,
   displayType: row,
 };
 
-export const createNewFolder = createAsyncThunk("items/createNewFolder", async (folderName: string, thunkAPI) => {
-  const response = await axios.post(`${api_root}/files/register`, folderName);
-  return response.data;
-});
+export const createNewFolder = createAsyncThunk(
+  "items/createNewFolder",
+  async (folderName: string, thunkAPI) => {
+    const response = await axios.post(`${api_root}/files/register`, folderName);
+    return response.data;
+  }
+);
 
 export const itemsSlice = createSlice({
   name: "items",
   initialState,
   reducers: {
     setItems: (state, action) => {
-      state = action.payload;
+      state.myItems = action.payload;
     },
     setActiveDirectory: (state, action: PayloadAction<FSNode>) => {
       state.activeDirectory = action.payload;
@@ -31,7 +35,7 @@ export const itemsSlice = createSlice({
       state.displayType = action.payload;
     },
     toggleIsOpened: (state, action: PayloadAction<FSNode>) => {
-      const nodeWritableDraft = getWritableDraft(action.payload, state.items.myItems);
+      const nodeWritableDraft = getWritableDraft(action.payload, state.myItems);
       if (nodeWritableDraft) {
         nodeWritableDraft.isOpened = !nodeWritableDraft.isOpened;
       }
@@ -40,6 +44,7 @@ export const itemsSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setItems, setActiveDirectory, setDisplayType, toggleIsOpened } = itemsSlice.actions;
+export const { setItems, setActiveDirectory, setDisplayType, toggleIsOpened } =
+  itemsSlice.actions;
 
 export default itemsSlice.reducer;
