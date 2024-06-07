@@ -1,5 +1,5 @@
 import { baseApi } from "../baseApi";
-
+import { axiosInstance } from "./axiosInstance";
 interface User {
     first_name: string;
     last_name: string;
@@ -14,7 +14,10 @@ interface SocialAuthArgs {
 
 interface CreateUserResponse {
     success: boolean;
-    user: User;
+    tokens: {
+        access: string;
+        refresh: string;
+    };
 }
 
 const authApiSlice = baseApi.injectEndpoints({
@@ -30,11 +33,12 @@ const authApiSlice = baseApi.injectEndpoints({
                 method: "POST",
                 body: { username, password },
             }),
-            transformResponse: (response: CreateUserResponse) => response.user,
-            async onQueryStarted(arg, { queryFulfilled }) {
-                const { data, meta } = await queryFulfilled;
-                console.log("ANSWER FROM auth/jwt/create: ", data);
-                console.log(meta);
+            transformResponse: (response: CreateUserResponse) => {
+                axiosInstance.interceptors.request.use((config) => {
+                    config.headers.Authorization = `Bearer ${response.tokens.access}`;
+                    return config;
+                });
+                return response.tokens;
             },
         }),
         // register: builder.mutation({
@@ -49,11 +53,8 @@ const authApiSlice = baseApi.injectEndpoints({
                 url: "/auth/jwt/verify",
                 method: "POST",
             }),
-            transformResponse: (response: CreateUserResponse) => response.user,
-            async onQueryStarted(arg, { queryFulfilled }) {
-                const { data, meta } = await queryFulfilled;
-                console.log("ANSWER FROM auth/jwt/verify: ", data);
-                console.log(meta);
+            transformResponse: (response: CreateUserResponse) => {
+                return response.tokens;
             },
         }),
         logout: builder.mutation({
@@ -61,11 +62,11 @@ const authApiSlice = baseApi.injectEndpoints({
                 url: "/auth/logout",
                 method: "POST",
             }),
-            transformResponse: (response: CreateUserResponse) => response.user,
+            transformResponse: (response: CreateUserResponse) =>
+                response.tokens,
             async onQueryStarted(arg, { queryFulfilled }) {
                 const { data, meta } = await queryFulfilled;
                 console.log("ANSWER FROM auth/logout: ", data);
-                console.log(meta);
             },
         }),
         // activation: builder.mutation({
