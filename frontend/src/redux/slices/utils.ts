@@ -17,16 +17,3 @@ export function getWritableDraft(node: FSNode, tree: FSNode) {
   }
   return null;
 }
-
-export function gotFolderChildren(node: FSNode) {
-  if (node.type === file) {
-    return false;
-  } else if (node.children) {
-    for (const child of node.children) {
-      if (child.type === folder) {
-        return true;
-      }
-    }
-  }
-  return false;
-}

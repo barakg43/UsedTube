@@ -15,7 +15,6 @@ const MainArea = ({ folderId }: { folderId: string | undefined }) => {
     toaster(error.data, "error");
   }
   const { files, folders, parents } = data || {};
-  console.log(data);
   const activeDirectory = useAppSelector(
     (state: RootState) => state.items.activeDirectory
   );
