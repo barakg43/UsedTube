@@ -3,10 +3,8 @@ import { baseApi } from "../baseApi";
 const driveApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     folderContent: builder.query({
-      query: ({ folderId }: { folderId: string | undefined }) => ({
-        url: `/files/dir-content/${folderId || ""}`,
-        method: "GET",
-      }),
+      query: ({ folderId }: { folderId: string | undefined }) =>
+        `/files/dir-content/${folderId || ""}`,
     }),
     directoryTree: builder.query({
       query: () => ({
