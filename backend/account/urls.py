@@ -12,7 +12,6 @@ urlpatterns = [
     path("jwt/refresh",CustomTokenRefreshView.as_view()),
     path("jwt/verify",CustomTokenVerifyView.as_view()),
 
-    # path('login', Login.as_view(), name='login'),
     path('logout', LogoutView.as_view(), name='logout'),
     path('validate', Validate.as_view()),
 ]
