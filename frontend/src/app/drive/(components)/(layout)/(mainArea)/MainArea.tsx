@@ -34,7 +34,7 @@ const MainArea = ({ folderId }: { folderId: string | undefined }) => {
                 </div>
             </div>
             <ItemsDisplay
-                parent={parents[0]}
+                parent={parents && parents[0]}
                 folders={folders || []}
                 files={files || []}
             />
