@@ -90,7 +90,6 @@ class UsedSpaceView(APIView):  #
 
 
 class DirectoryContentView(APIView):
-    # @login_required
     def get(self, request, folder_id: str=None):
         # create a json listing all files and their size of the requested folder
         user = get_user_object(request)

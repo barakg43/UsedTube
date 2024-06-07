@@ -15,11 +15,6 @@ const driveApiSlice = baseApi.injectEndpoints({
                 url: `/files/dir-content/${folderId ?? ""}`,
                 method: "GET",
             }),
-            transformResponse: (
-                response: { data: { folders: FSNode[]; files: FileNode[] } },
-                meta,
-                arg
-            ) => response.data,
         }),
         uploadFile: builder.mutation({
             query: ({ file, folderId }: { file: File; folderId: string }) => {
