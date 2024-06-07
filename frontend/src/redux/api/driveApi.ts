@@ -14,7 +14,14 @@ const driveApiSlice = baseApi.injectEndpoints({
         arg
       ) => response.data,
     }),
-  }),
+    createFolder: builder.mutation({
+      query: ({ folderName, parentId }: { folderName: string; parentId: string }) => ({
+        url: `/files/create-folder`,
+        method: "POST",
+        body: { folderName, parentId },
+      })
+    }),
+  })
 });
 
-export const { useFolderContentQuery } = driveApiSlice;
+export const { useFolderContentQuery,useCreateFolderMutation  } = driveApiSlice;

@@ -1,45 +1,44 @@
 import React, { useState } from "react";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
-import axios from 'axios';
+import { useCreateFolderMutation } from "@/redux/api/driveApi";
 import { Button, TextField, Typography, IconButton } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import { useAppDispatch } from "@/redux/hooks";
+import { setAuth } from "@/redux/slices/authSlice";
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "./theme";
 import { useAppSelector } from "@/redux/hooks";
+import { useToaster } from "@/app/(common)/useToaster";
 import { RootState } from "@/redux/store";
-import api_root from "@/config";
+import { useRouter } from "next/navigation";
+
 
 function CreateNewFolder() {
   const [isInputVisible, setInputVisible] = useState(false);
   const [folderName, setFolderName] = useState('');
-  const activeDirectoryID = useAppSelector((state:RootState)=>  state.items.activeDirectory.id)
+  const dispatch = useAppDispatch();
+  const toaster = useToaster();
+  const parentId = useAppSelector((state:RootState)=>  state.items.activeDirectory.id)
+  const [createFolder, { isLoading, error }] = useCreateFolderMutation();
+  const router = useRouter();
   const handleCreateFolder = () => {
     setInputVisible(true);
   };
 
   const handleApprove = async () => {
-    // TODO: update valid server endpoint when ready
     try {
-      // Make the HTTP request to the server
-
-      // TODO: change to original way!!
-      const response = await axios.post(`${api_root}/files/create-folder`, {
-        folderName,
-        activeDirectoryID,
-      });
-
-      // Handle the response as needed
-      console.log('Folder created:', response.data);
-
-      // Reset the state
-      setInputVisible(false);
-      setFolderName('');
+      await createFolder({ folderName, parentId }).unwrap();
+      dispatch(setAuth());
+      toaster("Folder was created successfully", "success");
+      // TODO: refetch folder contents
+      router.push("/drive/");
     } catch (error) {
-      console.error('Error creating folder:', error);
+      toaster("Failed to create folder", "error");
     }
   };
-
+  
+  
   const handleCancel = () => {
     setInputVisible(false);
     setFolderName('');
