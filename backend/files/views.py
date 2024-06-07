@@ -2,7 +2,9 @@ import json
 import os
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, ValidationError
 from django.http import HttpRequest, FileResponse, JsonResponse
+from rest_framework import status
 from rest_framework.views import APIView
 
 from constants import FILE, ERROR, JOB_ID
@@ -11,7 +13,7 @@ from engine.downloader.definition import Downloader
 from engine.downloader.impl import YouTubeDownloader
 from engine.driver import Driver
 from engine.manager import Mr_EngineManager
-from files.query import select_folder_subitems
+from files.query import select_folder_subitems, get_parent_tree_array
 from utils import get_user_object
 
 
@@ -87,14 +89,16 @@ class UsedSpaceView(APIView):  #
 
 class DirectoryContentView(APIView):
     # @login_required
-    def get(self, request, folder_id: str=None):
+    def get(self, request, folder_id: str = None):
         # create a json listing all files and their size of the requested folder
         user = get_user_object(request)
         if folder_id is None:
             folder_id = user.root_folder.id
-        if request.content_type == 'application/json':
-            folder_subitems = select_folder_subitems(user, folder_id)
-            return JsonResponse(folder_subitems)
-        else:
-
-            return JsonResponse({ERROR: 'bad request'}, status=400)
+        try:
+            folder_subitems_dict = select_folder_subitems(user, folder_id)
+            folder_subitems_dict["parents"] = get_parent_tree_array(user, folder_id)
+        except PermissionDenied as e:
+            return JsonResponse({ERROR: e.args[0]}, status=status.HTTP_403_FORBIDDEN)
+        except (ObjectDoesNotExist, ValidationError) as e:
+            return JsonResponse({ERROR: e.args[0]}, status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse(folder_subitems_dict)

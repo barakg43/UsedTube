@@ -39,7 +39,6 @@ const baseQueryWithReauth: BaseQueryFn<
           // retry the initial query
           result = await baseQuery(args, api, extraOptions);
         } else {
-          console.log("Failed to refresh token");
           api.dispatch(logout());
         }
       } finally {
