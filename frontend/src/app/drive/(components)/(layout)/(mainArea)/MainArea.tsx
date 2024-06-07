@@ -12,14 +12,14 @@ const MainArea = ({ folderId }: { folderId: string | undefined }) => {
   const toaster = useToaster();
   const { data, error, isLoading } = useFolderContentQuery({ folderId });
   if (error) {
-    toaster(error.data, "error");
+    // toaster(error.data, "error");
   }
   const { files, folders, parents } = data || {};
   const activeDirectory = useAppSelector(
     (state: RootState) => state.items.activeDirectory
   );
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div >Loading...</div>;
   }
 
   return (
@@ -32,7 +32,7 @@ const MainArea = ({ folderId }: { folderId: string | undefined }) => {
         </div>
       </div>
       <ItemsDisplay
-        parent={parents[0]}
+        parent={parents && parents[0]}
         folders={folders || []}
         files={files || []}
       />
