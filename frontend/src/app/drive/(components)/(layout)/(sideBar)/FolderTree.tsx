@@ -11,7 +11,7 @@ function FolderTree() {
 
   useEffect(() => {
     dispatch(setItems(data));
-  }, [data, setItems, dispatch]);
+  }, [data, dispatch]);
   const tree = useAppSelector((state: RootState) => state.items.myItems);
   if (isLoading) return <p>loading</p>;
   return <TreeFragment node={tree} spaces={0} />;
