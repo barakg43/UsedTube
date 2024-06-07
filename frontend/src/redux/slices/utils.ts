@@ -10,10 +10,10 @@ export function getWritableDraft(node: FSNode, tree: FSNode) {
       return current;
     }
     if (current?.children) {
-      current.children.forEach((child) => {
-        stack.push(child);
-      });
+      stack.push(...current.children);
     }
   }
   return null;
 }
+
+
