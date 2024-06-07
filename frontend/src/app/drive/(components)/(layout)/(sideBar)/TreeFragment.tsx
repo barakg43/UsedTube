@@ -1,12 +1,15 @@
 "use client";
-import React from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { FSNode } from "@/types";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+
 import { useAppDispatch } from "@/redux/hooks";
+import FolderIcon from "@mui/icons-material/Folder";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+
 import { setActiveDirectory, toggleIsOpened } from "@/redux/slices/itemsSlice";
-import { folder } from "@/constants";
-import { gotFolderChildren } from "@/redux/slices/utils";
+import { FSNode } from "@/types";
+import { useCallback, useState } from "react";
 
 const Space = () => {
   return <div className='w-[8px]' />;
@@ -22,12 +25,12 @@ type MyProps = {
 };
 
 export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
-  const [, updateState] = React.useState<object>();
-  const forceUpdate = React.useCallback(() => updateState({}), []);
+  const [, updateState] = useState<object>();
+  const forceUpdate = useCallback(() => updateState({}), []);
   const dispatch = useAppDispatch();
   const handleArrowToggle = (node: FSNode): void => {
     dispatch(toggleIsOpened(node));
-    console.log(node, forceUpdate);
+    // console.log(node, forceUpdate);
     forceUpdate();
   };
 
@@ -35,40 +38,48 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
     // set active directory
     dispatch(setActiveDirectory(node));
   };
-  const gotFolderChildren_ = gotFolderChildren(node);
+  if (!node) return null;
+  const hasChildren = (node?.children?.length ?? 0) > 0;
   return (
     <TreeContainer>
       <div className='flex cursor-pointer text-black  hover:bg-dustyPaperDark rounded-xl'>
         {spaces > 0 &&
           new Array(spaces).fill(0).map((_, index) => <Space key={index} />)}
-        {node.isOpened && gotFolderChildren_ && (
-          <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />
+
+        {hasChildren ? (
+          node?.isOpened ? (
+            <>
+              <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />
+              <FolderOpenIcon />
+            </>
+          ) : (
+            <>
+              <ArrowRightIcon onClick={() => handleArrowToggle(node)} />
+              <FolderIcon className='text-gray-500' />
+            </>
+          )
+        ) : (
+          <>
+            <ChevronRightIcon fontSize='small' />
+            <FolderOpenIcon />
+          </>
         )}
-        {!node.isOpened && gotFolderChildren_ && (
-          <ArrowRightIcon onClick={() => handleArrowToggle(node)} />
-        )}
-        {!gotFolderChildren_ && <div className='w-[24px]' />}
+
         {
           <span
-            className='text-left text-ellipsis flex-grow'
+            className='text-left text-ellipsis flex-grow w-[24px]'
             onClick={() => onLabelClick(node)}
           >{`${node.name}`}</span>
         }
       </div>
-      {node.isOpened && node.children && (
-        <>
-          <TreeContainer>
-            {node.children
-              .filter((node) => {
-                return node.type === folder;
-              })
-              .map((child: FSNode, index: number) => {
-                return (
-                  <TreeFragment key={index} spaces={spaces + 1} node={child} />
-                );
-              })}
-          </TreeContainer>
-        </>
+      {node?.isOpened && hasChildren && (
+        <TreeContainer>
+          {node?.children?.map((child: FSNode, index: number) => {
+            return (
+              <TreeFragment key={index} spaces={spaces + 1} node={child} />
+            );
+          })}
+        </TreeContainer>
       )}
     </TreeContainer>
   );
