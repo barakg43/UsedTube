@@ -19,6 +19,7 @@ interface CreateUserResponse {
 
 const authApiSlice = baseApi.injectEndpoints({
     endpoints: (builder) => ({
+        // Is this in use?
         retrieveUser: builder.query<User, void>({
             query: () => "account/auth/users/me/",
         }),
@@ -29,6 +30,12 @@ const authApiSlice = baseApi.injectEndpoints({
                 method: "POST",
                 body: { username, password },
             }),
+            transformResponse: (response: CreateUserResponse) => response.user,
+            async onQueryStarted(arg, { queryFulfilled }) {
+                const { data, meta } = await queryFulfilled;
+                console.log("ANSWER FROM auth/jwt/create: ", data);
+                console.log(meta);
+            },
         }),
         // register: builder.mutation({
         //   query: ({ first_name, last_name, email, password, re_password }) => ({
@@ -42,12 +49,24 @@ const authApiSlice = baseApi.injectEndpoints({
                 url: "/auth/jwt/verify",
                 method: "POST",
             }),
+            transformResponse: (response: CreateUserResponse) => response.user,
+            async onQueryStarted(arg, { queryFulfilled }) {
+                const { data, meta } = await queryFulfilled;
+                console.log("ANSWER FROM auth/jwt/verify: ", data);
+                console.log(meta);
+            },
         }),
         logout: builder.mutation({
             query: () => ({
                 url: "/auth/logout",
                 method: "POST",
             }),
+            transformResponse: (response: CreateUserResponse) => response.user,
+            async onQueryStarted(arg, { queryFulfilled }) {
+                const { data, meta } = await queryFulfilled;
+                console.log("ANSWER FROM auth/logout: ", data);
+                console.log(meta);
+            },
         }),
         // activation: builder.mutation({
         //   query: ({ uid, token }) => ({

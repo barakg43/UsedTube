@@ -4,7 +4,6 @@ import { fakeData } from "./itemsSliceFakeData";
 import { ROW } from "@/constants";
 import { getWritableDraft } from "./utils";
 import axios from "axios";
-import api_root from "@/config";
 
 const initialState: ItemsState = {
     items: fakeData,
@@ -16,7 +15,7 @@ export const createNewFolder = createAsyncThunk(
     "items/createNewFolder",
     async (folderName: string, thunkAPI) => {
         const response = await axios.post(
-            `${api_root}/files/register`,
+            `${process.env.NEXT_PUBLIC_HOST}/files/register`,
             folderName
         );
         return response.data;

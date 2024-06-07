@@ -2,7 +2,6 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setProgress } from "@/redux/slices/fileUploadSlice";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import api_root from "@/config";
 
 const DeserializedVideoDownloader = () => {
     const dispatch = useAppDispatch();
@@ -13,7 +12,7 @@ const DeserializedVideoDownloader = () => {
         const downloadFile = async () => {
             try {
                 const response = await axios.get(
-                    `${api_root}/files/retrieve/${jobId}`,
+                    `${process.env.NEXT_PUBLIC_HOST}/files/retrieve/${jobId}`,
                     {
                         responseType: "blob",
                         onDownloadProgress: (progressEvent) => {
