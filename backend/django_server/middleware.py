@@ -17,5 +17,4 @@ class ResponseLoggingMiddleware:
             print(response.content)
         except:
             print("No content")
-
         return response

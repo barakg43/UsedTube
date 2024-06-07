@@ -3,24 +3,24 @@
     "model": "admin.logentry",
     "pk": 1,
     "fields": {
-        "action_time": "2024-05-03T13:01:25.961Z",
-        "user": 1,
-        "content_type": 7,
-        "object_id": "1",
-        "object_repr": "root",
-        "action_flag": 1,
-        "change_message": "[{\"added\": {}}]"
+        "action_time": "2024-05-25T22:25:52.242Z",
+        "user": 5,
+        "content_type": 10,
+        "object_id": "5",
+        "object_repr": "usedtube",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Root folder\"]}}]"
     }
 },
 {
     "model": "admin.logentry",
     "pk": 2,
     "fields": {
-        "action_time": "2024-05-03T13:01:48.189Z",
-        "user": 1,
+        "action_time": "2024-05-26T10:35:36.428Z",
+        "user": 5,
         "content_type": 7,
-        "object_id": "2",
-        "object_repr": "test-lvl1",
+        "object_id": "d8083bc9-4b31-48ae-a2ca-74130e1a6c18",
+        "object_repr": "10",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
@@ -29,11 +29,11 @@
     "model": "admin.logentry",
     "pk": 3,
     "fields": {
-        "action_time": "2024-05-03T13:02:25.897Z",
-        "user": 1,
-        "content_type": 10,
-        "object_id": "1",
-        "object_repr": "10.pdf",
+        "action_time": "2024-05-26T10:35:49.070Z",
+        "user": 5,
+        "content_type": 7,
+        "object_id": "40c45a46-04fa-48e9-8503-2390d2f23baa",
+        "object_repr": "11",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
@@ -42,11 +42,11 @@
     "model": "admin.logentry",
     "pk": 4,
     "fields": {
-        "action_time": "2024-05-07T19:24:46.113Z",
-        "user": 1,
-        "content_type": 10,
-        "object_id": "2",
-        "object_repr": "test root.mp3",
+        "action_time": "2024-05-26T10:36:22.427Z",
+        "user": 5,
+        "content_type": 8,
+        "object_id": "558a9a9f-24e3-4715-93b7-2488f59dccbd",
+        "object_repr": "10.1.mp4",
         "action_flag": 1,
         "change_message": "[{\"added\": {}}]"
     }
@@ -55,13 +55,65 @@
     "model": "admin.logentry",
     "pk": 5,
     "fields": {
-        "action_time": "2024-05-17T12:33:16.673Z",
-        "user": 1,
-        "content_type": 4,
-        "object_id": "1",
-        "object_repr": "usedtube",
-        "action_flag": 2,
-        "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+        "action_time": "2024-05-26T10:37:31.766Z",
+        "user": 5,
+        "content_type": 8,
+        "object_id": "9d4d9708-295d-4373-8551-b45ed0381be5",
+        "object_repr": "root1.pdf",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 6,
+    "fields": {
+        "action_time": "2024-05-26T10:38:01.938Z",
+        "user": 5,
+        "content_type": 8,
+        "object_id": "2fdfe457-37be-41cd-81a3-d577cb84d051",
+        "object_repr": "sdfe.mp3",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 7,
+    "fields": {
+        "action_time": "2024-05-26T10:38:22.239Z",
+        "user": 5,
+        "content_type": 8,
+        "object_id": "66f30ebc-100d-4a8e-9132-6ff39b04f5c5",
+        "object_repr": "sdfe11.mp4",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 8,
+    "fields": {
+        "action_time": "2024-06-03T11:52:02.140Z",
+        "user": 5,
+        "content_type": 7,
+        "object_id": "ba460528-0c44-471e-af63-09d84b20bd57",
+        "object_repr": "101",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 9,
+    "fields": {
+        "action_time": "2024-06-03T11:52:23.373Z",
+        "user": 5,
+        "content_type": 7,
+        "object_id": "3a034c84-036a-4b16-8b47-3a287da0e5d1",
+        "object_repr": "1001",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
     }
 },
 {
@@ -176,108 +228,108 @@
     "model": "auth.permission",
     "pk": 13,
     "fields": {
-        "name": "Can add user",
+        "name": "Can add content type",
         "content_type": 4,
-        "codename": "add_user"
+        "codename": "add_contenttype"
     }
 },
 {
     "model": "auth.permission",
     "pk": 14,
     "fields": {
-        "name": "Can change user",
+        "name": "Can change content type",
         "content_type": 4,
-        "codename": "change_user"
+        "codename": "change_contenttype"
     }
 },
 {
     "model": "auth.permission",
     "pk": 15,
     "fields": {
-        "name": "Can delete user",
+        "name": "Can delete content type",
         "content_type": 4,
-        "codename": "delete_user"
+        "codename": "delete_contenttype"
     }
 },
 {
     "model": "auth.permission",
     "pk": 16,
     "fields": {
-        "name": "Can view user",
+        "name": "Can view content type",
         "content_type": 4,
-        "codename": "view_user"
+        "codename": "view_contenttype"
     }
 },
 {
     "model": "auth.permission",
     "pk": 17,
     "fields": {
-        "name": "Can add content type",
+        "name": "Can add session",
         "content_type": 5,
-        "codename": "add_contenttype"
+        "codename": "add_session"
     }
 },
 {
     "model": "auth.permission",
     "pk": 18,
     "fields": {
-        "name": "Can change content type",
+        "name": "Can change session",
         "content_type": 5,
-        "codename": "change_contenttype"
+        "codename": "change_session"
     }
 },
 {
     "model": "auth.permission",
     "pk": 19,
     "fields": {
-        "name": "Can delete content type",
+        "name": "Can delete session",
         "content_type": 5,
-        "codename": "delete_contenttype"
+        "codename": "delete_session"
     }
 },
 {
     "model": "auth.permission",
     "pk": 20,
     "fields": {
-        "name": "Can view content type",
+        "name": "Can view session",
         "content_type": 5,
-        "codename": "view_contenttype"
+        "codename": "view_session"
     }
 },
 {
     "model": "auth.permission",
     "pk": 21,
     "fields": {
-        "name": "Can add session",
+        "name": "Can add user details",
         "content_type": 6,
-        "codename": "add_session"
+        "codename": "add_userdetails"
     }
 },
 {
     "model": "auth.permission",
     "pk": 22,
     "fields": {
-        "name": "Can change session",
+        "name": "Can change user details",
         "content_type": 6,
-        "codename": "change_session"
+        "codename": "change_userdetails"
     }
 },
 {
     "model": "auth.permission",
     "pk": 23,
     "fields": {
-        "name": "Can delete session",
+        "name": "Can delete user details",
         "content_type": 6,
-        "codename": "delete_session"
+        "codename": "delete_userdetails"
     }
 },
 {
     "model": "auth.permission",
     "pk": 24,
     "fields": {
-        "name": "Can view session",
+        "name": "Can view user details",
         "content_type": 6,
-        "codename": "view_session"
+        "codename": "view_userdetails"
     }
 },
 {
@@ -320,306 +372,108 @@
     "model": "auth.permission",
     "pk": 29,
     "fields": {
-        "name": "Can add shared item",
+        "name": "Can add file",
         "content_type": 8,
-        "codename": "add_shareditem"
+        "codename": "add_file"
     }
 },
 {
     "model": "auth.permission",
     "pk": 30,
     "fields": {
-        "name": "Can change shared item",
+        "name": "Can change file",
         "content_type": 8,
-        "codename": "change_shareditem"
+        "codename": "change_file"
     }
 },
 {
     "model": "auth.permission",
     "pk": 31,
     "fields": {
-        "name": "Can delete shared item",
+        "name": "Can delete file",
         "content_type": 8,
-        "codename": "delete_shareditem"
+        "codename": "delete_file"
     }
 },
 {
     "model": "auth.permission",
     "pk": 32,
     "fields": {
-        "name": "Can view shared item",
+        "name": "Can view file",
         "content_type": 8,
-        "codename": "view_shareditem"
+        "codename": "view_file"
     }
 },
 {
     "model": "auth.permission",
     "pk": 33,
     "fields": {
-        "name": "Can add used space",
+        "name": "Can add shared item",
         "content_type": 9,
-        "codename": "add_usedspace"
+        "codename": "add_shareditem"
     }
 },
 {
     "model": "auth.permission",
     "pk": 34,
     "fields": {
-        "name": "Can change used space",
+        "name": "Can change shared item",
         "content_type": 9,
-        "codename": "change_usedspace"
+        "codename": "change_shareditem"
     }
 },
 {
     "model": "auth.permission",
     "pk": 35,
     "fields": {
-        "name": "Can delete used space",
+        "name": "Can delete shared item",
         "content_type": 9,
-        "codename": "delete_usedspace"
+        "codename": "delete_shareditem"
     }
 },
 {
     "model": "auth.permission",
     "pk": 36,
     "fields": {
-        "name": "Can view used space",
+        "name": "Can view shared item",
         "content_type": 9,
-        "codename": "view_usedspace"
+        "codename": "view_shareditem"
     }
 },
 {
     "model": "auth.permission",
     "pk": 37,
     "fields": {
-        "name": "Can add file",
+        "name": "Can add user",
         "content_type": 10,
-        "codename": "add_file"
+        "codename": "add_appuser"
     }
 },
 {
     "model": "auth.permission",
     "pk": 38,
     "fields": {
-        "name": "Can change file",
+        "name": "Can change user",
         "content_type": 10,
-        "codename": "change_file"
+        "codename": "change_appuser"
     }
 },
 {
     "model": "auth.permission",
     "pk": 39,
     "fields": {
-        "name": "Can delete file",
+        "name": "Can delete user",
         "content_type": 10,
-        "codename": "delete_file"
+        "codename": "delete_appuser"
     }
 },
 {
     "model": "auth.permission",
     "pk": 40,
     "fields": {
-        "name": "Can view file",
+        "name": "Can view user",
         "content_type": 10,
-        "codename": "view_file"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 41,
-    "fields": {
-        "name": "Can add user details",
-        "content_type": 11,
-        "codename": "add_userdetails"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 42,
-    "fields": {
-        "name": "Can change user details",
-        "content_type": 11,
-        "codename": "change_userdetails"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 43,
-    "fields": {
-        "name": "Can delete user details",
-        "content_type": 11,
-        "codename": "delete_userdetails"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 44,
-    "fields": {
-        "name": "Can view user details",
-        "content_type": 11,
-        "codename": "view_userdetails"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 45,
-    "fields": {
-        "name": "Can add Token",
-        "content_type": 12,
-        "codename": "add_token"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 46,
-    "fields": {
-        "name": "Can change Token",
-        "content_type": 12,
-        "codename": "change_token"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 47,
-    "fields": {
-        "name": "Can delete Token",
-        "content_type": 12,
-        "codename": "delete_token"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 48,
-    "fields": {
-        "name": "Can view Token",
-        "content_type": 12,
-        "codename": "view_token"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 49,
-    "fields": {
-        "name": "Can add Token",
-        "content_type": 13,
-        "codename": "add_tokenproxy"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 50,
-    "fields": {
-        "name": "Can change Token",
-        "content_type": 13,
-        "codename": "change_tokenproxy"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 51,
-    "fields": {
-        "name": "Can delete Token",
-        "content_type": 13,
-        "codename": "delete_tokenproxy"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 52,
-    "fields": {
-        "name": "Can view Token",
-        "content_type": 13,
-        "codename": "view_tokenproxy"
-    }
-},
-{
-    "model": "auth.user",
-    "pk": 1,
-    "fields": {
-        "password": "pbkdf2_sha256$390000$FcicLze9N81eXuTqpUVQWA$CeTVJjbOrsYsuUvOLdtAFyEheSrS3S4QR0AVosyxZdY=",
-        "last_login": "2024-05-19T11:34:45.408Z",
-        "is_superuser": true,
-        "username": "usedtube",
-        "first_name": "",
-        "last_name": "",
-        "email": "a@bb.com",
-        "is_staff": true,
-        "is_active": true,
-        "date_joined": "2024-05-03T12:43:12.262Z",
-        "groups": [],
-        "user_permissions": []
-    }
-},
-{
-    "model": "auth.user",
-    "pk": 5,
-    "fields": {
-        "password": "pbkdf2_sha256$390000$gKbXHJpyFowhaq6uCc1jM4$PWnL/lEfR6scNpIZFG5tZg8lefgugglTdpgSiWUddE8=",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "barak",
-        "first_name": "Barak",
-        "last_name": "Golan",
-        "email": "barak@litos.co.il",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2024-05-19T21:24:51.021Z",
-        "groups": [],
-        "user_permissions": []
-    }
-},
-{
-    "model": "auth.user",
-    "pk": 6,
-    "fields": {
-        "password": "pbkdf2_sha256$390000$HxLLhXmMRH3DxvtkzGKR2T$E1rxCtodsF5eOcQUylN0kkUTgGPvGaF3VKZuTnjWFAI=",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "barak1",
-        "first_name": "Barak",
-        "last_name": "Golan",
-        "email": "barak1@litos.co.il",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2024-05-19T21:25:52.518Z",
-        "groups": [],
-        "user_permissions": []
-    }
-},
-{
-    "model": "auth.user",
-    "pk": 7,
-    "fields": {
-        "password": "pbkdf2_sha256$390000$v2W4e5zjqhA3fdeYkh0PKr$gObkFspdtDeu/lucmPviu7f9qvNLSfylgxgeXY55fFs=",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "barakdwq1",
-        "first_name": "Barak",
-        "last_name": "Golan",
-        "email": "barak12@litos.co.il",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2024-05-19T21:27:01.304Z",
-        "groups": [],
-        "user_permissions": []
-    }
-},
-{
-    "model": "auth.user",
-    "pk": 8,
-    "fields": {
-        "password": "pbkdf2_sha256$390000$TNE9f17GKSWjj9dCl6izI1$hsWs9zMiRVkdoxURoDajLMMBRbMXH2HF0RzbViaskcQ=",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "44",
-        "first_name": "Barak",
-        "last_name": "Golan",
-        "email": "barawerk12@litos.co.il",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2024-05-19T21:27:55.643Z",
-        "groups": [],
-        "user_permissions": []
+        "codename": "view_appuser"
     }
 },
 {
@@ -650,24 +504,24 @@
     "model": "contenttypes.contenttype",
     "pk": 4,
     "fields": {
-        "app_label": "auth",
-        "model": "user"
-    }
-},
-{
-    "model": "contenttypes.contenttype",
-    "pk": 5,
-    "fields": {
         "app_label": "contenttypes",
         "model": "contenttype"
     }
 },
 {
     "model": "contenttypes.contenttype",
-    "pk": 6,
+    "pk": 5,
     "fields": {
         "app_label": "sessions",
         "model": "session"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 6,
+    "fields": {
+        "app_label": "files",
+        "model": "userdetails"
     }
 },
 {
@@ -683,7 +537,7 @@
     "pk": 8,
     "fields": {
         "app_label": "files",
-        "model": "shareditem"
+        "model": "file"
     }
 },
 {
@@ -691,265 +545,182 @@
     "pk": 9,
     "fields": {
         "app_label": "files",
-        "model": "usedspace"
+        "model": "shareditem"
     }
 },
 {
     "model": "contenttypes.contenttype",
     "pk": 10,
     "fields": {
-        "app_label": "files",
-        "model": "file"
-    }
-},
-{
-    "model": "contenttypes.contenttype",
-    "pk": 11,
-    "fields": {
-        "app_label": "files",
-        "model": "userdetails"
-    }
-},
-{
-    "model": "contenttypes.contenttype",
-    "pk": 12,
-    "fields": {
-        "app_label": "authtoken",
-        "model": "token"
-    }
-},
-{
-    "model": "contenttypes.contenttype",
-    "pk": 13,
-    "fields": {
-        "app_label": "authtoken",
-        "model": "tokenproxy"
+        "app_label": "account",
+        "model": "appuser"
     }
 },
 {
     "model": "sessions.session",
-    "pk": "25ktlvvs31hr3gpu42dlcki4ztnyz3ir",
+    "pk": "r9dfwxpcglkwzp3wn0yp48yxkkcel2b7",
     "fields": {
-        "session_data": "e30:1s8e8U:QvhKhHCxSnDoxFPFczQGd-gbSheuNkwXGMbTJ5GEj6U",
-        "expire_date": "2024-06-02T10:51:26.743Z"
+        "session_data": ".eJxVjMsOwiAQRf-FtSFAh5dL934DGWCQqoGktCvjv2uTLnR7zzn3xQJuaw3boCXMmZ2ZZqffLWJ6UNtBvmO7dZ56W5c58l3hBx382jM9L4f7d1Bx1G9dDDjthREJLGppldeEICzYmJHihMrRRMXnBM67JIyUsSgCYUiStJq9P889N30:1sAzWI:oXi4KEXFiEQmVnoxItkqedaU9Z28mja6Pgk5RnyzNO0",
+        "expire_date": "2024-06-08T22:05:42.536Z"
     }
 },
 {
     "model": "sessions.session",
-    "pk": "2ypv5ugn9m7t0sufvbcdto2c40dfs77w",
+    "pk": "v2mi54efq4gvsj0a92sfx74asqymv7x4",
     "fields": {
-        "session_data": ".eJxVjEEOwiAUBe_C2hCgQK1L956BPD4fWzWQlHZlvLtt0oVu38y8twhYlzGsjecwJXERWpx-twh6ctlBeqDcq6RalnmKclfkQZu81cSv6-H-HYxo41abczeozDknWFKRsjcG2kYLBjvbedbk2PfK04AB1oAAkKfNd13P4vMFDdk5OA:1s8eE2:ibWlf1EzvqqN4Jn7vB8zqO6IRBJHkKP2kAK06rowy2A",
-        "expire_date": "2024-06-02T10:57:10.448Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "4llbwogk4m608n9pz3ja3sxjrp6398vs",
-    "fields": {
-        "session_data": ".eJxVjEEOgjAQRe_StWk6OKWMS_ecgcy0U4saSCisjHdXEha6_e-9_zIDb2sZtqrLMCZzMWBOv5twfOi0g3Tn6TbbOE_rMordFXvQavs56fN6uH8HhWv51oQZg6MMSkG7s1fvs4rXrkUhAAFIsWF0QZCANHILqfGEjMySHZr3B9n6N9c:1s3irq:ORhc1eHqSPDfX14hj6IlJdNhxn-AfXFIzgE639Pg1cE",
-        "expire_date": "2024-05-19T20:53:54.046Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "5y5z52kffqd6ncawi2zuhszlkw7ayeqz",
-    "fields": {
-        "session_data": "e30:1s7yAh:cJ3fsokdkqj0xNcFZSEJbdfE_u8nlVQW43UjrlzoG9Y",
-        "expire_date": "2024-05-31T14:02:55.973Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "9r0cvw2goqeibuwzdsy3h8x93j57yuz0",
-    "fields": {
-        "session_data": ".eJxVjEEOgjAQRe_StWk6OKWMS_ecgcy0U4saSCisjHdXEha6_e-9_zIDb2sZtqrLMCZzMWBOv5twfOi0g3Tn6TbbOE_rMordFXvQavs56fN6uH8HhWv51oQZg6MMSkG7s1fvs4rXrkUhAAFIsWF0QZCANHILqfGEjMySHZr3B9n6N9c:1s3hNZ:gOJTz_4SWntkfjS5pkO4M6sRGe2TQr4MzYZPTnKKZ6A",
-        "expire_date": "2024-05-19T19:18:33.081Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "9z04g9dq0u9tij5l2ts2k1wdx4ym43ks",
-    "fields": {
-        "session_data": ".eJxVjEEOgjAQRe_StWk6OKWMS_ecgcy0U4saSCisjHdXEha6_e-9_zIDb2sZtqrLMCZzMWBOv5twfOi0g3Tn6TbbOE_rMordFXvQavs56fN6uH8HhWv51oQZg6MMSkG7s1fvs4rXrkUhAAFIsWF0QZCANHILqfGEjMySHZr3B9n6N9c:1s3fxC:WqbxO0cN5xiCGTKHTgtjHtDGbpbn79x6C3FhO7TGjIs",
-        "expire_date": "2024-05-19T17:47:14.592Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "cfcpqw3va1crjiugsfufb49oz3vb45md",
-    "fields": {
-        "session_data": ".eJxVjEEOwiAUBe_C2hCgQK1L956BPD4fWzWQlHZlvLtt0oVu38y8twhYlzGsjecwJXERWpx-twh6ctlBeqDcq6RalnmKclfkQZu81cSv6-H-HYxo41abczeozDknWFKRsjcG2kYLBjvbedbk2PfK04AB1oAAkKfNd13P4vMFDdk5OA:1s8eDl:yMGw5dgCEVev5UIM23nw70Dmm86e0s6B-hp0aTiLUtk",
-        "expire_date": "2024-06-02T10:56:53.076Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "cooksv63w9pvaaon22r6lzwhks5l6fgx",
-    "fields": {
-        "session_data": ".eJxVjEEOwiAUBe_C2hCgQK1L956BPD4fWzWQlHZlvLtt0oVu38y8twhYlzGsjecwJXERWpx-twh6ctlBeqDcq6RalnmKclfkQZu81cSv6-H-HYxo41abczeozDknWFKRsjcG2kYLBjvbedbk2PfK04AB1oAAkKfNd13P4vMFDdk5OA:1s7y9l:-810CbAzDdidzjN-_FCWfHgUBE2DL9ln8Xg_KQdB-7Q",
-        "expire_date": "2024-05-31T14:01:57.996Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "cvxgl1tgwr3ixeorf573wptoeo9k9yzj",
-    "fields": {
-        "session_data": ".eJxVjEEOgjAQRe_StWk6OKWMS_ecgcy0U4saSCisjHdXEha6_e-9_zIDb2sZtqrLMCZzMWBOv5twfOi0g3Tn6TbbOE_rMordFXvQavs56fN6uH8HhWv51oQZg6MMSkG7s1fvs4rXrkUhAAFIsWF0QZCANHILqfGEjMySHZr3B9n6N9c:1s4QN1:hPl-bTPXrpsxuCc1JIGbvpHlZiPm-nfM2h4qiAZwwko",
-        "expire_date": "2024-05-21T19:20:59.932Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "junbgrpeobu6an63vvnew48vvwlspt2g",
-    "fields": {
-        "session_data": ".eJxVjEEOwiAUBe_C2hCgQK1L956BPD4fWzWQlHZlvLtt0oVu38y8twhYlzGsjecwJXERWpx-twh6ctlBeqDcq6RalnmKclfkQZu81cSv6-H-HYxo41abczeozDknWFKRsjcG2kYLBjvbedbk2PfK04AB1oAAkKfNd13P4vMFDdk5OA:1s8dam:XWahlMjMMOeuRO04J0-0EbxwW0JaXlM-HsmbIxAZG9Y",
-        "expire_date": "2024-06-02T10:16:36.604Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "l7gujv8w5rmhhxdtcs3uyrisf65rn3jx",
-    "fields": {
-        "session_data": "e30:1s7yBb:8ex-neZj0mHhUL4DtfaqZZluwuio2HEFRnxCNqzrAmg",
-        "expire_date": "2024-05-31T14:03:51.900Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "lifhpp95pc4mplzcsycqd6110wmlcci8",
-    "fields": {
-        "session_data": ".eJxVjEEOwiAUBe_C2hCgQK1L956BPD4fWzWQlHZlvLtt0oVu38y8twhYlzGsjecwJXERWpx-twh6ctlBeqDcq6RalnmKclfkQZu81cSv6-H-HYxo41abczeozDknWFKRsjcG2kYLBjvbedbk2PfK04AB1oAAkKfNd13P4vMFDdk5OA:1s8eGc:be6HSapvvc2cFpeNOzVHkQr7qiJg-ZeUM9t4_xXVTtQ",
-        "expire_date": "2024-06-02T10:59:50.687Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "mmymv84vd54kl76xarf1ay434oa2v8ja",
-    "fields": {
-        "session_data": ".eJxVjEEOwiAUBe_C2hCgQK1L956BPD4fWzWQlHZlvLtt0oVu38y8twhYlzGsjecwJXERWpx-twh6ctlBeqDcq6RalnmKclfkQZu81cSv6-H-HYxo41abczeozDknWFKRsjcG2kYLBjvbedbk2PfK04AB1oAAkKfNd13P4vMFDdk5OA:1s8eAA:YFAuVPfVRIDT17InxswXcC4tdohTUiX0qaJ_uy0BuSE",
-        "expire_date": "2024-06-02T10:53:10.935Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "rydvzbbzhdayhi8d4v7rndkkb1qfkd55",
-    "fields": {
-        "session_data": ".eJxVjEEOwiAUBe_C2hCgQK1L956BPD4fWzWQlHZlvLtt0oVu38y8twhYlzGsjecwJXERWpx-twh6ctlBeqDcq6RalnmKclfkQZu81cSv6-H-HYxo41abczeozDknWFKRsjcG2kYLBjvbedbk2PfK04AB1oAAkKfNd13P4vMFDdk5OA:1s7yCP:_i1GnfENHqdjiimJ_Bc-CjLGEoLB7cuySxtW2ErrjYY",
-        "expire_date": "2024-05-31T14:04:41.013Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "tfawg48u79gd15t8xdx1bhk5ebrnx7e8",
-    "fields": {
-        "session_data": ".eJxVjEEOwiAUBe_C2hCgQK1L956BPD4fWzWQlHZlvLtt0oVu38y8twhYlzGsjecwJXERWpx-twh6ctlBeqDcq6RalnmKclfkQZu81cSv6-H-HYxo41abczeozDknWFKRsjcG2kYLBjvbedbk2PfK04AB1oAAkKfNd13P4vMFDdk5OA:1s7yEW:v10ql-4Zb_ew392RrFFkbV1xHjjxyVazTEvB2yPndns",
-        "expire_date": "2024-05-31T14:06:52.843Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "trtuwnhfdrja9tg30kdxk9cb69s86hc1",
-    "fields": {
-        "session_data": ".eJxVjEEOwiAUBe_C2hCgQK1L956BPD4fWzWQlHZlvLtt0oVu38y8twhYlzGsjecwJXERWpx-twh6ctlBeqDcq6RalnmKclfkQZu81cSv6-H-HYxo41abczeozDknWFKRsjcG2kYLBjvbedbk2PfK04AB1oAAkKfNd13P4vMFDdk5OA:1s8eCx:NKigm6zzeF7aUG_LfBo7wq3_6b5j2g1yLKG1hpIk_AE",
-        "expire_date": "2024-06-02T10:56:03.081Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "tvob6yawhnogi8pc6rpwgfq0pom2xxne",
-    "fields": {
-        "session_data": ".eJxVjEEOwiAUBe_C2hCgQK1L956BPD4fWzWQlHZlvLtt0oVu38y8twhYlzGsjecwJXERWpx-twh6ctlBeqDcq6RalnmKclfkQZu81cSv6-H-HYxo41abczeozDknWFKRsjcG2kYLBjvbedbk2PfK04AB1oAAkKfNd13P4vMFDdk5OA:1s7zSW:adzZF4qgUBYiyk9Ovdv7uAHW7TxfqTZEd1OwKHnThSI",
-        "expire_date": "2024-05-31T15:25:24.737Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "u05ygevl219i0xm0apup3qt99jjowynn",
-    "fields": {
-        "session_data": "e30:1s8eoP:dCPJcGX5WmwYcd_sS2Hhh-RbjPOd5ncJj7dHc0mfVyg",
-        "expire_date": "2024-06-02T11:34:45.390Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "us10ue598vvp6enzn3vh4jelnbzqck33",
-    "fields": {
-        "session_data": ".eJxVjEEOgjAQRe_StWk6OKWMS_ecgcy0U4saSCisjHdXEha6_e-9_zIDb2sZtqrLMCZzMWBOv5twfOi0g3Tn6TbbOE_rMordFXvQavs56fN6uH8HhWv51oQZg6MMSkG7s1fvs4rXrkUhAAFIsWF0QZCANHILqfGEjMySHZr3B9n6N9c:1s3q4e:HjUnfGJNksLcGPEoQNkvZC_gJr9hcW5OmKHDm6IrWkY",
-        "expire_date": "2024-05-20T04:35:36.177Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "uz4p7zq3yvwvotmmdt13czjdm30b8102",
-    "fields": {
-        "session_data": ".eJxVjEEOwiAUBe_C2hCgQK1L956BPD4fWzWQlHZlvLtt0oVu38y8twhYlzGsjecwJXERWpx-twh6ctlBeqDcq6RalnmKclfkQZu81cSv6-H-HYxo41abczeozDknWFKRsjcG2kYLBjvbedbk2PfK04AB1oAAkKfNd13P4vMFDdk5OA:1s7wlw:jufahG3g7hnaGvUpKUeySXk0XC9HotOQJ7ePVRAVc_8",
-        "expire_date": "2024-05-31T12:33:16.717Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "vj3foocxam7romd6fbkqdxza5kwitd5j",
-    "fields": {
-        "session_data": ".eJxVjEsOwjAMBe-SNYqa1K0bluw5Q-XYDimgROpnhbg7VOoCtm9m3suMtK153Badx0nM2Thz-t0i8UPLDuRO5VYt17LOU7S7Yg-62GsVfV4O9-8g05K_tQbhCE6RMCYA3yD1yQFyJxj6LkVVxdQOTcPRta0PDnoIyOBBeBAy7w_10DgM:1s3Tg0:KvlkuJe-G34dG9UTav1OgG2z9XwHmKIHSruvvlfiDZM",
-        "expire_date": "2024-05-19T04:40:40.331Z"
-    }
-},
-{
-    "model": "sessions.session",
-    "pk": "wz2tgbf5xdn4athl1mc6bcq7gcv2awpu",
-    "fields": {
-        "session_data": ".eJxVjEEOwiAUBe_C2hCgQK1L956BPD4fWzWQlHZlvLtt0oVu38y8twhYlzGsjecwJXERWpx-twh6ctlBeqDcq6RalnmKclfkQZu81cSv6-H-HYxo41abczeozDknWFKRsjcG2kYLBjvbedbk2PfK04AB1oAAkKfNd13P4vMFDdk5OA:1s8e7O:22Kl74MPRGIIslD5wdOI1pXZX8pLRayklshjfoo2vw8",
-        "expire_date": "2024-06-02T10:50:18.803Z"
+        "session_data": ".eJxVjMsOwiAQRf-FtSFAh5dL934DGWCQqoGktCvjv2uTLnR7zzn3xQJuaw3boCXMmZ2ZZqffLWJ6UNtBvmO7dZ56W5c58l3hBx382jM9L4f7d1Bx1G9dDDjthREJLGppldeEICzYmJHihMrRRMXnBM67JIyUsSgCYUiStJq9P889N30:1sE6Dx:J1RaRL2UQR5WKPrDj-iX4__RBCZDPfwwHWzXf14Wqr8",
+        "expire_date": "2024-06-17T11:51:37.549Z"
     }
 },
 {
     "model": "files.folder",
-    "pk": 1,
+    "pk": "3a034c84-036a-4b16-8b47-3a287da0e5d1",
     "fields": {
-        "name": "root",
-        "parent": null,
-        "owner": 1,
-        "created_at": "2024-05-03T13:01:25.949Z",
-        "updated_at": "2024-05-03T13:01:25.949Z"
+        "name": "1001",
+        "parent": "ba460528-0c44-471e-af63-09d84b20bd57",
+        "owner": 5,
+        "created_at": "2024-06-03T11:52:23.368Z",
+        "updated_at": "2024-06-03T11:52:23.368Z"
     }
 },
 {
     "model": "files.folder",
-    "pk": 2,
+    "pk": "40c45a46-04fa-48e9-8503-2390d2f23baa",
     "fields": {
-        "name": "test-lvl1",
-        "parent": 1,
-        "owner": 1,
-        "created_at": "2024-05-03T13:01:48.185Z",
-        "updated_at": "2024-05-03T13:01:48.185Z"
+        "name": "11",
+        "parent": "f65077f4-3ce4-4140-ac22-58ea177b08b7",
+        "owner": 5,
+        "created_at": "2024-05-26T10:35:49.067Z",
+        "updated_at": "2024-05-26T10:35:49.067Z"
     }
 },
 {
-    "model": "files.file",
-    "pk": 1,
+    "model": "files.folder",
+    "pk": "ba460528-0c44-471e-af63-09d84b20bd57",
+    "fields": {
+        "name": "101",
+        "parent": "d8083bc9-4b31-48ae-a2ca-74130e1a6c18",
+        "owner": 5,
+        "created_at": "2024-06-03T11:52:02.133Z",
+        "updated_at": "2024-06-03T11:52:02.133Z"
+    }
+},
+{
+    "model": "files.folder",
+    "pk": "d8083bc9-4b31-48ae-a2ca-74130e1a6c18",
     "fields": {
         "name": "10",
-        "extension": "pdf",
-        "size": 2342,
-        "folder": 2,
-        "owner": 1,
-        "url": "https://www.youtube.com/watch?v=VYpCy6tR-pU",
-        "created_at": "2024-05-03T13:02:25.882Z",
-        "updated_at": "2024-05-03T13:02:25.882Z"
+        "parent": "f65077f4-3ce4-4140-ac22-58ea177b08b7",
+        "owner": 5,
+        "created_at": "2024-05-26T10:35:36.422Z",
+        "updated_at": "2024-05-26T10:35:36.422Z"
+    }
+},
+{
+    "model": "files.folder",
+    "pk": "f65077f4-3ce4-4140-ac22-58ea177b08b7",
+    "fields": {
+        "name": "My Drive",
+        "parent": null,
+        "owner": 4,
+        "created_at": "2024-05-25T22:01:22.151Z",
+        "updated_at": "2024-05-25T22:01:22.151Z"
     }
 },
 {
     "model": "files.file",
-    "pk": 2,
+    "pk": "2fdfe457-37be-41cd-81a3-d577cb84d051",
     "fields": {
-        "name": "test root",
+        "name": "sdfe",
         "extension": "mp3",
-        "size": 1133,
-        "folder": 1,
-        "owner": 1,
+        "size": 3223,
+        "folder": "40c45a46-04fa-48e9-8503-2390d2f23baa",
+        "owner": 5,
         "url": "https://www.youtube.com/watch?v=VYpCy6tR-pUwef",
-        "created_at": "2024-05-07T19:24:45.683Z",
-        "updated_at": "2024-05-07T19:24:45.683Z"
+        "created_at": "2024-05-26T10:38:01.934Z",
+        "updated_at": "2024-05-26T10:38:01.934Z"
+    }
+},
+{
+    "model": "files.file",
+    "pk": "558a9a9f-24e3-4715-93b7-2488f59dccbd",
+    "fields": {
+        "name": "10.1",
+        "extension": "mp4",
+        "size": 3323,
+        "folder": "d8083bc9-4b31-48ae-a2ca-74130e1a6c18",
+        "owner": 5,
+        "url": "https://www.youtube.com/watch?v=VYpCy6tR-pUwef",
+        "created_at": "2024-05-26T10:36:22.372Z",
+        "updated_at": "2024-05-26T10:36:22.372Z"
+    }
+},
+{
+    "model": "files.file",
+    "pk": "66f30ebc-100d-4a8e-9132-6ff39b04f5c5",
+    "fields": {
+        "name": "sdfe11",
+        "extension": "mp4",
+        "size": 343,
+        "folder": "40c45a46-04fa-48e9-8503-2390d2f23baa",
+        "owner": 5,
+        "url": "https://www.youtube.com/watch?v=VYpCy6tR-pUwef",
+        "created_at": "2024-05-26T10:38:22.234Z",
+        "updated_at": "2024-05-26T10:38:22.234Z"
+    }
+},
+{
+    "model": "files.file",
+    "pk": "9d4d9708-295d-4373-8551-b45ed0381be5",
+    "fields": {
+        "name": "root1",
+        "extension": "pdf",
+        "size": 324234,
+        "folder": "f65077f4-3ce4-4140-ac22-58ea177b08b7",
+        "owner": 5,
+        "url": "https://www.youtube.com/watch?v=VYpCy6tR-pUwef",
+        "created_at": "2024-05-26T10:37:31.760Z",
+        "updated_at": "2024-05-26T10:37:31.760Z"
+    }
+},
+{
+    "model": "account.appuser",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$390000$D2QxRBdVR57r6c1lsKxtFJ$UI4k2zCXoGCCBjtgsw8wgWvxM/3OAekMEF4na3W4SkY=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "44114456",
+        "first_name": "Barak",
+        "last_name": "Golan",
+        "email": "baarak@litos1.co.il",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2024-05-25T22:01:21.840Z",
+        "storage_usage": 0,
+        "root_folder": "f65077f4-3ce4-4140-ac22-58ea177b08b7",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "account.appuser",
+    "pk": 5,
+    "fields": {
+        "password": "pbkdf2_sha256$390000$9RLlPCt8puz2ms6s7TpZOu$BNsgrsWqZcMr6CTvomKa1xlhyqdCjXX4D7cxDY8kP8g=",
+        "last_login": "2024-06-03T11:51:37.506Z",
+        "is_superuser": true,
+        "username": "usedtube",
+        "first_name": "",
+        "last_name": "",
+        "email": "a@c.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2024-05-25T22:02:01Z",
+        "storage_usage": 0,
+        "root_folder": "f65077f4-3ce4-4140-ac22-58ea177b08b7",
+        "groups": [],
+        "user_permissions": []
     }
 }
 ]

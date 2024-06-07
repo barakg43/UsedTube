@@ -1,7 +1,7 @@
-"use client";
-import LoginForm from "./(components)/LoginForm";
+// "use client";
 import Logo from "@/app/(common)/Logo";
 import Link from "next/link";
+import LoginForm from "./(components)/LoginForm";
 
 const Login = () => {
     return (

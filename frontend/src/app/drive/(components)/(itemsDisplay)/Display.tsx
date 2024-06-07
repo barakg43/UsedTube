@@ -42,3 +42,4 @@ function ItemsDisplay({ files, folders }: ItemsDisplayProp) {
 }
 
 export default ItemsDisplay;
+

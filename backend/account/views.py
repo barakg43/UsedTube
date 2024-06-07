@@ -1,6 +1,5 @@
 import datetime
 from uuid import uuid4
-
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpRequest, JsonResponse
 from django.views import View
@@ -11,7 +10,6 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView, TokenRefreshView
-
 from account.models import AppUser
 from constants import ERROR, MESSAGE
 from django_server import settings
@@ -182,9 +180,11 @@ class CustomTokenVerifyView(TokenVerifyView):
 
 
 class LogoutView(APIView):
+    permission_classes = ([])
     def post(self, request, *args, **kwargs):
         response = Response(status=status.HTTP_204_NO_CONTENT)
         response.delete_cookie(AUTH_COOKIE_KEY)
         response.delete_cookie(AUTH_REFRESH_KEY)
-        
+
         return response
+

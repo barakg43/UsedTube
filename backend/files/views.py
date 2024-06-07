@@ -1,10 +1,8 @@
 import json
 import os
-
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, FileResponse, JsonResponse
 from rest_framework.views import APIView
-
 from constants import FILE, ERROR, JOB_ID
 from engine.constants import SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
 from engine.downloader.definition import Downloader
@@ -104,3 +102,4 @@ class DirectoryContentView(APIView):
         else:
 
             return JsonResponse({ERROR: 'bad request'}, status=400)
+
