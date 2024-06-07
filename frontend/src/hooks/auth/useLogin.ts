@@ -6,40 +6,29 @@ import { UserCredentials } from "@/types";
 import { useRouter } from "next/navigation";
 
 export default function useLogin() {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
-  const [loginApi, { isLoading }] = useLoginMutation();
+    const router = useRouter();
+    const dispatch = useAppDispatch();
+    const [loginApi, { isLoading, error }] = useLoginMutation();
 
-  //   const [formData, setFormData] = useState({
-  //     username: "",
-  //     password: "",
-  //   });
+    const toaster = useToaster();
 
-  //   const { username, password } = formData;
+    const login = ({ username, password }: UserCredentials) => {
+        loginApi({ username, password })
+            .unwrap()
+            .then(() => {
+                dispatch(setAuth());
+                toaster("Logged in successfully", "success");
 
-  //   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //     const { name, value } = event.target;
+                router.push("/drive/");
+            })
+            .catch(() => {
+                toaster("Failed to log in", "error");
+            });
+    };
 
-  //     setFormData({ ...formData, [name]: value });
-  //   };
-  const toaster = useToaster();
-
-  const login = ({ username, password }: UserCredentials) => {
-    loginApi({ username, password })
-      .unwrap()
-      .then(() => {
-        dispatch(setAuth());
-        toaster("Logged in successfully", "success");
-
-        router.push("/drive/");
-      })
-      .catch(() => {
-        toaster("Failed to log in", "error");
-      });
-  };
-
-  return {
-    login,
-    isLoading,
-  };
+    return {
+        login,
+        error,
+        isLoading,
+    };
 }

@@ -16,7 +16,6 @@ from utils import get_user_object
 
 
 class DownloadView(APIView):
-    @login_required
     def get(self, request: HttpRequest):
         user = request.user
         # you get in request: user id, file_name
@@ -47,10 +46,25 @@ class DownloadView(APIView):
                             as_attachment=True,
                             content_type=None)
 
+class ProgressView(APIView):
+    def get(self, request: HttpRequest, job_id: str):
+        # if Mr_EngineManager.is_processing_done(job_id):
+        #     processed_item_path = Mr_EngineManager.get_processed_item_path(job_id)
+        #     return FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
+        # else:
+        return JsonResponse({"progress": Mr_EngineManager.get_progress(job_id)})
+    
+class RetrieveProcessedItemView(APIView):
+    def get(self, request: HttpRequest, job_id: str):
+        if Mr_EngineManager.is_processing_done(job_id):
+            processed_item_path = Mr_EngineManager.get_processed_item_path(job_id)
+            return FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
+        else:
+            return JsonResponse({ERROR: 'processing not done yet'}, status=400)
+
 
 class UploadView(APIView):
-    @login_required
-    def post(self, request: HttpRequest):
+    def post(self, request: HttpRequest, folder_id: str):
         # Check if file was uploaded
         # WHAT ABOUT CREATION OF A FOLDER?
         # IF FOLDER CREATION:
@@ -69,14 +83,6 @@ class UploadView(APIView):
 
         return JsonResponse({JOB_ID: Mr_EngineManager.process_file_to_video_async(str(file_path))})
 
-    @login_required
-    def get(self, request: HttpRequest):
-        job_id = json.loads(request.body)[JOB_ID]
-        if Mr_EngineManager.is_processing_done(job_id):
-            # return the video to upload
-            pass
-        else:
-            return JsonResponse({})
 
 
 class UsedSpaceView(APIView):  #

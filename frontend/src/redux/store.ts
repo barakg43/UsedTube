@@ -4,20 +4,28 @@ import itemsSlice from "./slices/itemsSlice";
 import generalSlice from "./slices/generalSlice";
 import authSlice from "./slices/authSlice";
 import { baseApi } from "./baseApi";
+import fileUploadSlice from "./slices/fileUploadSlice";
 
 export const makeStore = () => {
-  return configureStore({
-    reducer: {
-      [baseApi.reducerPath]: baseApi.reducer,
-      user: userSlice,
-      items: itemsSlice,
-      general: generalSlice,
-      auth: authSlice,
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(baseApi.middleware),
-    devTools: process.env.NODE_ENV !== "production",
-  });
+    return configureStore({
+        reducer: {
+            [baseApi.reducerPath]: baseApi.reducer,
+            user: userSlice,
+            items: itemsSlice,
+            general: generalSlice,
+            auth: authSlice,
+            fileUpload: fileUploadSlice,
+        },
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware({
+                serializableCheck: {
+                    ignoredActions: ["fileUpload/setFile"],
+                    ignoredPaths: ["fileUpload.file"],
+                },
+            }).concat(baseApi.middleware),
+
+        devTools: process.env.NODE_ENV !== "production",
+    });
 };
 
 // Infer the type of makeStore
