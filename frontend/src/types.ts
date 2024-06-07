@@ -28,7 +28,7 @@ export type GeneralState = {
 export type ItemsState = {
   myItems: FSNode;
   sharedItems: FSNode[] | null;
-  activeDirectory: FSNode;
+  activeDirectoryId: string;
   displayType: DisplayType;
 };
 

@@ -33,7 +33,7 @@ function ItemsDisplay({ files, folders, parent }: ItemsDisplayProp) {
   const onEntryClick = (node: FSNode) => {
     // set active directory
     if (node.type === "folder") {
-      dispatch(setActiveDirectory(node));
+      dispatch(setActiveDirectory(node.id));
       router.push(`/drive/${node.id}`);
     }
   };

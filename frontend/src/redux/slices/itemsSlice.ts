@@ -9,7 +9,7 @@ import api_root from "@/config";
 const initialState: ItemsState = {
   myItems: { id: "", name: "" },
   sharedItems: null,
-  activeDirectory: fakeData.myItems,
+  activeDirectoryId: "",
   displayType: row,
 };
 
@@ -28,8 +28,8 @@ export const itemsSlice = createSlice({
     setItems: (state, action) => {
       state.myItems = action.payload;
     },
-    setActiveDirectory: (state, action: PayloadAction<FSNode>) => {
-      state.activeDirectory = action.payload;
+    setActiveDirectory: (state, action: PayloadAction<string>) => {
+      state.activeDirectoryId = action.payload;
     },
     setDisplayType: (state, action: PayloadAction<DisplayType>) => {
       state.displayType = action.payload;
