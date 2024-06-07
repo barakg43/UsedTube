@@ -1,10 +1,19 @@
-import { useAppSelector } from "@/redux/hooks";
+import { useDirectoryTreeQuery } from "@/redux/api/driveApi";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setItems } from "@/redux/slices/itemsSlice";
+import { RootState } from "@/redux/store";
+import { useEffect } from "react";
 import TreeFragment from "./TreeFragment";
-import { RootState } from "@reduxjs/toolkit/query";
 
 function FolderTree() {
-  const tree = useAppSelector((state: RootState) => state.items.items.myItems);
+  const dispatch = useAppDispatch();
+  const { data, isLoading } = useDirectoryTreeQuery(undefined);
 
+  useEffect(() => {
+    dispatch(setItems(data));
+  }, [data, setItems, dispatch]);
+  const tree = useAppSelector((state: RootState) => state.items.myItems);
+  if (isLoading) return <p>loading</p>;
   return <TreeFragment node={tree} spaces={0} />;
 }
 
