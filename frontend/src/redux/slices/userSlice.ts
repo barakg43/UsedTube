@@ -1,4 +1,3 @@
-import api_root from "@/config";
 import { UserValues } from "@/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
@@ -18,7 +17,7 @@ export const registerUserData = createAsyncThunk(
     "account/register",
     async (userData: UserValues, thunkAPI) => {
         const response = await axios.post(
-            `${api_root}/auth/register`,
+            `${process.env.NEXT_PUBLIC_HOST}/auth/register`,
             userData
         );
         return response.data;

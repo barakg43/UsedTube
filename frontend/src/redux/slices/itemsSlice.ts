@@ -1,24 +1,26 @@
 import { DisplayType, FSNode, ItemsState } from "@/types";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fakeData } from "./itemsSliceFakeData";
-import { row } from "@/constants";
+import { ROW } from "@/constants";
 import { getWritableDraft } from "./utils";
 import axios from "axios";
-import api_root from "@/config";
 
 const initialState: ItemsState = {
   myItems: { id: "", name: "" },
-  sharedItems: null,
+    displayType: ROW,
   activeDirectoryId: "",
-  displayType: row,
+  sharedItems: null,
 };
 
 export const createNewFolder = createAsyncThunk(
-  "items/createNewFolder",
-  async (folderName: string, thunkAPI) => {
-    const response = await axios.post(`${api_root}/files/register`, folderName);
-    return response.data;
-  }
+    "items/createNewFolder",
+    async (folderName: string, thunkAPI) => {
+        const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_HOST}/files/register`,
+            folderName
+        );
+        return response.data;
+    }
 );
 
 export const itemsSlice = createSlice({

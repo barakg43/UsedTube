@@ -7,10 +7,14 @@ class ResponseLoggingMiddleware:
         response = self.get_response(request)
 
         # Print the response headers
-        print("Response Headers:")
+        print("[Response Headers:]\n#################")
         for header, value in response.items():
             print(f"{header}: {value}")
-        print("#####################")
+
         # Print the response content
-        print("Response Status:", response.status_code,"\n#####################")
+        print("[Response Content:]\n#################")
+        try :
+            print(response.content)
+        except:
+            print("No content")
         return response

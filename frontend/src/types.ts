@@ -1,4 +1,4 @@
-import { file, folder } from "./constants";
+import { FILE, FOLDER } from "./constants";
 
 export type UserValues = {
   username: string;
