@@ -23,8 +23,8 @@ export function useUploadFileProcess() {
     const selectedFile = useAppSelector((state) => state.fileUpload.file);
     const uploadPhase = useAppSelector((state) => state.fileUpload.uploadPhase);
     const isUploading = useAppSelector((state) => state.fileUpload.isUploading);
-    const activeDirectory = useAppSelector(
-        (state) => state.items.activeDirectory
+    const activeDirectoryId = useAppSelector(
+        (state) => state.items.activeDirectoryId
     );
     const jobId = useAppSelector((state) => state.fileUpload.jobId);
     const progress = useAppSelector((state) => state.fileUpload.progress);
@@ -41,7 +41,7 @@ export function useUploadFileProcess() {
         try {
             uploadFile({
                 file: selectedFile,
-                folderId: activeDirectory.id,
+                folderId: activeDirectoryId,
             })
                 .unwrap()
                 .then(() => dispatch(nextPhase()));
