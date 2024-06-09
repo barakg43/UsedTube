@@ -4,23 +4,21 @@ import { fakeData } from "./itemsSliceFakeData";
 import { ROW } from "@/constants";
 import { getWritableDraft } from "./utils";
 import axios from "axios";
+import { root_api } from "@/axios";
 
 const initialState: ItemsState = {
   myItems: { id: "", name: "" },
-    displayType: ROW,
+  displayType: ROW,
   activeDirectoryId: "",
   sharedItems: null,
 };
 
 export const createNewFolder = createAsyncThunk(
-    "items/createNewFolder",
-    async (folderName: string, thunkAPI) => {
-        const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_HOST}/files/register`,
-            folderName
-        );
-        return response.data;
-    }
+  "items/createNewFolder",
+  async (folderName: string, thunkAPI) => {
+    const response = await axios.post(`${root_api}/files/register`, folderName);
+    return response.data;
+  }
 );
 
 export const itemsSlice = createSlice({
