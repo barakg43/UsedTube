@@ -1,10 +1,10 @@
 "use client";
-import React, { FC, ReactNode } from "react";
-import TreeFragment from "./TreeFragment";
 import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
+import { FC, ReactNode } from "react";
 import FileUpload from "./(fileUpload)/FileUpload";
 import SelectedFile from "./(fileUpload)/SelectedFile";
+import FolderTree from "./FolderTree";
 
 const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
   children,
@@ -24,7 +24,6 @@ const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
 };
 
 const Sidebar = () => {
-  const tree = useAppSelector((state: RootState) => state.items.myItems);
   const file = useAppSelector((state: RootState) => state.fileUpload.file);
   return (
     <nav className='h-full w-[200px] flex flex-col px-2'>
@@ -37,7 +36,7 @@ const Sidebar = () => {
         </SideBarItem>
       )}
       <SideBarItem hoverStyle={false}>
-        <TreeFragment node={tree} spaces={0} />
+        <FolderTree />
       </SideBarItem>
       <SideBarItem>Shared with me</SideBarItem>
       <SideBarItem>Quota and storage left</SideBarItem>
