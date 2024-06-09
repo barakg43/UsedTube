@@ -16,26 +16,19 @@ const MainArea = ({ folderId }: { folderId: string | undefined }) => {
   }
   const { files, folders, parents } = data || {};
   const activeDirectory = useAppSelector(
-    (state: RootState) => state.items.activeDirectory
+    (state: RootState) => state.items.activeDirectoryId
   );
   if (isLoading) {
-    return <div >Loading...</div>;
+    return <div>Loading...</div>;
   }
 
-    return (
-        <div className="flex flex-col flex-grow px-4 py-4 mb-4 mr-4 bg-dustyPaper rounded-3xl">
-            <div className="flex flex-row justify-between w-full">
-                <Typography variant="h4">{activeDirectory?.name}</Typography>
-                <div className="flex flex-row justify-between w-[250px]">
-                    <CreateNewFolder />
-                    <ItemsDisplayToggle />
-                </div>
-            </div>
-            <ItemsDisplay
-                parent={parents && parents[0]}
-                folders={folders || []}
-                files={files || []}
-            />
+  return (
+    <div className='flex flex-col flex-grow px-4 py-4 mb-4 mr-4 bg-dustyPaper rounded-3xl'>
+      <div className='flex flex-row justify-between w-full'>
+        <Typography variant='h4'>{activeDirectory}</Typography>
+        <div className='flex flex-row justify-between w-[250px]'>
+          <CreateNewFolder />
+          <ItemsDisplayToggle />
         </div>
       </div>
       <ItemsDisplay
