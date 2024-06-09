@@ -1,15 +1,17 @@
-import json
 import os
-from django.contrib.auth.decorators import login_required
+
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.http import HttpRequest, FileResponse, JsonResponse
+from rest_framework import status
 from rest_framework.views import APIView
+
 from constants import FILE, ERROR, JOB_ID
 from engine.constants import SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
 from engine.downloader.definition import Downloader
 from engine.downloader.impl import YouTubeDownloader
 from engine.driver import Driver
 from engine.manager import Mr_EngineManager
-from files.query import select_folder_subitems
+from files.query import select_folder_subitems, get_folder_tree, get_parent_tree_array
 from utils import get_user_object
 
 
@@ -36,7 +38,7 @@ class DownloadView(APIView):
         print("ABOUT TO DOWNLOAD")
         downloaded_video_path = downloader.download(video_url)
         print("FINISHED, ABOUT TO TRANSFORM VIDEO TO FILE")
-        restored_file_path = Driver().process_video_to_file(downloaded_video_path, compressed_file_size)
+        restored_file_path = Driver().process_video_to_file(downloaded_video_path, compressed_file_size,"")
         print("FINISHED, ABOUT TO SEND RESULTS")
         os.remove(downloaded_video_path)
         return FileResponse(open(restored_file_path, 'rb'),
