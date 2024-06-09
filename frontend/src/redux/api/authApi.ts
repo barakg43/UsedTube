@@ -6,17 +6,6 @@ interface User {
   email: string;
 }
 
-interface SocialAuthArgs {
-  provider: string;
-  state: string;
-  code: string;
-}
-
-interface CreateUserResponse {
-  success: boolean;
-  user: User;
-}
-
 const authApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     retrieveUser: builder.query<User, void>({

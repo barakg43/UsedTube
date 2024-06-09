@@ -26,8 +26,9 @@ export type GeneralState = {
 };
 
 export type ItemsState = {
-  items: FSItems;
-  activeDirectory: FSNode;
+  myItems: FSNode;
+  sharedItems: FSNode[] | null;
+  activeDirectoryId: string;
   displayType: DisplayType;
 };
 
@@ -50,19 +51,6 @@ export interface FSNode {
   isOpened?: boolean;
   children?: FSNode[];
   context?: any;
-}
-
-export function gotFolderChildren(node: FSNode) {
-  if (node.type === file) {
-    return false;
-  } else if (node.children) {
-    for (const child of node.children) {
-      if (child.type === folder) {
-        return true;
-      }
-    }
-  }
-  return false;
 }
 
 export type DisplayType = "grid" | "row";

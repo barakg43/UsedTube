@@ -1,6 +1,7 @@
 from django.contrib.sites import requests
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, ValidationError
 
+from account.models import AppUser
 from files.models import Folder, File
 
 
@@ -27,3 +28,23 @@ def get_parent_tree_array(user, folder_id: str):
             parent_array.append({"id": folder_parent.id, "name": folder_parent.name})
         current_folder = folder_parent
     return parent_array
+
+
+def get_folder_tree(user: AppUser):
+    user_root_folder = user.root_folder
+    if user_root_folder is None:
+        raise ObjectDoesNotExist("User root folder not found")
+    return __get_folder_tree_rec(user_root_folder)
+
+
+def __get_folder_tree_rec(root_folder: Folder):
+    folder_children = Folder.objects.filter(parent=root_folder)
+    children_array = []
+    for children in folder_children:
+        children_array.append(__get_folder_tree_rec(children))
+    return {
+        "id": root_folder.id,
+        "name": root_folder.name,
+        "isOpen":False,
+        "children": children_array
+    }
