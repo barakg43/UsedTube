@@ -106,10 +106,12 @@ class DirectoryContentView(APIView):
         user = get_user_object(request)
         if folder_id is None:
             folder_id = user.root_folder.id
-        if request.content_type == 'application/json':
-            folder_subitems = select_folder_subitems(user, folder_id)
-            return JsonResponse(folder_subitems)
-        else:
-
-            return JsonResponse({ERROR: 'bad request'}, status=400)
+        try:
+            folder_subitems_dict = select_folder_subitems(user, folder_id)
+            folder_subitems_dict["parents"] = get_parent_tree_array(user, folder_id)
+        except PermissionDenied as e:
+            return JsonResponse({ERROR: e.args[0]}, status=status.HTTP_403_FORBIDDEN)
+        except (ObjectDoesNotExist, ValidationError) as e:
+            return JsonResponse({ERROR: e.args[0]}, status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse(folder_subitems_dict)
 
