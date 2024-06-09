@@ -53,20 +53,6 @@ export interface FSNode {
   context?: any;
 }
 
-export function gotFolderChildren(node: FSNode) {
-  return true;
-  if (node.type === file) {
-    return false;
-  } else if (node.children) {
-    for (const child of node.children ?? []) {
-      if (child.type === folder) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
 export type DisplayType = "grid" | "row";
 
 export type ItemsDisplayProp<T extends FSNode> = {
