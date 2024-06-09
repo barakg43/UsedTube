@@ -13,20 +13,6 @@ const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
   return (
     <div
       className={`rounded-2xl bg-dustyPaper ${
-        hoverStyle ? " hover:bg-dustyPaperDark" : ""
-      } items-center mb-3 text-black text-center cursor-pointer`}
-    >
-      {children}
-    </div>
-  );
-};
-const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
-  children,
-  hoverStyle = true,
-}) => {
-  return (
-    <div
-      className={`rounded-2xl bg-dustyPaper ${
         hoverStyle
           ? " hover:bg-dustyPaperDark  cursor-pointer"
           : "cursor-default"
@@ -38,7 +24,7 @@ const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
 };
 
 const Sidebar = () => {
-  const tree = useAppSelector((state: RootState) => state.items.items.myItems);
+  const tree = useAppSelector((state: RootState) => state.items.myItems);
   const file = useAppSelector((state: RootState) => state.fileUpload.file);
   return (
     <nav className='h-full w-[200px] flex flex-col px-2'>
