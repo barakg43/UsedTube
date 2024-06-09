@@ -51,12 +51,15 @@ export function useUploadFileProcess() {
     };
 
     const pollingAction = () => {
-        if (!isUninitialized) {
-            refetch();
-        }
-        if (progress) {
-            if (progress < 100) setTimeout(pollingAction, 500);
-        }
+        setTimeout(() => {
+            if (!isUninitialized) {
+                refetch();
+            }
+            if (progress) {
+                if (progress < 100) setTimeout(pollingAction, 500);
+                else dispatch(nextPhase());
+            }
+        }, 500);
     };
 
     const downloadFile = async () => {
@@ -94,10 +97,7 @@ export function useUploadFileProcess() {
                     break;
 
                 case WAIT_FOR_SERVER_TO_SERIALIZE:
-                    setTimeout(() => {
-                        pollingAction();
-                        if (progress === 100) dispatch(nextPhase());
-                    }, 500);
+                    pollingAction();
                     break;
 
                 case DOWNLOAD_SERIALIZED_VIDEO:

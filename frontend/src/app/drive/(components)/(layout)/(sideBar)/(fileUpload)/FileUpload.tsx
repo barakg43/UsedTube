@@ -14,10 +14,10 @@ const FileUpload = () => {
     //@ts-ignore
     const onFileBrowserClick = (e) => {
         const _file = e.target.files?.[0];
-        if (_file.size < 6 * 1024 * 1024) {
+        if (_file.size < 100 * 1024 * 1024) {
             dispatch(setFile(_file));
         } else {
-            alert("Currently We only support files with size less than 5MB");
+            alert("Currently We only support files with size less than 100MB");
         }
         if (fileInputRef.current) {
             //@ts-ignore
