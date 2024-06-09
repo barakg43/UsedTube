@@ -7,6 +7,9 @@ import { theme } from "../theme";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setFile } from "@/redux/slices/fileUploadSlice";
 
+const MAX_FILE_SIZE = 100;
+const MiB = 1024 * 1024;
+
 const FileUpload = () => {
     const dispatch = useAppDispatch();
     const fileInputRef = useRef(null);
@@ -14,10 +17,12 @@ const FileUpload = () => {
     //@ts-ignore
     const onFileBrowserClick = (e) => {
         const _file = e.target.files?.[0];
-        if (_file.size < 100 * 1024 * 1024) {
+        if (_file.size < MAX_FILE_SIZE * MiB) {
             dispatch(setFile(_file));
         } else {
-            alert("Currently We only support files with size less than 100MB");
+            alert(
+                `Currently We only support files with size less than ${MAX_FILE_SIZE}MB`
+            );
         }
         if (fileInputRef.current) {
             //@ts-ignore

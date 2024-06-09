@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
     DOWNLOAD_SERIALIZED_VIDEO,
     UPLOAD_PLAIN_FILE_TO_SERVER,
@@ -27,11 +27,17 @@ export function useUploadFileProcess() {
         (state) => state.items.activeDirectoryId
     );
     const jobId = useAppSelector((state) => state.fileUpload.jobId);
-    const progress = useAppSelector((state) => state.fileUpload.progress);
     const [uploadFile] = useUploadFileMutation();
-    const { isUninitialized, refetch } = useGetUploadProgressQuery({
-        jobId,
-    });
+    const [polling, setPolling] = useState(false);
+    const { data: progress } = useGetUploadProgressQuery(
+        {
+            jobId,
+        },
+        {
+            pollingInterval: 500,
+            skip: !polling,
+        }
+    );
 
     const uploadPlainFile = () => {
         if (!selectedFile) {
@@ -50,19 +56,19 @@ export function useUploadFileProcess() {
         }
     };
 
-    const pollingAction = () => {
-        setTimeout(() => {
-            if (!isUninitialized) {
-                refetch();
-            }
-            if (progress) {
-                if (progress < 100) setTimeout(pollingAction, 500);
-                else dispatch(nextPhase());
-            }
-        }, 500);
+    const updateProgress = () => {
+        if (progress && progress === 100) {
+            dispatch(nextPhase());
+            setPolling(false);
+        } else if (progress === undefined) {
+            setPolling(true);
+        } else if (progress) {
+            dispatch(setProgress(progress));
+        }
     };
 
     const downloadFile = async () => {
+        dispatch(setProgress(0));
         try {
             const response = await httpClient.get(
                 `${process.env.NEXT_PUBLIC_HOST}/files/retrieve/${jobId}`,
@@ -84,6 +90,7 @@ export function useUploadFileProcess() {
             link.setAttribute("download", "video.mp4");
             document.body.appendChild(link);
             link.click();
+            dispatch(nextPhase());
         } catch (error) {
             console.log("Failed to download file");
         }
@@ -97,21 +104,17 @@ export function useUploadFileProcess() {
                     break;
 
                 case WAIT_FOR_SERVER_TO_SERIALIZE:
-                    pollingAction();
+                    updateProgress();
                     break;
 
                 case DOWNLOAD_SERIALIZED_VIDEO:
-                    dispatch(setProgress(0));
                     downloadFile();
-                    dispatch(nextPhase());
                     break;
 
                 case UPLOAD_TO_SELECTED_PROVIDER:
-                    dispatch(setIsUploading(false));
-                    dispatch(setFile(null));
-                    dispatch(nextPhase());
+                    alert("UPLOAD TO SELECTED PROVIDER");
                     break;
             }
         }
-    }, [uploadPhase, isUploading]);
+    }, [uploadPhase, isUploading, progress]);
 }
