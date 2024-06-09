@@ -44,7 +44,7 @@ const fileUploadSlice = createSlice({
             state.isUploading = action.payload;
         },
         nextPhase: (state) => {
-            state.uploadPhase = (state.uploadPhase + 1) % 3;
+            state.uploadPhase = (state.uploadPhase + 1) % 4;
             console.log(state.uploadPhase);
         },
     },

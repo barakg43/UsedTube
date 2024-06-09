@@ -1,4 +1,3 @@
-import api_root from "@/config";
 import axios from "axios";
 
 export const validateNotExisting = async (field: string, value: string) => {
