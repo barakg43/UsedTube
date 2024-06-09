@@ -17,6 +17,7 @@ import {
     setProgress,
 } from "@/redux/slices/fileUploadSlice";
 import { httpClient } from "@/axios";
+import { useProviderAPITokenQuery } from "@/redux/api/authApi";
 
 export function useUploadFileProcess() {
     const dispatch = useAppDispatch();
@@ -38,6 +39,9 @@ export function useUploadFileProcess() {
             skip: !polling,
         }
     );
+    const { data: providerAPIToken } = useProviderAPITokenQuery({
+        provider: "",
+    });
 
     const uploadPlainFile = () => {
         if (!selectedFile) {
