@@ -1,29 +1,36 @@
 import { useDispatch, useSelector } from "react-redux";
 import { google } from "googleapis";
-import fs from "fs";
 import { setProgress, nextPhase } from "@/redux/slices/fileUploadSlice";
 import { RootState } from "@/redux/store";
+import { useProviderAPITokenQuery } from "@/redux/api/authApi";
+import { YOUTUBE } from "@/constants";
 
 const useUploadToYoutube = (fileSize: number) => {
     const dispatch = useDispatch();
-    const selectedFile = useSelector(
-        (state: RootState) => state.fileUpload.file
+
+    const serializedVideo = useSelector(
+        (state: RootState) => state.fileUpload.serializedVideoOfSelectedFile
     );
 
+    const { data: providerAPIToken } = useProviderAPITokenQuery({
+        provider: YOUTUBE,
+    });
+
     const uploadToYoutube = async () => {
-        if (!selectedFile || !providerAPIToken?) return;
+        if (!serializedVideo || !providerAPIToken) return;
 
         const oauth2Client = new google.auth.OAuth2();
+
         oauth2Client.setCredentials({
-            access_token: providerAPIToken.access_token,
+            access_token: providerAPIToken.key,
         });
 
         const youtube = google.youtube({ version: "v3", auth: oauth2Client });
 
         try {
-            const res = await youtube.videos.insert(
+            const response = await youtube.videos.insert(
                 {
-                    part: "snippet,status",
+                    part: ["snippet", "status"],
                     requestBody: {
                         snippet: {
                             title: "Uploaded Video",
@@ -35,7 +42,7 @@ const useUploadToYoutube = (fileSize: number) => {
                         },
                     },
                     media: {
-                        body: selectedFile.stream(),
+                        body: serializedVideo.stream(),
                     },
                 },
                 {
@@ -46,7 +53,7 @@ const useUploadToYoutube = (fileSize: number) => {
                 }
             );
 
-            console.log("Video uploaded:", res.data);
+            console.log("Video uploaded:", response);
             dispatch(nextPhase());
         } catch (error) {
             console.error("Error uploading video to YouTube", error);

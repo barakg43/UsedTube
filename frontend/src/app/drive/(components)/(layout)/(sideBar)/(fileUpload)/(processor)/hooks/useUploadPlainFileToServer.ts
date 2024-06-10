@@ -4,7 +4,9 @@ import { useUploadFileMutation } from "@/redux/api/driveApi";
 
 const useUploadPlainFileToServer = () => {
     const dispatch = useAppDispatch();
-    const selectedFile = useAppSelector((state) => state.fileUpload.file);
+    const selectedFile = useAppSelector(
+        (state) => state.fileUpload.fileToUpload
+    );
     const activeDirectoryId = useAppSelector(
         (state) => state.items.activeDirectoryId
     );

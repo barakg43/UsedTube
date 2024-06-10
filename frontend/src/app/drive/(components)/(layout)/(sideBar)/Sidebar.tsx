@@ -3,7 +3,7 @@ import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { FC, ReactNode } from "react";
 import FileUploadButton from "./(fileUpload)/FileUploadButton";
-import SelectedFileCard from "./(fileUpload)/SelectedFile";
+import SelectedFileCard from "./(fileUpload)/SelectedFileCard";
 import FolderTree from "./FolderTree";
 
 const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
@@ -24,13 +24,15 @@ const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
 };
 
 const Sidebar = () => {
-    const file = useAppSelector((state: RootState) => state.fileUpload.file);
+    const fileToUpload = useAppSelector(
+        (state: RootState) => state.fileUpload.fileToUpload
+    );
     return (
         <nav className="h-full w-[200px] flex flex-col px-2">
             <SideBarItem>
                 <FileUploadButton />
             </SideBarItem>
-            {file && (
+            {fileToUpload && (
                 <SideBarItem hoverStyle={false}>
                     <SelectedFileCard />
                 </SideBarItem>

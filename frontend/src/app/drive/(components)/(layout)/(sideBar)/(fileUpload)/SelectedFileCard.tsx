@@ -4,18 +4,28 @@ import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
 import { grey } from "@mui/material/colors";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setFile, setIsUploading } from "@/redux/slices/fileUploadSlice";
+import {
+    setSelectedFileToUpload,
+    setIsUploading,
+} from "@/redux/slices/fileUploadSlice";
 import UploadProgressInfo from "./UploadProgressInfo";
 import { compactFileSize } from "@/redux/slices/utils";
-import { useUploadFileProcess } from "./(processor)/hooks/hooks";
 import { UPLOAD_TO_SELECTED_PROVIDER } from "@/constants";
+import { useUploadFileProcess } from "./(processor)/hooks/useUploadFileProcess";
 
 const SelectedFileCard = () => {
     const dispatch = useAppDispatch();
+
     const isUploading = useAppSelector((state) => state.fileUpload.isUploading);
-    const selectedFile = useAppSelector((state) => state.fileUpload.file);
+
+    const selectedFile = useAppSelector(
+        (state) => state.fileUpload.fileToUpload
+    );
+
     const uploadPhase = useAppSelector((state) => state.fileUpload.uploadPhase);
+
     useUploadFileProcess();
+
     if (!selectedFile) return null;
 
     return (
@@ -50,7 +60,7 @@ const SelectedFileCard = () => {
                                     "&:hover": { color: grey },
                                 }}
                                 onClick={() => {
-                                    dispatch(setFile(null));
+                                    dispatch(setSelectedFileToUpload(null));
                                 }}
                             />
                         </button>

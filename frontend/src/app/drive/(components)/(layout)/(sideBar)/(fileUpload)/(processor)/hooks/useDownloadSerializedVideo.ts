@@ -3,6 +3,7 @@ import {
     setProgress,
     nextPhase,
     setSerializedVideoSize,
+    setSerializedVideoOfSelectedFile,
 } from "@/redux/slices/fileUploadSlice";
 import { httpClient } from "@/axios";
 import { AxiosResponse, AxiosProgressEvent } from "axios";
@@ -42,9 +43,29 @@ const useDownloadSerializedVideo = (jobId: string) => {
         return link;
     };
 
-    const triggerDownload = (link: HTMLAnchorElement) => {
+    const triggerDownload = (
+        link: HTMLAnchorElement,
+        callback: (file: File) => void
+    ) => {
         link.click();
         document.body.removeChild(link);
+        link.addEventListener("click", () => {
+            const url = link.href;
+            const fileName = link.getAttribute("download");
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.responseType = "blob";
+            xhr.onload = () => {
+                const blob = xhr.response;
+                const file = new File(
+                    [blob],
+                    fileName ? fileName : "video.mp4"
+                );
+                // Invoke the callback with the file object
+                callback(file);
+            };
+            xhr.send();
+        });
     };
 
     const handleDownloadError = (error: unknown) => {
@@ -57,8 +78,10 @@ const useDownloadSerializedVideo = (jobId: string) => {
             const url = `${process.env.NEXT_PUBLIC_HOST}/files/retrieve/${jobId}`;
             const response = await fetchSerializedVideo(url);
             const link = createDownloadLink(new Blob([response.data]));
-            triggerDownload(link);
-            dispatch(nextPhase());
+            triggerDownload(link, (file) => {
+                dispatch(setSerializedVideoOfSelectedFile(file));
+                dispatch(nextPhase());
+            });
         } catch (error) {
             handleDownloadError(error);
         }

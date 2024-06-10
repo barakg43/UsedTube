@@ -6,16 +6,19 @@ import {
     WAIT_FOR_SERVER_TO_SERIALIZE,
 } from "@/constants";
 import { useAppSelector } from "@/redux/hooks";
-import useDownloadSerializedVideo from "./useDownloadVideo";
+
 import useUploadPlainFileToServer from "./useUploadPlainFileToServer";
 import useWaitForServerToSerialize from "./useWaitForServerToSerialize";
 import useUploadToSelectedProvider from "./useUploadToSelectedProvider";
+import useDownloadSerializedVideo from "./useDownloadSerializedVideo";
 
 export function useUploadFileProcess() {
     const jobId = useAppSelector((state) => state.fileUpload.jobId);
     const uploadPhase = useAppSelector((state) => state.fileUpload.uploadPhase);
     const isUploading = useAppSelector((state) => state.fileUpload.isUploading);
-    const selectedFile = useAppSelector((state) => state.fileUpload.file);
+    const selectedFile = useAppSelector(
+        (state) => state.fileUpload.fileToUpload
+    );
 
     const { downloadSerializedVideo } = useDownloadSerializedVideo(jobId);
     const { uploadPlainFileToServer } = useUploadPlainFileToServer();
