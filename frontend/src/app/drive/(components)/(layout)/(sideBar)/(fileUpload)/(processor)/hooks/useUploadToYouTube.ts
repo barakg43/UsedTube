@@ -19,42 +19,44 @@ const useUploadToYoutube = (fileSize: number) => {
     const uploadToYoutube = async () => {
         if (!serializedVideo || !providerAPIToken) return;
 
-        const oauth2Client = new google.auth.OAuth2();
+        // TODO: the line below cause exception!!!
+        // VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVv
 
-        oauth2Client.setCredentials({
-            access_token: providerAPIToken.key,
-        });
+        // const oauth2Client = new google.auth.OAuth2();
 
-        const youtube = google.youtube({ version: "v3", auth: oauth2Client });
+        // oauth2Client.setCredentials({
+        //     access_token: providerAPIToken.key,
+        // });
+
+        // const youtube = google.youtube({ version: "v3", auth: oauth2Client });
 
         try {
-            const response = await youtube.videos.insert(
-                {
-                    part: ["snippet", "status"],
-                    requestBody: {
-                        snippet: {
-                            title: "Uploaded Video",
-                            description: "Uploaded via API",
-                            tags: ["tag1", "tag2"],
-                        },
-                        status: {
-                            privacyStatus: "private",
-                        },
-                    },
-                    media: {
-                        body: serializedVideo.stream(),
-                    },
-                },
-                {
-                    onUploadProgress: (evt) => {
-                        const progress = (evt.bytesRead / fileSize) * 100;
-                        dispatch(setProgress(Math.round(progress)));
-                    },
-                }
-            );
-
-            console.log("Video uploaded:", response);
-            dispatch(nextPhase());
+            // const response = await youtube.videos.insert(
+            //     {
+            //         part: ["snippet", "status"],
+            //         requestBody: {
+            //             snippet: {
+            //                 title: "Uploaded Video",
+            //                 description: "Uploaded via API",
+            //                 tags: ["tag1", "tag2"],
+            //             },
+            //             status: {
+            //                 privacyStatus: "private",
+            //             },
+            //         },
+            //         media: {
+            //             body: serializedVideo.stream(),
+            //         },
+            //     },
+            //     {
+            //         onUploadProgress: (evt) => {
+            //             const progress = (evt.bytesRead / fileSize) * 100;
+            //             dispatch(setProgress(Math.round(progress)));
+            //         },
+            //     }
+            // );
+            // console.log("Video uploaded:", response);
+            // dispatch(nextPhase());
         } catch (error) {
             console.error("Error uploading video to YouTube", error);
         }
