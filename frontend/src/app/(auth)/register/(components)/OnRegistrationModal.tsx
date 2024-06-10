@@ -29,7 +29,7 @@ const OnRegistrationModal: React.FC = () => {
 
     const redirectToHome = () => {
         dispatch(setShowModal(false));
-        router.push("");
+        router.push("/");
     };
     return (
         <Modal
