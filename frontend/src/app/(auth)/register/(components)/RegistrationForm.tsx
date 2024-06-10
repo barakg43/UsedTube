@@ -217,7 +217,7 @@ const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
                     />
 
                     <Button variant="contained" className="mb-4" type="submit">
-                        {"Let's get API key"}
+                        {"Continue"}
                     </Button>
                 </div>
             </form>
