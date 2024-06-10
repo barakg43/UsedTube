@@ -9,6 +9,7 @@ interface FileUploadState {
     jobId: string;
     isUploading: boolean;
     uploadPhase: number;
+    serializedVideoSize: number;
 }
 
 const initialState: FileUploadState = {
@@ -19,6 +20,7 @@ const initialState: FileUploadState = {
     jobId: "",
     isUploading: false,
     uploadPhase: 0,
+    serializedVideoSize: 0,
 };
 
 const fileUploadSlice = createSlice({
@@ -47,6 +49,9 @@ const fileUploadSlice = createSlice({
             state.uploadPhase = (state.uploadPhase + 1) % 4;
             console.log(state.uploadPhase);
         },
+        setSerializedVideoSize: (state, action: PayloadAction<number>) => {
+            state.serializedVideoSize = state.file ? action.payload : 0;
+        },
     },
 });
 
@@ -58,5 +63,6 @@ export const {
     setJobId,
     setIsUploading,
     nextPhase,
+    setSerializedVideoSize,
 } = fileUploadSlice.actions;
 export default fileUploadSlice.reducer;

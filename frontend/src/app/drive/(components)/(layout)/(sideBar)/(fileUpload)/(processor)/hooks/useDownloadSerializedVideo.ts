@@ -1,5 +1,9 @@
 import { useDispatch } from "react-redux";
-import { setProgress, nextPhase } from "@/redux/slices/fileUploadSlice";
+import {
+    setProgress,
+    nextPhase,
+    setSerializedVideoSize,
+} from "@/redux/slices/fileUploadSlice";
 import { httpClient } from "@/axios";
 import { AxiosResponse, AxiosProgressEvent } from "axios";
 
@@ -21,10 +25,12 @@ const useDownloadSerializedVideo = (jobId: string) => {
     const fetchSerializedVideo = async (
         url: string
     ): Promise<AxiosResponse<Blob>> => {
-        return await httpClient.get(url, {
+        const response = await httpClient.get(url, {
             responseType: "blob",
             onDownloadProgress: handleDownloadProgress,
         });
+        dispatch(setSerializedVideoSize(response.data.size));
+        return response;
     };
 
     const createDownloadLink = (blob: Blob): HTMLAnchorElement => {
