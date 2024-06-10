@@ -1,15 +1,5 @@
 import { FILE, FOLDER } from "./constants";
 
-export type UserValues = {
-    username: string;
-    password: string;
-    confirmPassword: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    apiKey: string;
-};
-
 export type UserCredentials = {
     username: string;
     password: string;
