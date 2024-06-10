@@ -46,5 +46,5 @@ class AppUser(AbstractUser):
     
 class APIProvider(models.Model):
     name = models.CharField(max_length=30)
-    api_key = models.CharField()
+    api_key = models.TextField()
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
