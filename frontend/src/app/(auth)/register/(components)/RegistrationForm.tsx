@@ -8,12 +8,12 @@ import { UserValues } from "../../../../types";
 import { schema } from "../registration-schema";
 import { validateNotExisting } from "@/redux/slices/api";
 import {
-    confirmPassword,
-    email,
-    firstName,
-    lastName,
-    password,
-    username,
+    CONFIRMPASSWORD,
+    EMAIL,
+    FIRSTNAME,
+    LASTNAME,
+    PASSWORD,
+    USERNAME,
 } from "@/constants";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setFormData } from "@/redux/slices/userSlice";
@@ -79,15 +79,15 @@ const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
                                 label="first name"
                                 size="small"
                                 helperText={
-                                    errors[firstName]
-                                        ? errors[firstName].message
+                                    errors[FIRSTNAME]
+                                        ? errors[FIRSTNAME].message
                                         : ""
                                 }
-                                error={errors[firstName] ? true : false}
+                                error={errors[FIRSTNAME] ? true : false}
                                 sx={{ width: "200px" }}
                             />
                         )}
-                        name={firstName}
+                        name={FIRSTNAME}
                         control={control}
                     />
 
@@ -98,15 +98,15 @@ const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
                                 label="last name"
                                 size="small"
                                 helperText={
-                                    errors[lastName]
-                                        ? errors[lastName].message
+                                    errors[LASTNAME]
+                                        ? errors[LASTNAME].message
                                         : ""
                                 }
-                                error={errors[lastName] ? true : false}
+                                error={errors[LASTNAME] ? true : false}
                                 sx={{ width: "200px" }}
                             />
                         )}
-                        name={lastName}
+                        name={LASTNAME}
                         control={control}
                     />
 
@@ -114,17 +114,17 @@ const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
                         render={({ field }) => (
                             <TextField
                                 {...field}
-                                label={email}
+                                label={EMAIL}
                                 onBlur={onBlur}
                                 size="small"
                                 helperText={
-                                    errors[email] ? errors[email].message : ""
+                                    errors[EMAIL] ? errors[EMAIL].message : ""
                                 }
-                                error={errors[email] ? true : false}
+                                error={errors[EMAIL] ? true : false}
                                 sx={{ width: "200px" }}
                             />
                         )}
-                        name={email}
+                        name={EMAIL}
                         control={control}
                     />
 
@@ -132,19 +132,19 @@ const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
                         render={({ field }) => (
                             <TextField
                                 {...field}
-                                label={username}
+                                label={USERNAME}
                                 onBlur={onBlur}
                                 size="small"
                                 helperText={
-                                    errors[username]
-                                        ? errors[username].message
+                                    errors[USERNAME]
+                                        ? errors[USERNAME].message
                                         : ""
                                 }
-                                error={errors[username] ? true : false}
+                                error={errors[USERNAME] ? true : false}
                                 sx={{ width: "200px" }}
                             />
                         )}
-                        name={username}
+                        name={USERNAME}
                         control={control}
                     />
 
@@ -152,16 +152,16 @@ const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
                         render={({ field }) => (
                             <TextField
                                 {...field}
-                                label={password}
+                                label={PASSWORD}
                                 size="small"
                                 sx={{ width: "200px" }}
-                                type={showPassword ? "text" : password}
+                                type={showPassword ? "text" : PASSWORD}
                                 helperText={
-                                    errors[password]
-                                        ? errors[password].message
+                                    errors[PASSWORD]
+                                        ? errors[PASSWORD].message
                                         : ""
                                 }
-                                error={errors[password] ? true : false}
+                                error={errors[PASSWORD] ? true : false}
                                 InputProps={{
                                     endAdornment: (
                                         <IconButton
@@ -180,7 +180,7 @@ const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
                             />
                         )}
                         //@ts-ignore
-                        name={password}
+                        name={PASSWORD}
                         control={control}
                     />
 
@@ -189,19 +189,19 @@ const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
                             <TextField
                                 {...field}
                                 label="confirm password"
-                                type={showPassword ? "text" : password}
+                                type={showPassword ? "text" : PASSWORD}
                                 size="small"
                                 helperText={
-                                    errors[confirmPassword]
-                                        ? errors[confirmPassword].message
+                                    errors[CONFIRMPASSWORD]
+                                        ? errors[CONFIRMPASSWORD].message
                                         : ""
                                 }
-                                error={errors[confirmPassword] ? true : false}
+                                error={errors[CONFIRMPASSWORD] ? true : false}
                                 sx={{ width: "200px" }}
                             />
                         )}
                         //@ts-ignore
-                        name={confirmPassword}
+                        name={CONFIRMPASSWORD}
                         control={control}
                     />
 

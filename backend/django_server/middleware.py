@@ -13,6 +13,8 @@ class ResponseLoggingMiddleware:
 
         # Print the response content
         print("[Response Content:]\n#################")
-        print(response.content)
-
+        try :
+            print(response.content)
+        except:
+            print("No content")
         return response

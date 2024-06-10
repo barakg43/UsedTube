@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+"use client";
+import React from "react";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import { useCreateFolderMutation } from "@/redux/api/driveApi";
 import { Button, TextField, Typography, IconButton } from '@mui/material';
@@ -12,14 +13,14 @@ import { useAppSelector } from "@/redux/hooks";
 import { useToaster } from "@/app/(common)/useToaster";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
-
+import { useState } from "react";
 
 function CreateNewFolder() {
   const [isInputVisible, setInputVisible] = useState(false);
   const [folderName, setFolderName] = useState('');
   const dispatch = useAppDispatch();
   const toaster = useToaster();
-  const parentId = useAppSelector((state:RootState)=>  state.items.activeDirectory.id)
+  const parentId = useAppSelector((state:RootState)=>  state.items.activeDirectoryId)
   const [createFolder, { isLoading, error }] = useCreateFolderMutation();
   const router = useRouter();
   const handleCreateFolder = () => {

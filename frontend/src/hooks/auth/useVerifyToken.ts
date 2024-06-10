@@ -1,12 +1,11 @@
 import { useVerifyMutation } from "@/redux/api/authApi";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { finishInitialLoad, setAuth } from "@/redux/slices/authSlice";
 import { useEffect } from "react";
 
 export function useVerifyToken() {
   const dispatch = useAppDispatch();
   const [verify] = useVerifyMutation();
-
   useEffect(() => {
     verify(undefined)
       .unwrap()
@@ -16,5 +15,5 @@ export function useVerifyToken() {
       .finally(() => {
         dispatch(finishInitialLoad());
       });
-  }, []);
+  }, [dispatch, verify]);
 }
