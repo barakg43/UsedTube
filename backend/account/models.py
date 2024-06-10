@@ -1,9 +1,7 @@
 # Create your models here.
 # class YouTubeAPIKey()
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, AbstractUser
-
-import files
+from django.contrib.auth.models import AbstractUser
 
 
 # class MyUserManager(BaseUserManager):
@@ -45,3 +43,8 @@ class AppUser(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+class APIProvider(models.Model):
+    name = models.CharField(max_length=30)
+    api_key = models.CharField()
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
