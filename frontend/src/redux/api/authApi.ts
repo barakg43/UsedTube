@@ -61,14 +61,15 @@ const authApiSlice = baseApi.injectEndpoints({
         // }),
         providerAPIToken: builder.query({
             query: ({ provider }: { provider: string }) =>
-                `/account/provider-token/${provider}`,
+                `/auth/providers/${provider}`,
+            // log response and transform it
             transformResponse: (response: {
                 provider: string;
-                token: string;
-            }) => ({
-                provider: response.provider,
-                token: response.token,
-            }),
+                key: string;
+            }) => {
+                console.log(response);
+                return response;
+            },
         }),
     }),
 });

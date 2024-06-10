@@ -10,7 +10,7 @@ import { setFile } from "@/redux/slices/fileUploadSlice";
 const MAX_FILE_SIZE = 100;
 const MiB = 1024 * 1024;
 
-const FileUpload = () => {
+const FileUploadButton = () => {
     const dispatch = useAppDispatch();
     const fileInputRef = useRef(null);
     const isUploading = useAppSelector((state) => state.fileUpload.isUploading);
@@ -57,4 +57,4 @@ const FileUpload = () => {
     );
 };
 
-export default FileUpload;
+export default FileUploadButton;

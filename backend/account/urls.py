@@ -14,4 +14,5 @@ urlpatterns = [
 
     path('logout', LogoutView.as_view(), name='logout'),
     path('validate', Validate.as_view()),
+    path('providers/<str:provider_name>', APIProviderView.as_view()),
 ]

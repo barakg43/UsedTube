@@ -7,10 +7,10 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setFile, setIsUploading } from "@/redux/slices/fileUploadSlice";
 import UploadProgressInfo from "./UploadProgressInfo";
 import { compactFileSize } from "@/redux/slices/utils";
-import { useUploadFileProcess } from "./(processor)/hooks";
+import { useUploadFileProcess } from "./(processor)/hooks/hooks";
 import { UPLOAD_TO_SELECTED_PROVIDER } from "@/constants";
 
-const SelectedFile = () => {
+const SelectedFileCard = () => {
     const dispatch = useAppDispatch();
     const isUploading = useAppSelector((state) => state.fileUpload.isUploading);
     const selectedFile = useAppSelector((state) => state.fileUpload.file);
@@ -61,4 +61,4 @@ const SelectedFile = () => {
     );
 };
 
-export default SelectedFile;
+export default SelectedFileCard;

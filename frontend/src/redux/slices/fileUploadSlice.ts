@@ -6,7 +6,7 @@ interface FileUploadState {
     progress: number;
     error: string | null;
     success: boolean;
-    jobId: string | null;
+    jobId: string;
     isUploading: boolean;
     uploadPhase: number;
 }
@@ -16,7 +16,7 @@ const initialState: FileUploadState = {
     progress: 0,
     error: null,
     success: false,
-    jobId: null,
+    jobId: "",
     isUploading: false,
     uploadPhase: 0,
 };
@@ -37,7 +37,7 @@ const fileUploadSlice = createSlice({
         setSuccess: (state, action: PayloadAction<boolean>) => {
             state.success = action.payload;
         },
-        setJobId: (state, action: PayloadAction<string | null>) => {
+        setJobId: (state, action: PayloadAction<string>) => {
             state.jobId = action.payload;
         },
         setIsUploading: (state, action: PayloadAction<boolean>) => {
