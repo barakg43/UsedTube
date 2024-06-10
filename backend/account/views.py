@@ -10,7 +10,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView, TokenRefreshView
-from account.models import AppUser
+from account.models import APIProvider, AppUser
 from constants import ERROR, MESSAGE
 from django_server import settings
 from django_server.settings import AUTH_REFRESH_KEY, AUTH_COOKIE_KEY
@@ -40,6 +40,7 @@ class Register(View):
         username = body_dict.get('username')
         password = body_dict.get('password')
         email = body_dict.get('email')
+        # api_provider = body_dict.get('apiProvider')
         # add empty cases handle
         # Check if username or email already exists
         if AppUser.objects.filter(username=username).exists():
@@ -51,6 +52,7 @@ class Register(View):
         user = AppUser.objects.create_user(username=username, email=email, password=password,
                                         first_name=body_dict.get('firstName'),
                                         last_name=body_dict.get('lastName'),storage_usage=0)
+        # APIProvider.objects.create(name=body_dict.get('apiProvider'), api_key=body_dict.get('apiKey'), user=user)
 
         self.__additional_registration_actions(user)
 

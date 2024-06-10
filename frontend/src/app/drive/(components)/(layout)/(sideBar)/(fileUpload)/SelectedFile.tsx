@@ -1,5 +1,5 @@
 "use client";
-import React, { FC } from "react";
+import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
 import { grey } from "@mui/material/colors";

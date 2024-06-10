@@ -60,7 +60,6 @@ const authApiSlice = baseApi.injectEndpoints({
         //   }),
         // }),
         providerAPIToken: builder.query({
-            // on response, set the token in the general slice map relevant entry
             query: ({ provider }: { provider: string }) =>
                 `/account/provider-token/${provider}`,
             transformResponse: (response: {

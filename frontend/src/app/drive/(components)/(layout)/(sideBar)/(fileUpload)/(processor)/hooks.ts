@@ -10,12 +10,7 @@ import {
     useUploadFileMutation,
 } from "@/redux/api/driveApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-    nextPhase,
-    setFile,
-    setIsUploading,
-    setProgress,
-} from "@/redux/slices/fileUploadSlice";
+import { nextPhase, setProgress } from "@/redux/slices/fileUploadSlice";
 import { httpClient } from "@/axios";
 import { useProviderAPITokenQuery } from "@/redux/api/authApi";
 
@@ -43,7 +38,7 @@ export function useUploadFileProcess() {
         provider: "",
     });
 
-    const uploadPlainFile = () => {
+    const uploadPlainFileToServer = () => {
         if (!selectedFile) {
             alert("No file selected");
             return;
@@ -60,7 +55,7 @@ export function useUploadFileProcess() {
         }
     };
 
-    const updateProgress = () => {
+    const waitForServerToSerialize = () => {
         if (progress && progress === 100) {
             dispatch(nextPhase());
             setPolling(false);
@@ -71,7 +66,7 @@ export function useUploadFileProcess() {
         }
     };
 
-    const downloadFile = async () => {
+    const downloadSerializedVideo = async () => {
         dispatch(setProgress(0));
         try {
             const response = await httpClient.get(
@@ -100,23 +95,25 @@ export function useUploadFileProcess() {
         }
     };
 
+    const uploadToSelectedProvider = () => {};
+
     useEffect(() => {
         if (isUploading && selectedFile) {
             switch (uploadPhase) {
                 case UPLOAD_PLAIN_FILE_TO_SERVER:
-                    uploadPlainFile();
+                    uploadPlainFileToServer();
                     break;
 
                 case WAIT_FOR_SERVER_TO_SERIALIZE:
-                    updateProgress();
+                    waitForServerToSerialize();
                     break;
 
                 case DOWNLOAD_SERIALIZED_VIDEO:
-                    downloadFile();
+                    downloadSerializedVideo();
                     break;
 
                 case UPLOAD_TO_SELECTED_PROVIDER:
-                    alert("UPLOAD TO SELECTED PROVIDER");
+                    uploadToSelectedProvider();
                     break;
             }
         }
