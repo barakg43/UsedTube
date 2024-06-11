@@ -1,7 +1,6 @@
 import { useAppSelector } from "@/redux/hooks";
 import { useProviderAPITokenQuery } from "@/redux/api/authApi";
 import { YOUTUBE } from "@/constants";
-import useUploadToYoutube from "./useUploadToYouTube";
 
 const useUploadToSelectedProvider = () => {
     const { data: providerAPIToken } = useProviderAPITokenQuery({
@@ -14,11 +13,17 @@ const useUploadToSelectedProvider = () => {
 
     const { uploadToYoutube } = useUploadToYoutube(fileSize);
 
+    const serializedVideo = useAppSelector(
+        (state) => state.fileUpload.serializedVideoOfSelectedFile
+    );
+
     const uploadToSelectedProvider = () => {
         if (!providerAPIToken) throw new Error("No provider API token found");
         switch (providerAPIToken.provider) {
             case YOUTUBE:
-                uploadToYoutube();
+                if (!serializedVideo)
+                    throw new Error("No serialized video found");
+                uploadToYoutube(serializedVideo);
                 console.log("Uploading to YouTube!!!!#@!#!@#!@#!@#!@#!");
                 break;
             default:

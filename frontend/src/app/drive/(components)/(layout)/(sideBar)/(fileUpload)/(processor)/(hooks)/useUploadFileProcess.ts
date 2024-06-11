@@ -7,10 +7,10 @@ import {
 } from "@/constants";
 import { useAppSelector } from "@/redux/hooks";
 
-import useUploadPlainFileToServer from "./useUploadPlainFileToServer";
-import useWaitForServerToSerialize from "./useWaitForServerToSerialize";
-import useUploadToSelectedProvider from "./useUploadToSelectedProvider";
-import useDownloadSerializedVideo from "./useDownloadSerializedVideo";
+import useUploadPlainFileToServer from "./(preProcessing)/useUploadPlainFileToServer";
+import useWaitForServerToSerialize from "./(preProcessing)/useWaitForServerToSerialize";
+import useUploadToSelectedProvider from "./(postProcessing)/useUploadToSelectedProvider";
+import useDownloadSerializedVideo from "./(preProcessing)/useDownloadSerializedVideo";
 
 export function useUploadFileProcess() {
     const jobId = useAppSelector((state) => state.fileUpload.jobId);
