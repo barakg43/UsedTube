@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useGetUploadProgressQuery } from "@/redux/api/driveApi";

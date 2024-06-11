@@ -3,8 +3,8 @@ import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { FC, ReactNode } from "react";
 import FolderTree from "./FolderTree";
-import FileUploadButton from "./(fileUpload)/(processor)/(components)/FileUploadButton";
-import SelectedFileCard from "./(fileUpload)/(processor)/(components)/SelectedFileCard";
+import FileUploadButton from "./(fileUpload)/(components)/FileUploadButton";
+import SelectedFileCard from "./(fileUpload)/(components)/SelectedFileCard";
 
 const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
     children,

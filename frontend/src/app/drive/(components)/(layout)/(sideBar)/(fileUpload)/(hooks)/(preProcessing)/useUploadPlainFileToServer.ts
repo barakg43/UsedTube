@@ -1,3 +1,4 @@
+"use client";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { nextPhase } from "@/redux/slices/fileUploadSlice";
 import { useUploadFileMutation } from "@/redux/api/driveApi";

@@ -1,6 +1,8 @@
+"use client";
 import { useAppSelector } from "@/redux/hooks";
 import { useProviderAPITokenQuery } from "@/redux/api/authApi";
 import { YOUTUBE } from "@/constants";
+import useUploadToYoutube from "./(YouTube)/useUploadToYouTube";
 
 const useUploadToSelectedProvider = () => {
     const { data: providerAPIToken } = useProviderAPITokenQuery({
@@ -23,7 +25,7 @@ const useUploadToSelectedProvider = () => {
             case YOUTUBE:
                 if (!serializedVideo)
                     throw new Error("No serialized video found");
-                uploadToYoutube(serializedVideo);
+                uploadToYoutube();
                 console.log("Uploading to YouTube!!!!#@!#!@#!@#!@#!@#!");
                 break;
             default:
