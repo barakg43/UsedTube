@@ -3,9 +3,9 @@ import { Button, Typography } from "@mui/material";
 import React, { useRef } from "react";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { ThemeProvider } from "@emotion/react";
-import { theme } from "../theme";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setSelectedFileToUpload } from "@/redux/slices/fileUploadSlice";
+import { theme } from "../../theme";
 
 const MAX_FILE_SIZE = 100;
 const MiB = 1024 * 1024;

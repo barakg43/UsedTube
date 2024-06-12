@@ -11,7 +11,7 @@ import {
 import UploadProgressInfo from "./UploadProgressInfo";
 import { compactFileSize } from "@/redux/slices/utils";
 import { UPLOAD_TO_SELECTED_PROVIDER } from "@/constants";
-import { useUploadFileProcess } from "./(processor)/hooks/useUploadFileProcess";
+import { useUploadFileProcess } from "../(hooks)/useUploadFileProcess";
 
 const SelectedFileCard = () => {
     const dispatch = useAppDispatch();

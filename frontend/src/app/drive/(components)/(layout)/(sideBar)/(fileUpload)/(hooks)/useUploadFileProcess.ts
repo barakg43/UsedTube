@@ -12,13 +12,19 @@ import useUploadPlainFileToServer from "./(preProcessing)/useUploadPlainFileToSe
 import useWaitForServerToSerialize from "./(preProcessing)/useWaitForServerToSerialize";
 import useUploadToSelectedProvider from "./(postProcessing)/useUploadToSelectedProvider";
 import useDownloadSerializedVideo from "./(preProcessing)/useDownloadSerializedVideo";
+import { RootState } from "@/redux/store";
 
 export function useUploadFileProcess() {
-    const jobId = useAppSelector((state) => state.fileUpload.jobId);
-    const uploadPhase = useAppSelector((state) => state.fileUpload.uploadPhase);
-    const isUploading = useAppSelector((state) => state.fileUpload.isUploading);
+    const jobId = useAppSelector((state: RootState) => state.fileUpload.jobId);
+
+    const uploadPhase = useAppSelector(
+        (state: RootState) => state.fileUpload.uploadPhase
+    );
+    const isUploading = useAppSelector(
+        (state: RootState) => state.fileUpload.isUploading
+    );
     const selectedFile = useAppSelector(
-        (state) => state.fileUpload.fileToUpload
+        (state: RootState) => state.fileUpload.fileToUpload
     );
 
     const { downloadSerializedVideo } = useDownloadSerializedVideo(jobId);
