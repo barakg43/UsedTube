@@ -12,7 +12,7 @@ const Login = () => {
                 </Link>
             </div>
             <div className="mt-[2.5%]">
-                <Login Form />
+                <LoginForm />
             </div>
         </div>
     );

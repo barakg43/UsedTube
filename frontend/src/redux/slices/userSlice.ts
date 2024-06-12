@@ -2,9 +2,6 @@ import { YOUTUBE } from "@/constants";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { enableMapSet } from "immer";
-
-enableMapSet();
 
 export type UserValues = {
     username: string;
@@ -13,7 +10,7 @@ export type UserValues = {
     email: string;
     firstName: string;
     lastName: string;
-    APIProvider2Key: Map<string, string>;
+    APIProvider2Key: { YouTube: string; Vimeo: string }; // [provider, key]
 };
 
 const initialState: UserValues = {
@@ -23,31 +20,15 @@ const initialState: UserValues = {
     email: "",
     firstName: "",
     lastName: "",
-    APIProvider2Key: new Map<string, string>(),
+    APIProvider2Key: { YouTube: "", Vimeo: "" },
 };
 
 export const registerUserData = createAsyncThunk(
     "account/register",
     async (userData: UserValues, thunkAPI) => {
-        let reshapedData = {
-            username: userData.username,
-            password: userData.password,
-            email: userData.email,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-        };
-
-        let providers = {};
-
-        userData.APIProvider2Key.forEach((value, key) => {
-            providers = { ...providers, [key]: value };
-        });
-
-        let formData = { ...reshapedData, providers: { ...providers } };
-
         const response = await axios.post(
             `${process.env.NEXT_PUBLIC_HOST}/auth/register`,
-            formData
+            userData
         );
         return response.data;
     }
@@ -78,13 +59,17 @@ export const userSlice = createSlice({
         addAPIData: (state, action: PayloadAction<Record<string, string>>) => {
             try {
                 const { provider, key } = action.payload;
-                state.APIProvider2Key.set(provider, key);
+                if (notASupportedProvider(provider))
+                    throw new Error("Invalid provider");
+                // @ts-ignore
+                state.APIProvider2Key[provider] = key;
             } catch (e) {
                 console.error(e);
             }
         },
         clearAPIProviderData: (state) => {
-            state.APIProvider2Key.clear();
+            state.APIProvider2Key.YouTube = "";
+            state.APIProvider2Key.Vimeo = "";
         },
         setFormData: (state, action: PayloadAction<UserValues>) => {
             const {
@@ -103,6 +88,7 @@ export const userSlice = createSlice({
             state.lastName = lastName;
         },
     },
+
     extraReducers: (builder) => {
         // Add reducers for additional action types here, and handle loading state as needed
         builder.addCase(registerUserData.fulfilled, (state, action) => {});
@@ -122,3 +108,6 @@ export const {
 } = userSlice.actions;
 
 export default userSlice.reducer;
+function notASupportedProvider(provider: string) {
+    return provider !== YOUTUBE && provider !== "Vimeo";
+}
