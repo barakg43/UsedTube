@@ -1,8 +1,7 @@
 import { GRID } from "@/constants";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setActiveDirectory } from "@/redux/slices/itemsSlice";
+import { useAppSelector } from "@/redux/hooks";
 import { FSNode, FileNode } from "@/types";
-import { useRouter } from "next/navigation";
+import { useFolderClick } from "../useFolderClick";
 import ItemsDisplayGrid from "./GridDisplay";
 import ItemsDisplayRow from "./RowDisplay";
 // import { useRouter } from "next/navigation";
@@ -13,7 +12,8 @@ type ItemsDisplayProp = {
   parent: FSNode;
 };
 function ItemsDisplay({ files, folders, parent }: ItemsDisplayProp) {
-  const router = useRouter();
+  const onLabelClick = useFolderClick();
+
   const filesWithType: FSNode[] = files.map((fileItem) => ({
     ...fileItem,
     type: "file",
@@ -28,13 +28,10 @@ function ItemsDisplay({ files, folders, parent }: ItemsDisplayProp) {
     ...filesWithType,
   ].filter(Boolean);
   const displayType = useAppSelector((state) => state.items.displayType);
-  const dispatch = useAppDispatch();
-  // const router = useRouter();
   const onEntryClick = (node: FSNode) => {
     // set active directory
     if (node.type === "folder") {
-      dispatch(setActiveDirectory(node.id));
-      router.push(`/drive/${node.id}`);
+      onLabelClick(node.id);
     }
   };
 

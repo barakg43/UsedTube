@@ -1,6 +1,7 @@
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { useFolderClick } from "../../useFolderClick";
 function ParentItem({
   id,
   name,
@@ -10,10 +11,12 @@ function ParentItem({
   name: string;
   isLastItem: boolean;
 }) {
+  const onClickItem = useFolderClick();
   const router = useRouter();
+
   function onClick() {
     if (!isLastItem) {
-      router.push(`/drive/${id}`);
+      onClickItem(id);
     }
   }
 
