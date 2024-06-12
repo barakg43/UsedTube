@@ -45,6 +45,6 @@ def __get_folder_tree_rec(root_folder: Folder):
     return {
         "id": root_folder.id,
         "name": root_folder.name,
-        "isOpen":False,
+        "isOpened":False,
         "children": children_array
     }
