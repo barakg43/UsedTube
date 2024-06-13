@@ -7,12 +7,13 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setFile, setIsUploading } from "@/redux/slices/fileUploadSlice";
 import UploadProgressInfo from "./UploadProgressInfo";
 import { compactFileSize } from "@/redux/slices/utils";
-import FileUploadProcessor from "./(processor)/FileUploadProcessor";
+import { useUploadFileProcess } from "./(processor)/hooks";
 
 const SelectedFile = () => {
     const dispatch = useAppDispatch();
     const isUploading = useAppSelector((state) => state.fileUpload.isUploading);
     const selectedFile = useAppSelector((state) => state.fileUpload.file);
+    useUploadFileProcess();
     if (!selectedFile) return null;
 
     return (
@@ -22,7 +23,6 @@ const SelectedFile = () => {
             {isUploading ? (
                 <>
                     <UploadProgressInfo />
-                    <FileUploadProcessor />
                 </>
             ) : (
                 <div className="flex flex-row justify-center w-full">
