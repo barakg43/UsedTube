@@ -47,20 +47,26 @@ const driveApiSlice = baseApi.injectEndpoints({
         url: `/files/upload/progress/${jobId}`,
         method: "GET",
       }),
-      transformResponse: (response: { progress: number }) =>
-        response.progress * 100,
-      async onQueryStarted({ jobId }, { dispatch, queryFulfilled }) {
-        const { data } = await queryFulfilled;
-        dispatch(setProgress(data));
-        if (data === 100) dispatch(nextPhase());
-      },
+      transformResponse: (
+        response: { data: { folders: FSNode[]; files: FileNode[] } },
+        meta,
+        arg
+      ) => response.data,
     }),
-  }),
+    createFolder: builder.mutation({
+      query: ({ folderName, parentId }: { folderName: string; parentId: string }) => ({
+        url: `/files/create-folder`,
+        method: "POST",
+        body: { folderName, parentId },
+      })
+    }),
+  })
 });
 
 export const {
   useUploadFileMutation,
   useFolderContentQuery,
+  useCreateFolderMutation ,
   useDirectoryTreeQuery,
   useGetUploadProgressQuery,
 } = driveApiSlice;
