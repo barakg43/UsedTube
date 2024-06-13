@@ -3,18 +3,18 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: GeneralState = {
-  showModal: false,
-  activeDirectory: null,
+    showModal: false,
+    providerAPIToken: new Map<string, string>(),
 };
 
 export const generalSlice = createSlice({
-  name: "general",
-  initialState,
-  reducers: {
-    setShowModal: (state, action: PayloadAction<boolean>) => {
-      state.showModal = action.payload;
+    name: "general",
+    initialState,
+    reducers: {
+        setShowModal: (state, action: PayloadAction<boolean>) => {
+            state.showModal = action.payload;
+        },
     },
-  },
 });
 
 // Action creators are generated for each case reducer function

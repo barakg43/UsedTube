@@ -62,7 +62,10 @@ class RetrieveProcessedItemView(APIView):
     def get(self, request: HttpRequest, job_id: str):
         if Mr_EngineManager.is_processing_done(job_id):
             processed_item_path = Mr_EngineManager.get_processed_item_path(job_id)
-            return FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
+            file_size = os.path.getsize(processed_item_path)
+            response = FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
+            response.data = {'size': file_size}
+            return response
         else:
             return JsonResponse({ERROR: 'processing not done yet'}, status=400)
 

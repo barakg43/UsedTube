@@ -4,9 +4,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { TextField, IconButton, Button, Typography } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { UserValues } from "../../../../types";
 import { schema } from "../registration-schema";
-import { validateNotExisting } from "@/redux/slices/api";
 import {
     CONFIRMPASSWORD,
     EMAIL,
@@ -15,16 +13,15 @@ import {
     PASSWORD,
     USERNAME,
 } from "@/constants";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setFormData } from "@/redux/slices/userSlice";
-import { RootState } from "@/redux/store";
+import { useAppDispatch } from "@/redux/hooks";
+import { UserValues, setFormData } from "@/redux/slices/userSlice";
+import axios from "axios";
 
 const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
     setIsFinishFillingForm,
 }) => {
     const [showPassword, setShowPassword] = useState(false);
     const dispatch = useAppDispatch();
-    const apiKey = useAppSelector((s: RootState) => s.user.apiKey);
 
     const {
         handleSubmit,
@@ -36,6 +33,25 @@ const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
         //@ts-ignore
         resolver: yupResolver<UserValues>(schema),
     });
+
+    const onSubmit: SubmitHandler<UserValues> = async (data: UserValues) => {
+        dispatch(setFormData({ ...data }));
+        setIsFinishFillingForm(true);
+    };
+
+    const validateNotExisting = async (field: string, value: string) => {
+        try {
+            const response = await axios.post(
+                `${process.env.NEXT_PUBLIC_HOST}/auth/validate`,
+                {
+                    [field]: value,
+                }
+            );
+            return { valid: true, message: response.data.message };
+        } catch (error: any) {
+            return { valid: false, message: error.response.data.error };
+        }
+    };
 
     const onBlur = async (
         e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
@@ -54,11 +70,6 @@ const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
             //@ts-ignore
             clearErrors(e.target.name);
         }
-    };
-
-    const onSubmit: SubmitHandler<UserValues> = async (data: UserValues) => {
-        dispatch(setFormData({ ...data, apiKey }));
-        setIsFinishFillingForm(true);
     };
 
     return (
@@ -206,7 +217,7 @@ const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
                     />
 
                     <Button variant="contained" className="mb-4" type="submit">
-                        {"Let's get API key"}
+                        {"Continue"}
                     </Button>
                 </div>
             </form>
