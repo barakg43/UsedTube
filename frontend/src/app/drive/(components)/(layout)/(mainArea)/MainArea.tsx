@@ -15,6 +15,7 @@ import { FSNode, FileNode } from "@/types";
 
 const MainArea = ({ folderId }: { folderId: string | undefined }) => {
   const toaster = useToaster();
+
   const { data, error, isLoading } = useFolderContentQuery({ folderId });
   if (error) {
     // toaster(error.data, "error");
