@@ -12,3 +12,4 @@ export const UPLOAD_PLAIN_FILE_TO_SERVER = 0;
 export const WAIT_FOR_SERVER_TO_SERIALIZE = 1;
 export const DOWNLOAD_SERIALIZED_VIDEO = 2;
 export const UPLOAD_TO_SELECTED_PROVIDER = 3;
+export const YOUTUBE = "YouTube";

@@ -1,16 +1,13 @@
 import datetime
 from uuid import uuid4
-from django.contrib.auth import authenticate, login, logout
 from django.http import HttpRequest, JsonResponse
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt
 from djoser.social.views import ProviderAuthView
 from rest_framework import status
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView, TokenRefreshView
-from account.models import AppUser
+from account.models import APIProvider, AppUser
 from constants import ERROR, MESSAGE
 from django_server import settings
 from django_server.settings import AUTH_REFRESH_KEY, AUTH_COOKIE_KEY
@@ -40,6 +37,7 @@ class Register(View):
         username = body_dict.get('username')
         password = body_dict.get('password')
         email = body_dict.get('email')
+        
         # add empty cases handle
         # Check if username or email already exists
         if AppUser.objects.filter(username=username).exists():
@@ -52,6 +50,10 @@ class Register(View):
                                         first_name=body_dict.get('firstName'),
                                         last_name=body_dict.get('lastName'),storage_usage=0)
 
+        providers_to_keys = body_dict.get('providers')
+        for provider in providers_to_keys:
+            APIProvider.objects.create(provider_name=provider, api_key=providers_to_keys[provider], user=user)
+            
         self.__additional_registration_actions(user)
 
         return JsonResponse({MESSAGE: 'User registered successfully'})
@@ -188,3 +190,13 @@ class LogoutView(APIView):
 
         return response
 
+class APIProviderView(APIView):
+    def get(self, request: HttpRequest, provider_name: str):
+        try:
+            user = get_user_object(request)
+            provider = APIProvider.objects.get(provider_name=provider_name, user=user)
+        except APIProvider.DoesNotExist:
+            return JsonResponse({ERROR: 'Provider not found'}, status=404)
+        # WHY API KEY NOT SENT?
+        print(provider.api_key)
+        return JsonResponse({'provider': provider.provider_name, 'key': provider.api_key}, status=200)
