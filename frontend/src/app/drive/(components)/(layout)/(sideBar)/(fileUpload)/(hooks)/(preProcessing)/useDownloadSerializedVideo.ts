@@ -48,8 +48,6 @@ const useDownloadSerializedVideo = (jobId: string) => {
         link: HTMLAnchorElement,
         callback: (file: File) => void
     ) => {
-        link.click();
-        document.body.removeChild(link);
         link.addEventListener("click", () => {
             const url = link.href;
             const fileName = link.getAttribute("download");
@@ -67,6 +65,8 @@ const useDownloadSerializedVideo = (jobId: string) => {
             };
             xhr.send();
         });
+        link.click();
+        document.body.removeChild(link);
     };
 
     const handleDownloadError = (error: unknown) => {

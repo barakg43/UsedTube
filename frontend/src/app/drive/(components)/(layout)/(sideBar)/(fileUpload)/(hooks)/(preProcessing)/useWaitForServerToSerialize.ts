@@ -16,13 +16,15 @@ const useWaitForServerToSerialize = () => {
     );
 
     useEffect(() => {
-        if (progress === undefined && phase === WAIT_FOR_SERVER_TO_SERIALIZE) {
-            setPolling(true);
-        } else if (progress === 100) {
-            dispatch(nextPhase());
-            setPolling(false);
-        } else if (progress !== undefined) {
-            dispatch(setProgress(progress));
+        if (phase === WAIT_FOR_SERVER_TO_SERIALIZE) {
+            if (progress === undefined) {
+                setPolling(true);
+            } else if (progress === 100) {
+                dispatch(nextPhase());
+                setPolling(false);
+            } else {
+                dispatch(setProgress(progress));
+            }
         }
     }, [progress, phase, dispatch]);
 
