@@ -1,10 +1,12 @@
-import { GeneralState } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
+export type GeneralState = {
+    showModal: boolean;
+};
+
 const initialState: GeneralState = {
     showModal: false,
-    providerAPIToken: new Map<string, string>(),
 };
 
 export const generalSlice = createSlice({

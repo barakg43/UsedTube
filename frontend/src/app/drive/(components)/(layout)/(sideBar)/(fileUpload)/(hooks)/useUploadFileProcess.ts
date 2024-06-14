@@ -51,15 +51,7 @@ export function useUploadFileProcess() {
                     break;
             }
         }
-    }, [
-        uploadPhase,
-        isUploading,
-        selectedFile,
-        uploadPlainFileToServer,
-        waitForServerToSerialize,
-        downloadSerializedVideo,
-        uploadToSelectedProvider,
-    ]);
+    }, [uploadPhase, isUploading, selectedFile]);
 
     return null;
 }

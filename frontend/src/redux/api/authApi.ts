@@ -14,7 +14,7 @@ const authApiSlice = baseApi.injectEndpoints({
 
         login: builder.mutation({
             query: ({ username, password }) => ({
-                url: "auth/jwt/create",
+                url: "account/auth/jwt/create",
                 method: "POST",
                 body: { username, password },
             }),
@@ -28,13 +28,13 @@ const authApiSlice = baseApi.injectEndpoints({
         // }),
         verify: builder.mutation({
             query: () => ({
-                url: "/auth/jwt/verify",
+                url: "account/auth/jwt/verify",
                 method: "POST",
             }),
         }),
         logout: builder.mutation({
             query: () => ({
-                url: "/auth/logout",
+                url: "account/auth/logout",
                 method: "POST",
             }),
         }),
@@ -61,7 +61,7 @@ const authApiSlice = baseApi.injectEndpoints({
         // }),
         providerAPIToken: builder.query({
             query: ({ provider }: { provider: string }) =>
-                `/auth/providers/${provider}`,
+                `account/providers/${provider}`,
             // log response and transform it
             transformResponse: (response: {
                 provider: string;

@@ -10,11 +10,6 @@ export type FSItems = {
     sharedItems: FSNode[];
 };
 
-export type GeneralState = {
-    showModal: boolean;
-    providerAPIToken: Map<string, string>;
-};
-
 export type ItemsState = {
     myItems: FSNode;
     sharedItems: FSNode[] | null;
