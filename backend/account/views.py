@@ -189,14 +189,3 @@ class LogoutView(APIView):
         response.delete_cookie(AUTH_REFRESH_KEY)
 
         return response
-
-class APIProviderView(APIView):
-    def get(self, request: HttpRequest, provider_name: str):
-        try:
-            user = get_user_object(request)
-            provider = APIProvider.objects.get(provider_name=provider_name, user=user)
-        except APIProvider.DoesNotExist:
-            return JsonResponse({ERROR: 'Provider not found'}, status=404)
-        # WHY API KEY NOT SENT?
-        print(provider.api_key)
-        return JsonResponse({'provider': provider.provider_name, 'key': provider.api_key}, status=200)

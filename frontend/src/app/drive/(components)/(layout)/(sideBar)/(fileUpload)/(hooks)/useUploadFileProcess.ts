@@ -1,17 +1,14 @@
 "use client";
 import { useEffect } from "react";
 import {
-    DOWNLOAD_SERIALIZED_VIDEO,
+    DOWNLOAD_SERIALIZED_VIDEO as WAIT_FOR_SERVER_TO_UPLOAD,
     UPLOAD_PLAIN_FILE_TO_SERVER,
-    UPLOAD_TO_SELECTED_PROVIDER,
+    UPLOAD_TO_SELECTED_PROVIDER as FETCH_FILE_METADATA,
     WAIT_FOR_SERVER_TO_SERIALIZE,
 } from "@/constants";
 import { useAppSelector } from "@/redux/hooks";
-
-import useUploadPlainFileToServer from "./(preProcessing)/useUploadPlainFileToServer";
-import useWaitForServerToSerialize from "./(preProcessing)/useWaitForServerToSerialize";
-import useUploadToSelectedProvider from "./(postProcessing)/useUploadToSelectedProvider";
-import useDownloadSerializedVideo from "./(preProcessing)/useDownloadSerializedVideo";
+import useUploadPlainFileToServer from "./useUploadPlainFileToServer";
+import useWaitForServerToSerialize from "./useWaitForServerToSerialize";
 import { RootState } from "@/redux/store";
 
 export function useUploadFileProcess() {
@@ -27,10 +24,8 @@ export function useUploadFileProcess() {
         (state: RootState) => state.fileUpload.fileToUpload
     );
 
-    const { downloadSerializedVideo } = useDownloadSerializedVideo(jobId);
     const { uploadPlainFileToServer } = useUploadPlainFileToServer();
     const { waitForServerToSerialize } = useWaitForServerToSerialize();
-    const { uploadToSelectedProvider } = useUploadToSelectedProvider();
 
     useEffect(() => {
         if (isUploading && selectedFile) {
@@ -41,13 +36,11 @@ export function useUploadFileProcess() {
                 case WAIT_FOR_SERVER_TO_SERIALIZE:
                     waitForServerToSerialize();
                     break;
-                case DOWNLOAD_SERIALIZED_VIDEO:
-                    downloadSerializedVideo();
+                case WAIT_FOR_SERVER_TO_UPLOAD:
+                    throw new Error("reimplemented");
                     break;
-                case UPLOAD_TO_SELECTED_PROVIDER:
-                    uploadToSelectedProvider();
-                    break;
-                default:
+                case FETCH_FILE_METADATA:
+                    throw new Error("reimplemented");
                     break;
             }
         }

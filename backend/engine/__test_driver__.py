@@ -1,5 +1,4 @@
 import unittest
-
 from engine.constants import TEST_RESOURCES_DIR, FILES_READY_FOR_STORAGE_DIR, SAMPLE_FILE_4, SF_4_SIZE
 from engine.driver import Driver
 
@@ -26,3 +25,4 @@ class DriverTest(unittest.TestCase):
         driver = Driver()
         print(driver.process_video_to_file(paths_dict[VIDEO_TO_DESERIALIZE_PATH], SF_4_SIZE))
         pass
+    

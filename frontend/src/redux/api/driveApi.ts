@@ -52,8 +52,9 @@ const driveApiSlice = baseApi.injectEndpoints({
                 url: `/files/upload/progress/${jobId}`,
                 method: "GET",
             }),
-            transformResponse: (response: { progress: number }) =>
-                response.progress * 100,
+            transformResponse: (
+                response: { progress: number } // stage should also return
+            ) => response.progress * 100,
         }),
     }),
 });
