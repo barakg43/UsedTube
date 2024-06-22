@@ -139,13 +139,14 @@ class CreateNewFolderView(APIView):
             return JsonResponse({"error": "active directory is required"}, status=400)
 
         try:
-            parent_folder = Folder.objects.filter(id=active_directory_id)
+            parent_folder = Folder.objects.filter(id=active_directory_id).get()
             new_folder = Folder.objects.create(
-                name=folder_name, parent=parent_folder, owner=get_user_object()
+                name=folder_name, parent=parent_folder, owner=get_user_object(request)
             )
+
             return JsonResponse(
                 {
-                    "new folder": json.dumps(new_folder),
+                    "new folder": new_folder.name,
                     "parent id": active_directory_id,
                 },
                 status=201,

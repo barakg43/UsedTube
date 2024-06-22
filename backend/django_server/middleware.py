@@ -1,3 +1,10 @@
+from files.models import Folder
+
+
+tpos = Folder.objects.all()
+for x in tpos:
+    print(x)
+
 
 class ResponseLoggingMiddleware:
     def __init__(self, get_response):
@@ -13,7 +20,7 @@ class ResponseLoggingMiddleware:
 
         # Print the response content
         print("[Response Content:]\n#################")
-        try :
+        try:
             print(response.content)
         except:
             print("No content")

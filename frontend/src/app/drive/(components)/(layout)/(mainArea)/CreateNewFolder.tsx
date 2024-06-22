@@ -19,7 +19,6 @@ function CreateNewFolder() {
   const [isInputVisible, setInputVisible] = useState(false);
   const [folderName, setFolderName] = useState('');
   const dispatch = useAppDispatch();
-  const toaster = useToaster();
   const parentId = useAppSelector((state:RootState)=>  state.items.activeDirectoryId)
   const [createFolder, { isLoading, error }] = useCreateFolderMutation();
   const router = useRouter();
@@ -29,7 +28,7 @@ function CreateNewFolder() {
 
   const handleApprove = async () => {
     try {
-      await createFolder({ folderName, parentId:"1" }).unwrap();
+      await createFolder({ folderName, parentId:'aeb13b3a-3552-4af9-ab5d-bceb01ef8d59' }).unwrap();
       console.log(`Folder ${folderName} was created successfully`)
       // TODO: impliment front added folder
     } catch{

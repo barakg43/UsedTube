@@ -13,13 +13,13 @@ const initialState: ItemsState = {
   sharedItems: null,
 };
 
-export const createNewFolder = createAsyncThunk(
-  "items/createNewFolder",
-  async (folderName: string, thunkAPI) => {
-    const response = await axios.post(`${root_api}/files/register`, folderName);
-    return response.data;
-  }
-);
+// export const createNewFolder = createAsyncThunk(
+//   "items/createNewFolder",
+//   async (folderName: string, thunkAPI) => {
+//     const response = await axios.post(`${root_api}/files/register`, folderName);
+//     return response.data;
+//   }
+// );
 
 export const itemsSlice = createSlice({
   name: "items",
