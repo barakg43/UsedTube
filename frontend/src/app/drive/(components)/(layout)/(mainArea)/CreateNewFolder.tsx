@@ -29,13 +29,11 @@ function CreateNewFolder() {
 
   const handleApprove = async () => {
     try {
-      await createFolder({ folderName, parentId }).unwrap();
-      dispatch(setAuth());
-      toaster("Folder was created successfully", "success");
-      // TODO: refetch folder contents
-      router.push("/drive/");
-    } catch (error) {
-      toaster("Failed to create folder", "error");
+      await createFolder({ folderName, parentId:"1" }).unwrap();
+      console.log(`Folder ${folderName} was created successfully`)
+      // TODO: impliment front added folder
+    } catch{
+      console.error(`Failed to create folder ${folderName}`)
     }
   };
   

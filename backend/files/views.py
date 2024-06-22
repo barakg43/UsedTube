@@ -33,7 +33,7 @@ class DownloadView(APIView):
         # It is later used when returning the `FileResponse` in the `get` method of the `DownloadView`
         # class to provide the downloaded file with a specific filename when it is sent back to the
         # user for download.
-        file_name = 'sample-file2.pdf'
+        file_name = "sample-file2.pdf"
         # from the db extract video_url, compressed_file_size, content-type
         compressed_file_size = SF_4_SIZE  # in Bytes
         video_url = r"https://www.youtube.com/watch?v=jW9zNLdPH0M&ab_channel=GalAviezri"
@@ -42,13 +42,18 @@ class DownloadView(APIView):
         print("ABOUT TO DOWNLOAD")
         downloaded_video_path = downloader.download(video_url)
         print("FINISHED, ABOUT TO TRANSFORM VIDEO TO FILE")
-        restored_file_path = Driver().process_video_to_file(downloaded_video_path, compressed_file_size,"")
+        restored_file_path = Driver().process_video_to_file(
+            downloaded_video_path, compressed_file_size, ""
+        )
         print("FINISHED, ABOUT TO SEND RESULTS")
         os.remove(downloaded_video_path)
-        return FileResponse(open(restored_file_path, 'rb'),
-                            filename=file_name,
-                            as_attachment=True,
-                            content_type=None)
+        return FileResponse(
+            open(restored_file_path, "rb"),
+            filename=file_name,
+            as_attachment=True,
+            content_type=None,
+        )
+
 
 class ProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
@@ -57,14 +62,15 @@ class ProgressView(APIView):
         #     return FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
         # else:
         return JsonResponse({"progress": Mr_EngineManager.get_progress(job_id)})
-    
+
+
 class RetrieveProcessedItemView(APIView):
     def get(self, request: HttpRequest, job_id: str):
         if Mr_EngineManager.is_processing_done(job_id):
             processed_item_path = Mr_EngineManager.get_processed_item_path(job_id)
-            return FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
+            return FileResponse(open(processed_item_path, "rb"), as_attachment=True)
         else:
-            return JsonResponse({ERROR: 'processing not done yet'}, status=400)
+            return JsonResponse({ERROR: "processing not done yet"}, status=400)
 
 
 class UploadView(APIView):
@@ -75,39 +81,39 @@ class UploadView(APIView):
         #   PASS
         # ELSE:
         if FILE not in request.FILES:
-            return JsonResponse({ERROR: 'no file provided'}, status=400)
+            return JsonResponse({ERROR: "no file provided"}, status=400)
 
         uploaded_file = request.FILES[FILE]
 
         # Save the uploaded file to disk
         file_path = os.path.join(ITEMS_READY_FOR_PROCESSING, uploaded_file.name)
-        with open(file_path, 'wb') as destination:
+        with open(file_path, "wb") as destination:
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
 
-        return JsonResponse({JOB_ID: Mr_EngineManager.process_file_to_video_async(str(file_path))})
-
+        return JsonResponse(
+            {JOB_ID: Mr_EngineManager.process_file_to_video_async(str(file_path))}
+        )
 
 
 class UsedSpaceView(APIView):  #
     def get(self, request: HttpRequest):
         used_space = request.user.used_space.first()
-        return JsonResponse({'value': used_space.value})
+        return JsonResponse({"value": used_space.value})
 
 
 class DirectoryTree(APIView):
-    def get(self,request):
+    def get(self, request):
         try:
             user = get_user_object(request)
-            folder_tree=get_folder_tree(user)
+            folder_tree = get_folder_tree(user)
         except ObjectDoesNotExist as e:
-            return JsonResponse({ERROR:e.args[0] }, status=status.HTTP_404_NOT_FOUND)
+            return JsonResponse({ERROR: e.args[0]}, status=status.HTTP_404_NOT_FOUND)
         return JsonResponse(folder_tree)
 
 
-
 class DirectoryContentView(APIView):
-    def get(self, request, folder_id: str=None):
+    def get(self, request, folder_id: str = None):
         # create a json listing all files and their size of the requested folder
         user = get_user_object(request)
         if folder_id is None:
@@ -124,18 +130,25 @@ class DirectoryContentView(APIView):
 
 class CreateNewFolderView(APIView):
     def post(self, request: HttpRequest):
-        folder_name = request.data.get('folderName')
-        active_directory_id = request.data.get('activeDirectoryID')
-        
+        folder_name = request.data.get("folderName")
+        active_directory_id = request.data.get("parentId")
+
         if not folder_name:
-            return JsonResponse({'error': 'Folder name is required'}, status=400)
+            return JsonResponse({"error": "Folder name is required"}, status=400)
         if not active_directory_id:
-            return JsonResponse({'error': 'active directory is required'}, status=400)
-        
+            return JsonResponse({"error": "active directory is required"}, status=400)
+
         try:
             parent_folder = Folder.objects.filter(id=active_directory_id)
-            new_folder = Folder.objects.create(name=folder_name,parent=parent_folder,owner=get_user_object())
-            return JsonResponse({'new folder': json.dumps(new_folder), 'parent id': active_directory_id}, status=201)
-        except IntegrityError as e:
-            return JsonResponse({'error': str(e)}, status=400)
-        
+            new_folder = Folder.objects.create(
+                name=folder_name, parent=parent_folder, owner=get_user_object()
+            )
+            return JsonResponse(
+                {
+                    "new folder": json.dumps(new_folder),
+                    "parent id": active_directory_id,
+                },
+                status=201,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
