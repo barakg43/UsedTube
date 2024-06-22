@@ -10,7 +10,6 @@ import {
 } from "@/redux/slices/fileUploadSlice";
 import UploadProgressInfo from "./UploadProgressInfo";
 import { compactFileSize } from "@/redux/slices/utils";
-import { UPLOAD_TO_SELECTED_PROVIDER } from "@/constants";
 import { useUploadFileProcess } from "../(hooks)/useUploadFileProcess";
 
 const SelectedFileCard = () => {
@@ -21,8 +20,6 @@ const SelectedFileCard = () => {
     const selectedFile = useAppSelector(
         (state) => state.fileUpload.fileToUpload
     );
-
-    const uploadPhase = useAppSelector((state) => state.fileUpload.uploadPhase);
 
     useUploadFileProcess();
 

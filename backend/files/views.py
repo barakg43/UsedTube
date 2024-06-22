@@ -48,11 +48,9 @@ class DownloadView(APIView):
 
 class ProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
-        # if Mr_EngineManager.is_processing_done(job_id):
-        #     processed_item_path = Mr_EngineManager.get_processed_item_path(job_id)
-        #     return FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
-        # else:
-        return JsonResponse({"progress": Mr_EngineManager.get_progress(job_id)})
+        if Mr_EngineManager.is_processing_done(job_id):
+            return JsonResponse({"phase": 2, "progress": 101})
+        return JsonResponse({"phase": 1,"progress": Mr_EngineManager.get_progress(job_id)})
     
 class RetrieveProcessedItemView(APIView):
     def get(self, request: HttpRequest, job_id: str):

@@ -1,12 +1,5 @@
-import { FSNode, FileNode } from "@/types";
 import { baseApi } from "../baseApi";
-import {
-    nextPhase,
-    setError,
-    setIsUploading,
-    setJobId,
-    setProgress,
-} from "../slices/fileUploadSlice";
+import { setError, setIsUploading, setJobId } from "../slices/fileUploadSlice";
 
 const driveApiSlice = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -52,9 +45,6 @@ const driveApiSlice = baseApi.injectEndpoints({
                 url: `/files/upload/progress/${jobId}`,
                 method: "GET",
             }),
-            transformResponse: (
-                response: { progress: number } // stage should also return
-            ) => response.progress * 100,
         }),
     }),
 });

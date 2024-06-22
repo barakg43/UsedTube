@@ -8,11 +8,11 @@ interface FileUploadState {
     fileToUpload: File | null;
     serializedVideoOfSelectedFile: File | null;
     serializedVideoSize: number;
-    progress: number;
     error: string | null;
     success: boolean;
     jobId: string;
     isUploading: boolean;
+    polling: boolean;
     uploadPhase: number;
 }
 
@@ -20,11 +20,11 @@ const initialState: FileUploadState = {
     fileToUpload: null,
     serializedVideoOfSelectedFile: null,
     serializedVideoSize: 0,
-    progress: 0,
     error: null,
     success: false,
     jobId: "",
     isUploading: false,
+    polling: false,
     uploadPhase: 0,
 };
 
@@ -37,9 +37,6 @@ const fileUploadSlice = createSlice({
             action: PayloadAction<File | null>
         ) => {
             state.fileToUpload = action.payload;
-        },
-        setProgress: (state, action: PayloadAction<number>) => {
-            state.progress = action.payload;
         },
         setError: (state, action: PayloadAction<string | null>) => {
             state.error = action.payload;
@@ -54,7 +51,7 @@ const fileUploadSlice = createSlice({
             state.isUploading = action.payload;
         },
         nextPhase: (state) => {
-            state.uploadPhase = (state.uploadPhase + 1) % 4;
+            state.uploadPhase = (state.uploadPhase + 1) % 3;
             console.log(state.uploadPhase);
         },
         setSerializedVideoSize: (state, action: PayloadAction<number>) => {
@@ -68,12 +65,14 @@ const fileUploadSlice = createSlice({
         ) => {
             state.serializedVideoOfSelectedFile = action.payload;
         },
+        setPolling: (state, action: PayloadAction<boolean>) => {
+            state.polling = action.payload;
+        },
     },
 });
 
 export const {
     setSelectedFileToUpload,
-    setProgress,
     setError,
     setSuccess,
     setJobId,
@@ -81,5 +80,6 @@ export const {
     nextPhase,
     setSerializedVideoSize,
     setSerializedVideoOfSelectedFile,
+    setPolling,
 } = fileUploadSlice.actions;
 export default fileUploadSlice.reducer;
