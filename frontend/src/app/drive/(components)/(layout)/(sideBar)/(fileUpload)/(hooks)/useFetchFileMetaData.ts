@@ -1,16 +1,13 @@
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch } from "@/redux/hooks";
 import { nextPhase, setIsUploading } from "@/redux/slices/fileUploadSlice";
 
 export function useFetchFileMetaData() {
-    // bring the file metadata from the server
-    // nextphase()
-    // isUploading = false
-    const jobId = useAppSelector((state) => state.fileUpload.jobId);
     const dispatch = useAppDispatch();
 
     const fetchFileMetaData = () => {
         // fetch file metadata
         // set the file in the tree
+        alert("File metadata fetched successfully! Need To Implement fetch");
         dispatch(nextPhase());
         dispatch(setIsUploading(false));
     };

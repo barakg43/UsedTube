@@ -4,6 +4,8 @@ from typing import Dict, Tuple
 from uuid import uuid1
 from engine.driver import Driver
 from engine.progress_tracker import Tracker
+from engine.uploader.YouTube.uploader import YouTubeUploader
+from engine.uploader.definition import Uploader
 
 
 
@@ -12,7 +14,8 @@ class EngineManager:
     _instance = None
     _lock = Lock()
 
-    def get_progress(self, uuid) -> float:
+    
+    def get_action_progress(self, uuid) -> float:
         return self._progress_tracker.get_progress(uuid)
     
     def __new__(cls):
@@ -53,5 +56,19 @@ class EngineManager:
 
     def is_processing_done(self, uuid) -> bool:
         return self.uuid_to_future[uuid].done()
+    
+    def upload_video_to_providers(self, video_path: str) -> uuid1:
+        uuid = str(uuid1())
+        self.uploader: Uploader = YouTubeUploader(uuid, self._progress_tracker)
+        self.uuid_to_future[uuid] = self.workers.submit(self.uploader.upload, video_path)
+        return uuid
+    
+    def get_url(self, uuid) -> str:
+        future = self.uuid_to_future[uuid]
+        results = future.result()
+        del self.uuid_to_future[uuid]
+        return self.uploader.base_url+results if results else results
+    
+        
 
 Mr_EngineManager: EngineManager = EngineManager()
