@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from "react";
 import CircularProgressWithLabel from "./CircularProgressWithLabel";
-import { useGetUploadProgressQuery } from "@/redux/api/driveApi";
+import {
+    useGetSerializationProgressQuery,
+    useGetUploadProgressQuery,
+} from "@/redux/api/driveApi";
 import { useAppSelector } from "@/redux/hooks";
 
 const UploadProgressInfo = () => {
     const jobId = useAppSelector((state) => state.fileUpload.jobId);
-    const polling = useAppSelector((state) => state.fileUpload.polling);
 
-    const {
-        data: { phase, progress },
-    } = useGetUploadProgressQuery(
-        { jobId },
-        { pollingInterval: 500, skip: !polling }
+    const { data: ser_data } = useGetSerializationProgressQuery(
+        {
+            jobId,
+        },
+        { skip: true }
     );
+
+    const { data: upload_data } = useGetUploadProgressQuery(
+        { jobId },
+        { skip: true }
+    );
+
+    let phase = 1;
 
     const phaseDisplay = `${phase} / 2`;
 
@@ -20,17 +29,28 @@ const UploadProgressInfo = () => {
         phaseDisplay
     );
 
+    const relevant_progress = () => {
+        if (ser_data?.progress && ser_data?.progress !== 100) {
+            return ser_data.progress;
+        } else if (upload_data?.progress) {
+            return upload_data?.progress;
+        }
+        return 0;
+    };
+
     // interval to switch between progress and step display
     useEffect(() => {
         const interval = setInterval(() => {
             setProgressLabel((prevProgressLabel) =>
-                prevProgressLabel === phaseDisplay ? progress : phaseDisplay
+                prevProgressLabel === phaseDisplay
+                    ? relevant_progress()
+                    : phaseDisplay
             );
         }, 1000);
         return () => {
             clearInterval(interval);
         };
-    }, [phaseDisplay, progress]);
+    }, [phaseDisplay, ser_data, upload_data]);
 
     return (
         <>

@@ -2,14 +2,16 @@
 import { useEffect } from "react";
 import {
     UPLOAD_PLAIN_FILE_TO_SERVER,
-    WAIT_FOR_SERVER_TO_UPLOAD,
+    WAIT_FOR_SERVER_TO_SERIALIZE,
     FETCH_FILE_METADATA,
+    WAIT_FOR_SERVER_TO_UPLOAD,
 } from "@/constants";
 import { useAppSelector } from "@/redux/hooks";
 import useUploadPlainFileToServer from "./useUploadPlainFileToServer";
-import useWaitForServerToUpload from "./useWaitForServerToSerialize";
+import useWaitForServerToSerialize from "./useWaitForServerToSerialize";
 import { RootState } from "@/redux/store";
 import { useFetchFileMetaData } from "./useFetchFileMetaData";
+import { useWaitForServerToUpload } from "./useWaitForServerToUpload";
 
 export function useUploadFileProcess() {
     const uploadPhase = useAppSelector(
@@ -23,7 +25,13 @@ export function useUploadFileProcess() {
     );
 
     const { uploadPlainFileToServer } = useUploadPlainFileToServer();
-    const { waitForServerToUpload } = useWaitForServerToUpload();
+
+    const { waitForServerToSerialize, stopSerializationPolling } =
+        useWaitForServerToSerialize();
+
+    const { waitForServerToUpload, stopUploadPolling } =
+        useWaitForServerToUpload();
+
     const { fetchFileMetaData } = useFetchFileMetaData();
 
     useEffect(() => {
@@ -32,10 +40,15 @@ export function useUploadFileProcess() {
                 case UPLOAD_PLAIN_FILE_TO_SERVER:
                     uploadPlainFileToServer();
                     break;
+                case WAIT_FOR_SERVER_TO_SERIALIZE:
+                    waitForServerToSerialize();
+                    break;
                 case WAIT_FOR_SERVER_TO_UPLOAD:
+                    stopSerializationPolling();
                     waitForServerToUpload();
                     break;
                 case FETCH_FILE_METADATA:
+                    stopUploadPolling();
                     fetchFileMetaData();
                     break;
             }

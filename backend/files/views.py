@@ -60,6 +60,7 @@ class UploadProgressView(APIView):
         if Mr_EngineManager.is_processing_done(job_id):
             # get the file id from the cache
             file_id = cache.get(job_id)
+            cache.delete(job_id)
             # set url to the file
             file = File.objects.get(id=file_id)
             url = Mr_EngineManager.get_url(job_id)
@@ -72,16 +73,16 @@ class UploadProgressView(APIView):
                 return JsonResponse({ERROR: 'upload failed'}, status=400)
         return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
     
-class RetrieveProcessedItemView(APIView):
-    def get(self, request: HttpRequest, job_id: str):
-        if Mr_EngineManager.is_processing_done(job_id):
-            processed_item_path = Mr_EngineManager.get_processed_item_path(job_id)
-            file_size = os.path.getsize(processed_item_path)
-            response = FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
-            response.data = {'size': file_size}
-            return response
-        else:
-            return JsonResponse({ERROR: 'processing not done yet'}, status=400)
+# class RetrieveProcessedItemView(APIView):
+#     def get(self, request: HttpRequest, job_id: str):
+#         if Mr_EngineManager.is_processing_done(job_id):
+#             processed_item_path = Mr_EngineManager.get_processed_item_path(job_id)
+#             file_size = os.path.getsize(processed_item_path)
+#             response = FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
+#             response.data = {'size': file_size}
+#             return response
+#         else:
+#             return JsonResponse({ERROR: 'processing not done yet'}, status=400)
 
 
 class UploadView(APIView):

@@ -9,6 +9,6 @@ urlpatterns =[
     path('dir-content/<str:folder_id>', DirectoryContentView.as_view()),
     path('dir-content/', DirectoryContentView.as_view()),
     path("dir-tree/", DirectoryTree.as_view()),
-    path('upload/progress/<str:job_id>', SerializationProgressView.as_view()),
-    path('retrieve/<str:job_id>', RetrieveProcessedItemView.as_view())
+    path('upload/serialize/progress/<str:job_id>', SerializationProgressView.as_view()),
+    path('upload/progress/<str:job_id>', UploadProgressView.as_view()),
 ]
