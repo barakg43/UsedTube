@@ -8,26 +8,31 @@ import { useAppSelector } from "@/redux/hooks";
 
 const UploadProgressInfo = () => {
     const jobId = useAppSelector((state) => state.fileUpload.jobId);
+    const phase = useAppSelector((state) => state.fileUpload.uploadPhase);
+    const [skipSerializationQuery, setSkipSerializationQuery] = useState(true);
+    const [skipUploadQuery, setSkipUploadQuery] = useState(true);
 
     const { data: ser_data } = useGetSerializationProgressQuery(
-        {
-            jobId,
-        },
-        { skip: true }
+        { jobId },
+        { skip: skipSerializationQuery }
     );
 
     const { data: upload_data } = useGetUploadProgressQuery(
         { jobId },
-        { skip: true }
+        { skip: skipUploadQuery }
     );
 
-    let phase = 1;
-
-    const phaseDisplay = `${phase} / 2`;
+    const phaseDisplay = `${phase + 1} / 4`;
 
     const [progressLabel, setProgressLabel] = useState<number | string>(
         phaseDisplay
     );
+
+    useEffect(() => {
+        if (phase === 1) {
+            setSkipSerializationQuery(false);
+        }
+    }, [ser_data, upload_data]);
 
     const relevant_progress = () => {
         if (ser_data?.progress && ser_data?.progress !== 100) {

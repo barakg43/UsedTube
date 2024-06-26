@@ -57,11 +57,9 @@ class EngineManager:
     def is_processing_done(self, uuid) -> bool:
         return self.uuid_to_future[uuid].done()
     
-    def upload_video_to_providers(self, video_path: str) -> uuid1:
-        uuid = str(uuid1())
-        self.uploader: Uploader = YouTubeUploader(uuid, self._progress_tracker)
-        self.uuid_to_future[uuid] = self.workers.submit(self.uploader.upload, video_path)
-        return uuid
+    def upload_video_to_providers(self, job_id, video_path: str) -> uuid1:
+        self.uploader: Uploader = YouTubeUploader(job_id, self._progress_tracker)
+        self.uuid_to_future[job_id] = self.workers.submit(self.uploader.upload, video_path)
     
     def get_url(self, uuid) -> str:
         future = self.uuid_to_future[uuid]

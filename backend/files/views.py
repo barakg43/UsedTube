@@ -51,8 +51,7 @@ class SerializationProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
         if Mr_EngineManager.is_processing_done(job_id):
             path = Mr_EngineManager.get_processed_item_path(job_id)
-            upload_job_id = Mr_EngineManager.upload_video_to_providers(path)
-            return JsonResponse({JOB_ID: upload_job_id})
+            Mr_EngineManager.upload_video_to_providers(job_id, path)
         return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
     
 class UploadProgressView(APIView):
@@ -100,10 +99,11 @@ class UploadView(APIView):
                 
         
         created_file = File.objects.create(name=uploaded_file.name, size=uploaded_file.size, folder_id=folder_id, owner=request.user, url='')
-        ser_job_id = Mr_EngineManager.process_file_to_video_async(str(file_path))
+        job_id = Mr_EngineManager.process_file_to_video_async(str(file_path))
         
-        cache.set(ser_job_id, created_file.id, timeout=None)
-        return JsonResponse({JOB_ID: ser_job_id})
+        cache.set(job_id, created_file.id, timeout=None)
+        
+        return JsonResponse({JOB_ID: job_id})
 
 
 

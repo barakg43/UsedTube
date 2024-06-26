@@ -15,6 +15,8 @@ from oauth2client.tools import run_flow
 from oauth2client.client import flow_from_clientsecrets
 from uuid import uuid4
 
+from engine.uploader.definition import Uploader
+
 # Retry settings
 httplib2.RETRIES = 1
 MAX_RETRIES = 10
@@ -28,7 +30,7 @@ YOUTUBE_API_VERSION = "v3"
 YOUTUBE_TOKEN = 'youtube_token.json'
 YOUTUBE_CREDENTIALS = os.path.join(os.path.dirname(__file__),'client_secrets.json')
 
-class YouTubeUploader:
+class YouTubeUploader(Uploader):
     def __init__(self, uuid, tracker):
         self.credentials = self.__get_credentials()
         self.youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, credentials=self.credentials)
