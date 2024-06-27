@@ -13,3 +13,6 @@ backend/engine/logs/
 *artifacts*
 *migrations*
 server/engine/logs/
+*/.venv
+*/credentials.json*
+*/token.json*

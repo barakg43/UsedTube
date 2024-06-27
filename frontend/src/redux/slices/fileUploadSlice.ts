@@ -1,22 +1,27 @@
 // fileUploadSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+//TODO: update state.fileUpload.file to state.fileUpload.originalFile
+//  and create state.fileUpload.fileToUploadToProvider
+
 interface FileUploadState {
-    file: File | null;
-    progress: number;
+    fileToUpload: File | null;
+    serializedVideoOfSelectedFile: File | null;
+    serializedVideoSize: number;
     error: string | null;
     success: boolean;
-    jobId: string | null;
+    jobId: string;
     isUploading: boolean;
     uploadPhase: number;
 }
 
 const initialState: FileUploadState = {
-    file: null,
-    progress: 0,
+    fileToUpload: null,
+    serializedVideoOfSelectedFile: null,
+    serializedVideoSize: 0,
     error: null,
     success: false,
-    jobId: null,
+    jobId: "",
     isUploading: false,
     uploadPhase: 0,
 };
@@ -25,11 +30,11 @@ const fileUploadSlice = createSlice({
     name: "fileUpload",
     initialState,
     reducers: {
-        setFile: (state, action: PayloadAction<File | null>) => {
-            state.file = action.payload;
-        },
-        setProgress: (state, action: PayloadAction<number>) => {
-            state.progress = action.payload;
+        setSelectedFileToUpload: (
+            state,
+            action: PayloadAction<File | null>
+        ) => {
+            state.fileToUpload = action.payload;
         },
         setError: (state, action: PayloadAction<string | null>) => {
             state.error = action.payload;
@@ -37,7 +42,7 @@ const fileUploadSlice = createSlice({
         setSuccess: (state, action: PayloadAction<boolean>) => {
             state.success = action.payload;
         },
-        setJobId: (state, action: PayloadAction<string | null>) => {
+        setJobId: (state, action: PayloadAction<string>) => {
             state.jobId = action.payload;
         },
         setIsUploading: (state, action: PayloadAction<boolean>) => {
@@ -47,16 +52,28 @@ const fileUploadSlice = createSlice({
             state.uploadPhase = (state.uploadPhase + 1) % 4;
             console.log(state.uploadPhase);
         },
+        setSerializedVideoSize: (state, action: PayloadAction<number>) => {
+            state.serializedVideoSize = state.serializedVideoOfSelectedFile
+                ? action.payload
+                : 0;
+        },
+        setSerializedVideoOfSelectedFile: (
+            state,
+            action: PayloadAction<File>
+        ) => {
+            state.serializedVideoOfSelectedFile = action.payload;
+        },
     },
 });
 
 export const {
-    setFile,
-    setProgress,
+    setSelectedFileToUpload,
     setError,
     setSuccess,
     setJobId,
     setIsUploading,
     nextPhase,
+    setSerializedVideoSize,
+    setSerializedVideoOfSelectedFile,
 } = fileUploadSlice.actions;
 export default fileUploadSlice.reducer;

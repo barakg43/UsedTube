@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
 import RegistrationForm from "./(components)/RegistrationForm";
-import RegisterYouTubeAPIKey from "./(components)/RegisterYouTubeAPIKey";
+import RegisterYouTubeAPIKey from "./(components)/(apiRegistrations)/RegisterYouTubeAPIKey";
 import Link from "next/link";
 import Logo from "@/app/(common)/Logo";
+import ChooseFirstProvider from "./(components)/ChooseFirstProvider";
 
 const Register = () => {
-    const [isRegistered, setIsRegistered] = useState(false);
+    const [isFinishFillingForm, setIsFinishFillingForm] = useState(false);
 
     return (
         <div className="flex flex-col h-full">
@@ -16,12 +17,12 @@ const Register = () => {
                 </Link>
             </div>
 
-            {isRegistered ? (
-                <RegisterYouTubeAPIKey />
+            {isFinishFillingForm ? (
+                <ChooseFirstProvider />
             ) : (
                 <div className="mt-[7em]">
                     <RegistrationForm
-                        setIsFinishFillingForm={setIsRegistered}
+                        setIsFinishFillingForm={setIsFinishFillingForm}
                     />
                 </div>
             )}

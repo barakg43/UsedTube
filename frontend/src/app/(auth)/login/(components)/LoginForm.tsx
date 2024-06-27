@@ -10,13 +10,13 @@ import useLogin from "@/hooks/auth/useLogin";
 
 const LoginForm: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const { login, isLoading } = useLogin();
     const {
         handleSubmit,
         formState: { errors },
         register,
         setError,
     } = useForm<UserCredentials>();
+    const { login, isLoading } = useLogin(setError);
 
     return (
         <form onSubmit={handleSubmit(login)}>
