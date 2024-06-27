@@ -1,5 +1,4 @@
-import { FILE, FOLDER } from "@/constants";
-import { FSNode } from "@/types";
+import { FSNode, ParentDict } from "@/types";
 
 // get writable draft a given node from the tree
 export function getWritableDraft(node: FSNode, tree: FSNode) {
@@ -26,4 +25,18 @@ export function compactFileSize(sizeInBytes: number): string {
     unitIndex++;
   }
   return `${size.toFixed(2)} ${units[unitIndex]}`;
+}
+
+export function openAllAncestorsHelper(node: FSNode, nodeToFindId: string) {
+  let isToOpenAncestor = false;
+  if (node.id === nodeToFindId) {
+    return true;
+  } else if (node.children) {
+    node.children.forEach((child) => {
+      isToOpenAncestor =
+        isToOpenAncestor || openAllAncestorsHelper(child, nodeToFindId);
+    });
+  }
+  if (isToOpenAncestor) node.isOpened = true;
+  return isToOpenAncestor;
 }

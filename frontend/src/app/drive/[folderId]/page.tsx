@@ -1,7 +1,11 @@
 import DriveComponent from "../DriveComponent";
 
-function Drive({ params }: { params?: { folderId: string | undefined } }) {
+function DriveWithFolderId({
+  params,
+}: {
+  params?: { folderId: string | undefined };
+}) {
   return <DriveComponent folderId={params?.folderId} />;
 }
 
-export default Drive;
+export default DriveWithFolderId;
