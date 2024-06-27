@@ -52,6 +52,7 @@ class SerializationProgressView(APIView):
         if Mr_EngineManager.is_processing_done(job_id):
             path = Mr_EngineManager.get_processed_item_path(job_id)
             Mr_EngineManager.upload_video_to_providers(job_id, path)
+            return JsonResponse({"progress": 1})
         return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
     
 class UploadProgressView(APIView):

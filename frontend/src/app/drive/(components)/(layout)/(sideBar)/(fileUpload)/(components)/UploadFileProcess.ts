@@ -6,14 +6,17 @@ import {
     FETCH_FILE_METADATA,
     WAIT_FOR_SERVER_TO_UPLOAD,
 } from "@/constants";
-import { useAppSelector } from "@/redux/hooks";
-import useUploadPlainFileToServer from "./useUploadPlainFileToServer";
-import useWaitForServerToSerialize from "./useWaitForServerToSerialize";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import useUploadPlainFileToServer from "../(hooks)/useUploadPlainFileToServer";
+import useWaitForServerToSerialize from "../(hooks)/useWaitForServerToSerialize";
 import { RootState } from "@/redux/store";
-import { useFetchFileMetaData } from "./useFetchFileMetaData";
-import { useWaitForServerToUpload } from "./useWaitForServerToUpload";
+import { useFetchFileMetaData } from "../(hooks)/useFetchFileMetaData";
+import { useWaitForServerToUpload } from "../(hooks)/useWaitForServerToUpload";
+import { setSelectedFileToUpload } from "@/redux/slices/fileUploadSlice";
 
-export function useUploadFileProcess() {
+export function UploadFileProcess() {
+    const dispatch = useAppDispatch();
+
     const uploadPhase = useAppSelector(
         (state: RootState) => state.fileUpload.uploadPhase
     );
@@ -50,6 +53,7 @@ export function useUploadFileProcess() {
                 case FETCH_FILE_METADATA:
                     stopUploadPolling();
                     fetchFileMetaData();
+                    dispatch(setSelectedFileToUpload(null));
                     break;
             }
         }

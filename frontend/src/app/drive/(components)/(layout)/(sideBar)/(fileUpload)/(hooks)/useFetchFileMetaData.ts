@@ -1,13 +1,15 @@
-import { useAppDispatch } from "@/redux/hooks";
+import { useFolderContentQuery } from "@/redux/api/driveApi";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { nextPhase, setIsUploading } from "@/redux/slices/fileUploadSlice";
 
 export function useFetchFileMetaData() {
     const dispatch = useAppDispatch();
-
+    const activeDirectoryId = useAppSelector(
+        (state) => state.items.activeDirectoryId
+    );
+    const { refetch } = useFolderContentQuery({ folderId: activeDirectoryId });
     const fetchFileMetaData = () => {
-        // fetch file metadata
-        // set the file in the tree
-        alert("File metadata fetched successfully! Need To Implement fetch");
+        refetch();
         dispatch(nextPhase());
         dispatch(setIsUploading(false));
     };

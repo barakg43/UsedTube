@@ -60,7 +60,7 @@ class YouTubeUploader(Uploader):
             body=self.__request_body(),
             media_body=MediaFileUpload(video_path, chunksize=-1, resumable=True)
         )
-        return Thread(target=self.__resumable_upload, args=(request, os.path.getsize(video_path))).start()
+        return self.__resumable_upload(request, os.path.getsize(video_path))
 
     @staticmethod
     def __request_body():

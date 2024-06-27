@@ -55,11 +55,16 @@ class EngineManager:
         return results[0]
 
     def is_processing_done(self, uuid) -> bool:
-        return self.uuid_to_future[uuid].done()
+        future = self.uuid_to_future.get(uuid, None)
+        if future is not None:
+            return future.done()
+        raise KeyError(f"uuid {uuid} not found")
     
     def upload_video_to_providers(self, job_id, video_path: str) -> uuid1:
-        self.uploader: Uploader = YouTubeUploader(job_id, self._progress_tracker)
-        self.uuid_to_future[job_id] = self.workers.submit(self.uploader.upload, video_path)
+        # self.uploader: Uploader = YouTubeUploader(job_id, self._progress_tracker)
+        # self.uuid_to_future[job_id] = self.workers.submit(self.uploader.upload, video_path)
+        self.uuid_to_future[job_id] = self.workers.submit(lambda: "abcd")
+        Tracker.set_progress(job_id, 1)
     
     def get_url(self, uuid) -> str:
         future = self.uuid_to_future[uuid]

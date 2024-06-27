@@ -31,6 +31,11 @@ const UploadProgressInfo = () => {
     useEffect(() => {
         if (phase === 1) {
             setSkipSerializationQuery(false);
+        } else if (phase === 2) {
+            setSkipSerializationQuery(true);
+            setSkipUploadQuery(false);
+        } else {
+            setSkipUploadQuery(true);
         }
     }, [ser_data, upload_data]);
 

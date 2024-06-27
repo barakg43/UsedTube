@@ -17,7 +17,7 @@ export function useWaitForServerToUpload() {
         }
     );
     useEffect(() => {
-        if (phase === WAIT_FOR_SERVER_TO_UPLOAD && data?.progress === 100) {
+        if (phase === WAIT_FOR_SERVER_TO_UPLOAD && data?.progress === 1) {
             dispatch(nextPhase());
         }
     }, [data, phase, dispatch]);

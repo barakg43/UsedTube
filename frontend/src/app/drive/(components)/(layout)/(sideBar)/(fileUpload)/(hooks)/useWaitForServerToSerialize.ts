@@ -1,10 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-    useGetSerializationProgressQuery,
-    useGetUploadProgressQuery,
-} from "@/redux/api/driveApi";
+import { useGetSerializationProgressQuery } from "@/redux/api/driveApi";
 import { nextPhase } from "@/redux/slices/fileUploadSlice";
 import { WAIT_FOR_SERVER_TO_SERIALIZE } from "@/constants";
 
@@ -22,7 +19,7 @@ const useWaitForServerToSerialize = () => {
     );
 
     useEffect(() => {
-        if (phase === WAIT_FOR_SERVER_TO_SERIALIZE && data?.progress === 100) {
+        if (phase === WAIT_FOR_SERVER_TO_SERIALIZE && data?.progress === 1) {
             dispatch(nextPhase());
         }
     }, [data, phase, dispatch, polling]);
