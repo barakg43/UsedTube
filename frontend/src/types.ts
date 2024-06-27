@@ -1,5 +1,3 @@
-import { FILE, FOLDER } from "./constants";
-
 export type UserValues = {
   username: string;
   password: string;

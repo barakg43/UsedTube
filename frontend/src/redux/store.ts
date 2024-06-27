@@ -7,29 +7,29 @@ import { baseApi } from "./baseApi";
 import fileUploadSlice from "./slices/fileUploadSlice";
 
 export const makeStore = () => {
-    return configureStore({
-        reducer: {
-            [baseApi.reducerPath]: baseApi.reducer,
-            user: userSlice,
-            items: itemsSlice,
-            general: generalSlice,
-            auth: authSlice,
-            fileUpload: fileUploadSlice,
+  return configureStore({
+    reducer: {
+      [baseApi.reducerPath]: baseApi.reducer,
+      user: userSlice,
+      items: itemsSlice,
+      general: generalSlice,
+      auth: authSlice,
+      fileUpload: fileUploadSlice,
+    },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: ["fileUpload/setFile"],
+          ignoredPaths: ["fileUpload.file"],
         },
-        middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware({
-                serializableCheck: {
-                    ignoredActions: ["fileUpload/setFile"],
-                    ignoredPaths: ["fileUpload.file"],
-                },
-            }).concat(baseApi.middleware),
+      }).concat(baseApi.middleware),
 
-        devTools: process.env.NODE_ENV !== "production",
-    });
+    devTools: process.env.NODE_ENV !== "production",
+  });
 };
-
+export const store = makeStore();
 // Infer the type of makeStore
-export type AppStore = ReturnType<typeof makeStore>;
+export type AppStore = typeof store;
 // Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<AppStore["getState"]>;
-export type AppDispatch = AppStore["dispatch"];
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

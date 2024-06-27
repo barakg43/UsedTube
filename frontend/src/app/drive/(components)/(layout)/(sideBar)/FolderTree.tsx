@@ -4,17 +4,17 @@ import { setItems } from "@/redux/slices/itemsSlice";
 import { RootState } from "@/redux/store";
 import { useEffect } from "react";
 import TreeFragment from "./TreeFragment";
+import { CircularProgress } from "@mui/material";
 
 function FolderTree() {
   const dispatch = useAppDispatch();
   const { data, isLoading } = useDirectoryTreeQuery(undefined);
-
+  const { myItems } = useAppSelector((state: RootState) => state.items);
   useEffect(() => {
     dispatch(setItems(data));
   }, [data, dispatch]);
-  const tree = useAppSelector((state: RootState) => state.items.myItems);
-  if (isLoading) return <p>loading</p>;
-  return <TreeFragment node={tree} spaces={0} />;
+  if (isLoading) return <CircularProgress />;
+  return <TreeFragment node={myItems} spaces={0} />;
 }
 
 export default FolderTree;

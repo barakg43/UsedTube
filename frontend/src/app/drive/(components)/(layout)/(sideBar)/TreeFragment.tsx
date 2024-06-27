@@ -7,11 +7,11 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 
-import { setActiveDirectory, toggleIsOpened } from "@/redux/slices/itemsSlice";
+import { toggleIsOpened } from "@/redux/slices/itemsSlice";
+import { RootState } from "@/redux/store";
 import { FSNode } from "@/types";
 import { useCallback, useState } from "react";
-import { RootState } from "@/redux/store";
-import { useRouter } from "next/navigation";
+import { useFolderClick } from "../../useFolderClick";
 
 const Space = () => {
   return <div className='w-[8px]' />;
@@ -29,7 +29,7 @@ type MyProps = {
 export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
   const [, updateState] = useState<object>();
   const forceUpdate = useCallback(() => updateState({}), []);
-  const router = useRouter();
+  const onLabelClick = useFolderClick();
   const dispatch = useAppDispatch();
   const activeDirectory = useAppSelector(
     (state: RootState) => state.items.activeDirectoryId
@@ -40,11 +40,6 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
     forceUpdate();
   };
 
-  const onLabelClick = (node: FSNode) => {
-    // set active directory
-    dispatch(setActiveDirectory(node.id));
-    router.push(`/drive/${node.id}`);
-  };
   if (!node) return null;
   const hasChildren = (node?.children?.length ?? 0) > 0;
   const isActiveFolder =
@@ -82,7 +77,7 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
         {
           <span
             className={`text-left text-ellipsis flex-grow w-[24px]  `}
-            onClick={() => onLabelClick(node)}
+            onClick={() => onLabelClick(node.id)}
           >{`${node.name}`}</span>
         }
       </div>

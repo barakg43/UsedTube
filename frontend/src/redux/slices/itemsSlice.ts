@@ -1,10 +1,9 @@
+import { root_api } from "@/axios";
+import { ROW } from "@/constants";
 import { DisplayType, FSNode, ItemsState } from "@/types";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { fakeData } from "./itemsSliceFakeData";
-import { ROW } from "@/constants";
-import { getWritableDraft } from "./utils";
 import axios from "axios";
-import { root_api } from "@/axios";
+import { getWritableDraft, openAllAncestorsHelper } from "./utils";
 
 const initialState: ItemsState = {
   myItems: { id: "", name: "" },
@@ -25,11 +24,18 @@ export const itemsSlice = createSlice({
   name: "items",
   initialState,
   reducers: {
-    setItems: (state, action) => {
-      state.myItems = action.payload;
+    setItems: (state, action: PayloadAction<FSNode | undefined>) => {
+      state.activeDirectoryId = state.activeDirectoryId
+        ? state.activeDirectoryId
+        : action.payload?.id ?? "";
+      if (action.payload) {
+        state.myItems = structuredClone(action.payload);
+        openAllAncestorsHelper(state.myItems, state.activeDirectoryId);
+      }
     },
     setActiveDirectory: (state, action: PayloadAction<string>) => {
       state.activeDirectoryId = action.payload;
+      openAllAncestorsHelper(state.myItems, action.payload);
     },
     setDisplayType: (state, action: PayloadAction<DisplayType>) => {
       state.displayType = action.payload;
