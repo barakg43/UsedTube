@@ -1,4 +1,5 @@
 asgiref==3.8.1
+cachetools==5.3.3
 certifi==2024.2.2
 cffi==1.16.0
 charset-normalizer==3.3.2
@@ -13,6 +14,13 @@ djangorestframework==3.15.1
 djangorestframework-simplejwt==5.3.1
 djoser==2.2.2
 fonttools==4.52.1
+google-api-core==2.19.0
+google-api-python-client==2.133.0
+google-auth==2.30.0
+google-auth-httplib2==0.2.0
+google-auth-oauthlib==1.2.0
+googleapis-common-protos==1.63.1
+httplib2==0.22.0
 idna==3.7
 kiwisolver==1.4.5
 matplotlib==3.8.4
@@ -23,7 +31,11 @@ oauthlib==3.2.2
 opencv-python==4.9.0.80
 packaging==24.0
 pillow==10.3.0
+proto-plus==1.23.0
+protobuf==4.25.3
 psycopg2==2.9.9
+pyasn1==0.6.0
+pyasn1_modules==0.4.0
 pycparser==2.22
 PyJWT==2.8.0
 pyparsing==3.1.2
@@ -33,9 +45,11 @@ python3-openid==3.2.0
 pytube==15.0.0
 requests==2.32.2
 requests-oauthlib==2.0.0
+rsa==4.9
 six==1.16.0
 social-auth-app-django==5.4.1
 social-auth-core==4.5.4
 sqlparse==0.5.0
 tzdata==2024.1
+uritemplate==4.1.1
 urllib3==2.2.1

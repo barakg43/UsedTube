@@ -6,10 +6,10 @@ import axios from "axios";
 import { getWritableDraft, openAllAncestorsHelper } from "./utils";
 
 const initialState: ItemsState = {
-  myItems: { id: "", name: "" },
-  displayType: ROW,
-  activeDirectoryId: "",
-  sharedItems: null,
+    myItems: { id: "", name: "" },
+    displayType: ROW,
+    activeDirectoryId: "",
+    sharedItems: null,
 };
 
 // export const createNewFolder = createAsyncThunk(
@@ -51,6 +51,6 @@ export const itemsSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const { setItems, setActiveDirectory, setDisplayType, toggleIsOpened } =
-  itemsSlice.actions;
+    itemsSlice.actions;
 
 export default itemsSlice.reducer;
