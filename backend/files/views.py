@@ -1,17 +1,14 @@
 import os
-import json
 
-from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.http import HttpRequest, FileResponse, JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
-from django.core.cache import cache
 from constants import FILE, ERROR, JOB_ID, MESSAGE
 from engine.constants import SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
+from engine.downloader.YouTubeDownloader import YouTubeDownloader
 from engine.downloader.definition import Downloader
-from engine.downloader.impl import YouTubeDownloader
 from engine.driver import Driver
 from engine.manager import Mr_EngineManager
 from files.models import File
@@ -38,7 +35,7 @@ class DownloadView(APIView):
         compressed_file_size = SF_4_SIZE  # in Bytes
         video_url = r"https://www.youtube.com/watch?v=jW9zNLdPH0M&ab_channel=GalAviezri"
         # use the downloader to download the video from url
-        downloader: Downloader = YouTubeDownloader  # choose based on URL
+        downloader: Downloader = YouTubeDownloader()  # choose based on URL
         print("ABOUT TO DOWNLOAD")
         downloaded_video_path = downloader.download(video_url)
         print("FINISHED, ABOUT TO TRANSFORM VIDEO TO FILE")
