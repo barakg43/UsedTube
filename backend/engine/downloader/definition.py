@@ -5,7 +5,11 @@ from pathlib import Path
 class Downloader(ABC):
 
 
-    @staticmethod
+    # @staticmethod
     @abstractmethod
-    def download(link) -> Path:
+    def download(self,video_url:str) -> Path:
+
+        pass
+    @abstractmethod
+    def get_download_percent(self):
         pass
