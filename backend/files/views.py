@@ -20,7 +20,7 @@ from utils import get_user_object
 
 
 class DownloadView(APIView):
-    def get(self, request: HttpRequest):
+    def get(self, request: HttpRequest, file_id: str):
         user = request.user
         # you get in request: user id, file_name
         # The `file_name` variable in the `DownloadView` class is being set to 'sample-file2.pdf'.
