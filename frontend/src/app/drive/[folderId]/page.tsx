@@ -1,4 +1,4 @@
-import DriveComponent from "../DriveComponent";
+import DriveComponent from "../(components)/DriveComponent";
 
 function DriveWithFolderId({
   params,

@@ -10,6 +10,8 @@ FILES_READY_FOR_STORAGE_DIR = Path(os.path.join(ARTIFACTS_DIR, 'awaiting_storage
 FILES_READY_FOR_RETRIEVAL_DIR = Path(os.path.join(ARTIFACTS_DIR, 'awaiting_retrieval'))
 ITEMS_READY_FOR_PROCESSING = Path(os.path.join(ARTIFACTS_DIR, 'downloaded_preprocessed'))
 TMP_WORK_DIR = Path(os.path.join(ARTIFACTS_DIR, 'tmp'))
+YOUTUBE_CREDENTIALS = Path(os.path.join(ENGINE_ROOT, 'uploader', 'YouTube', 'credentials.json'))
+YOUTUBE_TOKEN = Path(os.path.join(ENGINE_ROOT, 'uploader', 'YouTube', 'token.json'))
 DIRS = [
     ARTIFACTS_DIR,
     TEST_RESOURCES_DIR,

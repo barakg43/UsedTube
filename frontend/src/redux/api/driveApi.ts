@@ -1,11 +1,5 @@
 import { baseApi } from "../baseApi";
-import {
-  nextPhase,
-  setError,
-  setIsUploading,
-  setJobId,
-  setProgress,
-} from "../slices/fileUploadSlice";
+import { setError, setIsUploading, setJobId } from "../slices/fileUploadSlice";
 
 const driveApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -42,18 +36,44 @@ const driveApiSlice = baseApi.injectEndpoints({
         }
       },
     }),
+    getSerializationProgress: builder.query({
+      query: ({ jobId }: { jobId: string | null }) => ({
+        url: `/files/upload/serialize/progress/${jobId}`,
+        method: "GET",
+      }),
+      transformResponse: (response: { progress: number }) => response,
+    }),
     getUploadProgress: builder.query({
       query: ({ jobId }: { jobId: string | null }) => ({
         url: `/files/upload/progress/${jobId}`,
         method: "GET",
       }),
-      transformResponse: (response: { progress: number }) =>
-        response.progress * 100,
-      async onQueryStarted({ jobId }, { dispatch, queryFulfilled }) {
-        const { data } = await queryFulfilled;
-        dispatch(setProgress(data));
-        if (data === 100) dispatch(nextPhase());
-      },
+      transformResponse: (response: { progress: number }) => response,
+    }),
+
+    // getUploadProgress: builder.query({
+    //   query: ({ jobId }: { jobId: string | null }) => ({
+    //     url: `/files/upload/progress/${jobId}`,
+    //     method: "GET",
+    //   }),
+    //   transformResponse: (
+    //     response: { data: { folders: FSNode[]; files: FileNode[] } },
+    //     meta,
+    //     arg
+    //   ) => response.data,
+    // }),
+    createFolder: builder.mutation({
+      query: ({
+        folderName,
+        parentId,
+      }: {
+        folderName: string;
+        parentId: string;
+      }) => ({
+        url: `/files/create-folder`,
+        method: "POST",
+        body: { folderName, parentId },
+      }),
     }),
   }),
 });
@@ -62,5 +82,7 @@ export const {
   useUploadFileMutation,
   useFolderContentQuery,
   useDirectoryTreeQuery,
+  useGetSerializationProgressQuery,
+  useCreateFolderMutation,
   useGetUploadProgressQuery,
 } = driveApiSlice;

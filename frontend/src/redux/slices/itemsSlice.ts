@@ -6,19 +6,19 @@ import axios from "axios";
 import { getWritableDraft, openAllAncestorsHelper } from "./utils";
 
 const initialState: ItemsState = {
-  myItems: { id: "", name: "" },
-  displayType: ROW,
-  activeDirectoryId: "",
-  sharedItems: null,
+    myItems: { id: "", name: "" },
+    displayType: ROW,
+    activeDirectoryId: "",
+    sharedItems: null,
 };
 
-export const createNewFolder = createAsyncThunk(
-  "items/createNewFolder",
-  async (folderName: string, thunkAPI) => {
-    const response = await axios.post(`${root_api}/files/register`, folderName);
-    return response.data;
-  }
-);
+// export const createNewFolder = createAsyncThunk(
+//   "items/createNewFolder",
+//   async (folderName: string, thunkAPI) => {
+//     const response = await axios.post(`${root_api}/files/register`, folderName);
+//     return response.data;
+//   }
+// );
 
 export const itemsSlice = createSlice({
   name: "items",
@@ -51,6 +51,6 @@ export const itemsSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const { setItems, setActiveDirectory, setDisplayType, toggleIsOpened } =
-  itemsSlice.actions;
+    itemsSlice.actions;
 
 export default itemsSlice.reducer;
