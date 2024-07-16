@@ -6,7 +6,7 @@
 
 backend/engine/logs/
 *Postgres*
-Mongo/data/journal/*
+
 
 backend/engine/artifacts/awaiting_retrieval/*
 !backend/engine/artifacts/awaiting_retrieval/placeholder.txt
