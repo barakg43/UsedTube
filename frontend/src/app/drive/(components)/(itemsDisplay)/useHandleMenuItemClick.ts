@@ -12,15 +12,21 @@ export const useHandleMenuItemClick = () => {
                 console.log("Sharing:", node);
                 break;
             case "delete":
-                try {
-                    deleteNode({
-                        nodeId: node.id,
-                    }).unwrap();
-                    alert("Delete successful --> change to toaster!");
-                } catch (error) {
-                    console.error("Delete failed:", error);
-                    alert("Delete unsuccessful --> change to toaster!");
-                }
+                const response = deleteNode({
+                    nodeId: node.id,
+                })
+                    .unwrap()
+                    .then((data) => {
+                        console.log("Delete successful:", data);
+                        alert("Delete successful :-) ## change to toaster! ##");
+                    })
+                    .catch((error) => {
+                        console.error("Delete failed:", error);
+                        alert(
+                            "Delete unsuccessful >:-( ## change to toaster! ##"
+                        );
+                    });
+
                 break;
         }
     };

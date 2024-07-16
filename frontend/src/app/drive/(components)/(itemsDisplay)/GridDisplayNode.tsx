@@ -15,7 +15,7 @@ const ItemsDisplayNode: FC<{ node: FSNode; onEntryClick: Function }> = ({
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorPosition({ top: event.clientY, left: event.clientX });
     };
-    const handleClose = () => {
+    const closeContextMenu = () => {
         setAnchorPosition({ top: 0, left: 0 });
     };
 
@@ -49,26 +49,29 @@ const ItemsDisplayNode: FC<{ node: FSNode; onEntryClick: Function }> = ({
                 open={Boolean(
                     anchorPosition.top > 0 && anchorPosition.left > 0
                 )}
-                onClose={handleClose}
+                onClose={closeContextMenu}
             >
                 <MenuItem
-                    onClick={() =>
-                        handleMenuItemClick(node, handleClose, "download")
-                    }
+                    onClick={() => {
+                        handleMenuItemClick(node, "download");
+                        closeContextMenu();
+                    }}
                 >
                     Download
                 </MenuItem>
                 <MenuItem
-                    onClick={() =>
-                        handleMenuItemClick(node, handleClose, "share")
-                    }
+                    onClick={() => {
+                        handleMenuItemClick(node, "share");
+                        closeContextMenu();
+                    }}
                 >
                     Share
                 </MenuItem>
                 <MenuItem
-                    onClick={() =>
-                        handleMenuItemClick(node, handleClose, "delete")
-                    }
+                    onClick={() => {
+                        handleMenuItemClick(node, "delete");
+                        closeContextMenu();
+                    }}
                 >
                     Delete
                 </MenuItem>
