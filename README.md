@@ -1,5 +1,8 @@
 # How To Deploy:
 
+please note that there exists a script which launches vscode for both front and back, and also launched postgres on a container, assuming you have docker desktop.
+look for open-code-projects.bat in the root folder
+
 ## Server
 
 #### 1. clone the repo.
@@ -27,6 +30,9 @@ $> python manage.py runserver
 ```
 ## Client
 
+#### 1. make sure you have node installed.
+
+#### 2. 
 UsedTube
 Characterization:
 https://drive.google.com/file/d/1iOTetSaOxWOfx-bEFAp5SqA-q40O99FG/view?usp=drive_link
