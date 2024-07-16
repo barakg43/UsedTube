@@ -32,7 +32,11 @@ $> python manage.py runserver
 
 #### 1. make sure you have node installed.
 
-#### 2. 
+#### 2. install dependencies:
+```
+$> npm i
+```
+
 UsedTube
 Characterization:
 https://drive.google.com/file/d/1iOTetSaOxWOfx-bEFAp5SqA-q40O99FG/view?usp=drive_link
