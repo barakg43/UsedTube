@@ -50,9 +50,9 @@ class Register(View):
                                         first_name=body_dict.get('firstName'),
                                         last_name=body_dict.get('lastName'),storage_usage=0)
 
-        providers_to_keys = body_dict.get('providers')
-        for provider in providers_to_keys:
-            APIProvider.objects.create(provider_name=provider, api_key=providers_to_keys[provider], user=user)
+        # providers_to_keys = body_dict.get('providers')
+        # for provider in providers_to_keys:
+        #     APIProvider.objects.create(provider_name=provider, api_key=providers_to_keys[provider], user=user)
             
         self.__additional_registration_actions(user)
 
