@@ -1,0 +1,5 @@
+Mongo/data/journal/WiredTigerLog.0000000005
+Mongo/data/journal/WiredTigerLog.0000000004
+Mongo/data/journal/WiredTigerPreplog.0000000001
+backend/engine/artifacts/test_resources/sample-file2.pdf
+backend/engine/artifacts/cover_videos/cover-video.mp4

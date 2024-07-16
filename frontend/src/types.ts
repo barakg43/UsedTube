@@ -1,11 +1,11 @@
 export type UserValues = {
-  username: string;
-  password: string;
-  confirmPassword: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  apiKey: string;
+    username: string;
+    password: string;
+    confirmPassword: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    apiKey: string;
 };
 
 import { FILE, FOLDER } from "./constants";
@@ -23,7 +23,7 @@ export type FSItems = {
 export type ItemsState = {
     myItems: FSNode;
     sharedItems: FSNode[] | null;
-    activeDirectoryId: string;
+    activeDirectoryId: string | undefined;
     displayType: DisplayType;
 };
 
@@ -42,7 +42,7 @@ export interface FSNode {
     name: string;
     createdAt?: string;
     updatedAt?: string;
-    type?: NodeType;
+    type: NodeType;
     isOpened?: boolean;
     children?: FSNode[];
     context?: any;
@@ -54,3 +54,5 @@ export type ItemsDisplayProp<T extends FSNode> = {
     onEntryClick: Function;
     items: T[];
 };
+
+export type ContextMenuAction = "download" | "share" | "delete";
