@@ -1,24 +1,44 @@
-import { useDeleteNodeMutation } from "@/redux/api/driveApi";
+import { useToaster, Variants } from "@/app/(common)/useToaster";
+import { FOLDER } from "@/constants";
+import {
+    useDeleteNodeMutation,
+    useDirectoryTreeQuery,
+    useFolderContentQuery,
+} from "@/redux/api/driveApi";
+import { useAppSelector } from "@/redux/hooks";
 import { ContextMenuAction, FSNode } from "@/types";
 
 // # 1
 
 export const useHandleMenuItemClick = () => {
+    const toaster = useToaster();
+    const folderId = useAppSelector((state) => state.items.activeDirectoryId);
     const [deleteNode] = useDeleteNodeMutation();
+    const { refetch: refetchDirsTree } = useDirectoryTreeQuery({});
+    const { refetch: refetchDirContent } = useFolderContentQuery({
+        folderId,
+    });
 
-    const handleDelete = (nodeId: string) => {
+    const handleDelete = (id: string, type: string, name: string) => {
+        let message = "",
+            variant = "" as Variants;
         deleteNode({
-            nodeId,
+            nodeId: id,
         })
             .unwrap()
             .then((data) => {
-                console.log("Delete successful:", data);
-                alert("Delete successful :-) ## change to toaster! ##");
+                if (type === FOLDER) {
+                    refetchDirsTree();
+                }
+                refetchDirContent();
+                message = `successfully deleted ${name}`;
+                variant = "success";
             })
-            .catch((error) => {
-                console.error("Delete failed:", error);
-                alert("Delete unsuccessful >:-( ## change to toaster! ##");
+            .catch((_) => {
+                message = `failed to delete ${name}`;
+                variant = "error";
             });
+        toaster(message, variant);
     };
 
     const handleMenuItemClick = (node: FSNode, action: ContextMenuAction) => {
@@ -32,7 +52,7 @@ export const useHandleMenuItemClick = () => {
                 console.log("Sharing:", node);
                 break;
             case "delete":
-                handleDelete(node.id);
+                handleDelete(node.id, node.type, node.name);
                 break;
         }
     };

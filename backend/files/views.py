@@ -195,3 +195,5 @@ class DeleteNodeView(APIView):
             self.__delete_folder(folder)
             return JsonResponse({"message": "folder deleted successfully"}, status=200)
         
+        return JsonResponse({"error": "node not found"}, status=404)
+        
