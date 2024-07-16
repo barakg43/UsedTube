@@ -1,5 +1,7 @@
 # How To Deploy:
 
+## Server
+
 #### 1. clone the repo.
 
 #### 2 . download a long video (approx 2hrs) and place it in /backend\artifacts\cover_videos , name it "cover-video.mp4" exactly.
@@ -19,8 +21,11 @@ $> python manage.py makemigrations
 $> python manage.py migrate
 ```
 
-#### 6.
-
+#### 6. you are ready to go!
+```
+$> python manage.py runserver
+```
+## Client
 
 UsedTube
 Characterization:
