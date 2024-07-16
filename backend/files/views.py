@@ -11,7 +11,7 @@ from engine.downloader.YouTubeDownloader import YouTubeDownloader
 from engine.downloader.definition import Downloader
 from engine.driver import Driver
 from engine.manager import Mr_EngineManager
-from files.models import File
+from files.models import File, Folder
 from files.query import select_folder_subitems, get_folder_tree, get_parent_tree_array
 from utils import get_user_object
 
@@ -171,3 +171,27 @@ class CreateNewFolderView(APIView):
             )
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
+
+class DeleteNodeView(APIView):
+    
+    def __delete_folder(self, folder: Folder):
+        for item in folder.items.all():
+            if isinstance(item, Folder):
+                self.__delete_folder(item)
+            else:
+                item.delete()
+        folder.delete()
+        
+    def delete(self, request: HttpRequest, node_id: str):
+        if not node_id:
+            return JsonResponse({"error": "node id is required"}, status=400)
+        
+        if File.objects.filter(id=node_id).exists():
+            File.objects.filter(id=node_id).delete()
+            return JsonResponse({"message": "file deleted successfully"}, status=200)
+        
+        if Folder.objects.filter(id=node_id).exists():
+            folder = Folder.objects.filter(id=node_id).get()
+            self.__delete_folder(folder)
+            return JsonResponse({"message": "folder deleted successfully"}, status=200)
+        

@@ -12,4 +12,5 @@ urlpatterns =[
     path("dir-tree/", DirectoryTree.as_view()),
     path('upload/serialize/progress/<str:job_id>', SerializationProgressView.as_view()),
     path('upload/progress/<str:job_id>', UploadProgressView.as_view()),
+    path('delete/<str:node_id>', DeleteNodeView.as_view()),
 ]
