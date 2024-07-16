@@ -64,17 +64,19 @@ class UploadProgressView(APIView):
         if Mr_EngineManager.is_processing_done(job_id):
             # get the file id from the cache
             file_id = cache.get(job_id)
-            cache.delete(job_id)
+            
             # set url to the file
             file = File.objects.get(id=file_id)
             url = Mr_EngineManager.get_url(job_id)
             if url:
                 file.url = url
                 file.save()
+                cache.delete(job_id)
                 return JsonResponse({MESSAGE: "upload successful"})
             else:
                 File.objects.delete(id=file_id)
                 return JsonResponse({ERROR: 'upload failed'}, status=400)
+
         return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
     
 # class RetrieveProcessedItemView(APIView):

@@ -17,7 +17,9 @@ const FileUploadButton = () => {
     //@ts-ignore
     const onFileBrowserClick = (e) => {
         const _file = e.target.files?.[0];
-        if (_file.size < MAX_FILE_SIZE * MiB) {
+        if (_file.size <= 0) {
+            alert("File is empty, please select a non empty file");
+        } else if (_file.size < MAX_FILE_SIZE * MiB) {
             dispatch(setSelectedFileToUpload(_file));
         } else {
             alert(
