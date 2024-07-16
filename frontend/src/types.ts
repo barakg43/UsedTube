@@ -1,11 +1,11 @@
 export type UserValues = {
-  username: string;
-  password: string;
-  confirmPassword: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  apiKey: string;
+    username: string;
+    password: string;
+    confirmPassword: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    apiKey: string;
 };
 
 import { FILE, FOLDER } from "./constants";
@@ -54,3 +54,5 @@ export type ItemsDisplayProp<T extends FSNode> = {
     onEntryClick: Function;
     items: T[];
 };
+
+export type ContextMenuAction = "download" | "share" | "delete";

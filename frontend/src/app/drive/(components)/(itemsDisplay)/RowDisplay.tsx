@@ -33,7 +33,7 @@ const ItemsDisplayRow: FC<ItemsDisplayProp<FSNode | FileNode>> = ({
 
     const [anchorPosition, setAnchorPosition] = useState({ top: 0, left: 0 });
     const [selectedNode, setSelectedNode] = useState<FSNode>({} as FSNode);
-    const onClose = () => {
+    const closeContextMenu = () => {
         setAnchorPosition({ top: 0, left: 0 });
     };
     return (
@@ -58,30 +58,29 @@ const ItemsDisplayRow: FC<ItemsDisplayProp<FSNode | FileNode>> = ({
                     open={Boolean(
                         anchorPosition.top > 0 && anchorPosition.left > 0
                     )}
-                    onClose={onClose}
+                    onClose={closeContextMenu}
                 >
                     <MenuItem
-                        onClick={() =>
-                            handleMenuItemClick(
-                                selectedNode,
-                                onClose,
-                                "download"
-                            )
-                        }
+                        onClick={() => {
+                            handleMenuItemClick(selectedNode, "download");
+                            closeContextMenu();
+                        }}
                     >
                         Download
                     </MenuItem>
                     <MenuItem
-                        onClick={() =>
-                            handleMenuItemClick(selectedNode, onClose, "share")
-                        }
+                        onClick={() => {
+                            handleMenuItemClick(selectedNode, "share");
+                            closeContextMenu();
+                        }}
                     >
                         Share
                     </MenuItem>
                     <MenuItem
-                        onClick={() =>
-                            handleMenuItemClick(selectedNode, onClose, "delete")
-                        }
+                        onClick={() => {
+                            handleMenuItemClick(selectedNode, "delete");
+                            closeContextMenu();
+                        }}
                     >
                         Delete
                     </MenuItem>
