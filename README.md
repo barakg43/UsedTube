@@ -24,7 +24,20 @@ $> python manage.py makemigrations
 $> python manage.py migrate
 ```
 
-#### 6. you are ready to go!
+#### create .env.local file
+this file should be placed in backend folder and contain the following key with the values which you would set
+DEVELOPMENT_MODE=
+SECRET_KEY = 
+DEBUG=
+DOMAIN='localhost:3000'
+AUTH_COOKIE_SECURE='True'
+DAILYMOTION_API_KEY=
+DAILYMOTION_API_SECRET=
+DAILYMOTION_USERNAME=
+DAILYMOTION_PASSWORD=
+
+
+#### 7. you are ready to go!
 ```
 $> python manage.py runserver
 ```
