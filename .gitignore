@@ -10,7 +10,15 @@ backend/engine/resources/sample-file2.zip
 
 backend/engine/logs/
 *Postgres*
-*artifacts*
+
+backend\engine\artifacts\awaiting_retrieval
+backend\engine\artifacts\awaiting_storage
+backend\engine\artifacts\cover_videos
+backend\engine\artifacts\downloaded_preprocessed
+backend\engine\artifacts\test_output_files
+backend\engine\artifacts\test_resources
+backend\engine\artifacts\tmp
+
 *migrations*
 server/engine/logs/
 */.venv
