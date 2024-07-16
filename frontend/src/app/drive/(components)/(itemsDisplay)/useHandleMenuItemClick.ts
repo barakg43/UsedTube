@@ -12,7 +12,7 @@ export const useHandleMenuItemClick = () => {
                 console.log("Sharing:", node);
                 break;
             case "delete":
-                const response = deleteNode({
+                deleteNode({
                     nodeId: node.id,
                 })
                     .unwrap()
