@@ -1,12 +1,8 @@
-/backend/engine/output_files/
+
 .idea
 .vscode
-usedTube
-*__pycache__*
-backend/engine/output_files
-backend/engine/resources/output.mp4
 
-backend/engine/resources/sample-file2.zip
+*__pycache__*
 
 backend/engine/logs/
 *Postgres*
@@ -26,7 +22,6 @@ backend/engine/artifacts/test_resources/*
 backend/engine/artifacts/tmp/*
 !backend/engine/artifacts/tmp/placeholder.txt
 
-*migrations*
 server/engine/logs/
 */.venv
 */credentials.json*
