@@ -1,8 +1,7 @@
 How To Deploy:
 
 clone the repo.
-
-
+download a long video (approx 2hrs) and place it in /backend\artifacts\cover_videos , name it "cover-video.mp4" exactly.
 
 
 
