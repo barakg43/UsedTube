@@ -6,7 +6,7 @@ from engine.driver import Driver
 from engine.progress_tracker import Tracker
 from engine.uploader.YouTube.uploader import YouTubeUploader
 from engine.uploader.definition import Uploader
-
+from engine.uploader.Dailymotion.uploader import DailymotionUploader
 
 
 class EngineManager:
@@ -62,15 +62,16 @@ class EngineManager:
     
     def upload_video_to_providers(self, job_id, video_path: str) -> uuid1:
         # self.uploader: Uploader = YouTubeUploader(job_id, self._progress_tracker)
+        uploader = DailymotionUploader()
         # self.uuid_to_future[job_id] = self.workers.submit(self.uploader.upload, video_path)
-        self.uuid_to_future[job_id] = self.workers.submit(lambda: "abcd")
+        self.uuid_to_future[job_id] = self.workers.submit(uploader.upload, video_path)
         Tracker.set_progress(job_id, 1)
     
     def get_url(self, uuid) -> str:
         future = self.uuid_to_future[uuid]
         results = future.result()
         del self.uuid_to_future[uuid]
-        return self.uploader.base_url+results if results else results
+        return DailymotionUploader.base_url+results if results else results
     
         
 

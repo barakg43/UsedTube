@@ -10,7 +10,8 @@ from engine.uploader.definition import Uploader
 
 
 class DailymotionUploader(Uploader):
-
+    base_url = "ABCDE"
+    
     def __init__(self):
         super().__init__()
         self.client = dailymotion.Dailymotion()
@@ -37,6 +38,7 @@ class DailymotionUploader(Uploader):
         self.headers = {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
+
 
 
     def upload(self, file_path: str):
