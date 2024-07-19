@@ -83,6 +83,8 @@ class StatelessSerializer:
         """
         file_to_serialize = open(file_to_serialize_path, 'rb')
         cover_video = cv2.VideoCapture(cover_video_path)
+        if cover_video.isOpened() is False:
+            raise Exception(f"failed to open cover video: {cover_video_path}")
         context = StatelessSerializer.initialize_serialization_context(file_to_serialize_path, cover_video)
         cover_video.release()
 
