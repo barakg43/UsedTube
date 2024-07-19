@@ -43,7 +43,7 @@ const MainArea = ({ folderId }: { folderId: string | undefined }) => {
         <Typography variant='h4'>
           <ParentsRow parents={parents?.slice().reverse()} />
         </Typography>
-        <div className='flex flex-row justify-between w-[250px]'>
+        <div className='flex flex-row justify-between'>
           <CreateNewFolder />
           <ItemsDisplayToggle />
         </div>

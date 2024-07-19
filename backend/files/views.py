@@ -1,6 +1,7 @@
 import os
 import json
 
+from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
@@ -141,7 +142,7 @@ class CreateNewFolderView(APIView):
         try:
             parent_folder = Folder.objects.filter(id=active_directory_id).get()
             new_folder = Folder.objects.create(
-                name=folder_name, parent=parent_folder, owner=get_user_object(request)
+                name=folder_name, parent=parent_folder, owner=get_user_object(request),created_at=timezone.now()
             )
 
             return JsonResponse(
