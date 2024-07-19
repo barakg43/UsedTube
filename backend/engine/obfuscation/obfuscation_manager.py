@@ -33,40 +33,41 @@ class ObfuscationManager:
         # save out to a generated path, using UUID to avoid collisions?
         # return the path
 
-        ff = cv2.VideoCapture(file_frames_path)
-        assert ff.isOpened(), "Could not open file_frames_path"
+        file_frames_video = cv2.VideoCapture(file_frames_path)
+        assert file_frames_video.isOpened(), "Could not open file_frames_path"
 
-        cov = cv2.VideoCapture(cover_video_path)
-        assert cov.isOpened(), "Could not open cover_video_path"
+        cover_video = cv2.VideoCapture(cover_video_path)
+        assert cover_video.isOpened(), "Could not open cover_video_path"
 
         # Get video properties
-        fps = ff.get(cv2.CAP_PROP_FPS)
-        width = int(ff.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(ff.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = file_frames_video.get(cv2.CAP_PROP_FPS)
+        width = int(file_frames_video.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(file_frames_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         out_path = (FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}.mp4").as_posix()
         fourcc  = cv2.VideoWriter.fourcc(*fourcc)
         out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
-
-        while True:
-            ret_ff, frame_ff = ff.read()
+        counter = 0
+        while True and counter < 1800:
+            ret_ff, frame_ff = file_frames_video.read()
             if not ret_ff:
                 self.logger.info("loop ended. No more frames in file_frames")
                 break  
 
-            out.write(frame_ff)  
+            out.write(frame_ff)
+            counter += 1
 
             for _ in range(self.cycle):
-                ret_cov, frame_cov = cov.read()
+                ret_cov, frame_cov = cover_video.read()
                 if not ret_cov:
                     self.logger.info("No more frames in cover_video")
                     break
-
+                counter+=1
                 out.write(frame_cov)  
 
         # Release video capture and writer
-        ff.release()
-        cov.release()
+        file_frames_video.release()
+        cover_video.release()
         out.release()
 
         return out_path
