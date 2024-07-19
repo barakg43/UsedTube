@@ -53,6 +53,8 @@ class StatelessSerializer:
         )
         context.fps = cover_video.get(cv2.CAP_PROP_FPS)
         context.encoding = cv2.VideoWriter.fourcc(*StatelessSerializer.strategy.fourcc)
+        if context.dims[0] == 0 or context.dims[1] == 0:
+            raise Exception(f"invalid video dimensions: {context.dims} on file {cover_video}")
         context.dims_multiplied = np.multiply(*context.dims)
         return context
 
