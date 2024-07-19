@@ -1,6 +1,6 @@
 import { useDirectoryTreeQuery } from "@/redux/api/driveApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setItems } from "@/redux/slices/itemsSlice";
+import { setActiveDirectory, setItems } from "@/redux/slices/itemsSlice";
 import { RootState } from "@/redux/store";
 import { useEffect } from "react";
 import TreeFragment from "./TreeFragment";

@@ -18,10 +18,12 @@ import { setActiveDirectory } from "@/redux/slices/itemsSlice";
 
 function CreateNewFolder() {
   const [isInputVisible, setInputVisible] = useState(false);
-  const [folderName, setFolderName] = useState('');
+  const [folderName, setFolderName] = useState("");
   const dispatch = useAppDispatch();
-  const parentId = useAppSelector((state:RootState)=>  state.items.activeDirectoryId);
   const [createFolder, { isLoading, error }] = useCreateFolderMutation();
+  const parentId = useAppSelector(
+    (state: RootState) => state.items.activeDirectoryId
+  ) ?? '1';
   const router = useRouter();
   const handleCreateFolder = () => {
     setInputVisible(true);
@@ -37,37 +39,36 @@ function CreateNewFolder() {
       console.error(`Failed to create folder ${folderName}`)
     }
   };
-  
-  
+
   const handleCancel = () => {
     setInputVisible(false);
-    setFolderName('');
+    setFolderName("");
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="flex items-center space-x-2 mx-8">
+      <div className='flex items-center space-x-2 mx-8'>
         {isInputVisible ? (
-          <div className="flex items-center space-x-2">
+          <div className='flex items-center space-x-2'>
             <TextField
-              size="small"
+              size='small'
               value={folderName}
               onChange={(e) => setFolderName(e.target.value)}
-              placeholder="New Folder Name"
+              placeholder='New Folder Name'
             />
-            <IconButton size="small" onClick={handleApprove}>
+            <IconButton size='small' onClick={handleApprove}>
               <CheckIcon />
             </IconButton>
-            <IconButton size="small" onClick={handleCancel}>
+            <IconButton size='small' onClick={handleCancel}>
               <CloseIcon />
             </IconButton>
           </div>
         ) : (
           <Button
-            className="hover:bg-dustyPaperDark text-black flex flex-row justify-left h-[47.33px]"
-            component="label"
-            variant="outlined"
-            size="small"
+            className='hover:bg-dustyPaperDark text-black flex flex-row justify-left h-[47.33px]'
+            component='label'
+            variant='outlined'
+            size='small'
             sx={{ textTransform: "none" }}
             onClick={handleCreateFolder}
           >

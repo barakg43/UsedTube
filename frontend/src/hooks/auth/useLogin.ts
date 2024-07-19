@@ -1,13 +1,15 @@
 "use client";
 import { useToaster } from "@/app/(common)/useToaster";
+import { PASSWORD, USERNAME } from "@/constants";
 import { useLoginMutation, useVerifyMutation } from "@/redux/api/authApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setAuth } from "@/redux/slices/authSlice";
+import { RootState } from "@/redux/store";
 import { UserCredentials } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function useLogin() {
+export default function useLogin(setError: Function) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const toaster = useToaster();
@@ -17,7 +19,9 @@ export default function useLogin() {
   //   };
   useVerifyMutation();
 
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const isAuthenticated = useAppSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
   useEffect(() => {
     if (isAuthenticated) router.push("/drive/");
   }, [isAuthenticated, router]);
@@ -30,7 +34,14 @@ export default function useLogin() {
         router.push("/drive/");
       })
       .catch(() => {
-        toaster("Failed to log in", "error");
+        setError(USERNAME, {
+          type: "manual",
+          message: "",
+        });
+        setError(PASSWORD, {
+          type: "manual",
+          message: "Invalid username or password",
+        });
       });
   };
 
