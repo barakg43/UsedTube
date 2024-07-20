@@ -47,7 +47,7 @@ function CreateNewFolder() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className='flex items-center space-x-2 mx-8'>
+      <div className='items-center space-x-2 mx-8'>
         {isInputVisible ? (
           <div className='flex items-center space-x-2'>
             <TextField
