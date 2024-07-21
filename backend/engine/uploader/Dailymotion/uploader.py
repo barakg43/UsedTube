@@ -1,11 +1,10 @@
-import json
 import logging
 import os
 from os import getenv, path
+from typing import Callable
 
 import dailymotion
 import dotenv
-import requests
 
 from django_server.settings import BASE_DIR
 from engine.constants import UPLOAD_VIDEO_CHUNK_SIZE, SERIALIZE_LOGGER
@@ -37,6 +36,7 @@ class DailymotionUploader(Uploader):
                                    api_secret=self.api_secret,
                                    scope=['manage_videos'], info={"username": self.username, "password": self.password})
         self.authorization_header =None
+
         # self.body = {
         #     'grant_type': 'client_credentials',
         #     'client_id': self.api_key,
@@ -48,22 +48,27 @@ class DailymotionUploader(Uploader):
         # }
 
 
-    def upload(self, file_path: str):
+    def upload(self, file_path: str,progress_tracker: Callable[[float], None]):
         print(f" Uploading {file_path}")
-        upload_url =self.__upload_video(file_path)
+        upload_url =self.__upload_video(file_path,progress_tracker)
         publish_url=self.__publish_uploaded_video(upload_url)
         return publish_url
     # Sending the video file to the upload url obtained in the previous function
-    def __upload_video(self, file_path):
+    def __upload_video(self, file_path,tracker: Callable[[float], None]):
 
         video_size=os.stat(file_path).st_size
         chunk_amount=video_size/UPLOAD_VIDEO_CHUNK_SIZE
         def progress_tracker(bytes_written, total_size):
-            print(f"{bytes_written}/{total_size}", end="\r")
-            self.logger.debug(f"{file_path}: Uploaded {bytes_written} / {total_size}")
-            self.print_progress(bytes_written, total_size)
-        upload_url = self.client.upload(file_path,workers=chunk_amount,progress=progress_tracker)
-        return upload_url
+            percent = self.__get_percent_progress(bytes_written, total_size)
+            self.logger.debug(f"{file_path}: Uploaded {percent}%")
+            if tracker is not None:
+                tracker(percent)
+        try:
+            upload_url = self.client.upload(file_path,workers=chunk_amount,progress=progress_tracker)
+            return upload_url
+        except Exception as e:
+            self.logger.error(e, exc_info=True)
+            raise e
     def __publish_uploaded_video(self, uploaded_url):
         '''
         Now that your video has been uploaded, you can publish it to make it visible
@@ -80,19 +85,14 @@ class DailymotionUploader(Uploader):
             })
         return self.videos_url_template.format(pub_url['id'])
 
-    def print_progress(self,current, total):
+    def __get_percent_progress(self,current, total):
         """
         Example of function which prints the percentage of progression
         :param current: current bytes sent
         :param total: total bytes
-        :return: None
+        :return: percent number
         """
-        percent = int(min((current * 100) / total, 100))
+        percent = round((min((current * 100) / total, 100)),2)
+        return percent
 
-        print(
-            "[{}{}] {}%\r".format(
-                "*" * int(percent), " " * (100 - int(percent)), percent
-            ),
-            flush=True,
-            end="",
-        )
+
