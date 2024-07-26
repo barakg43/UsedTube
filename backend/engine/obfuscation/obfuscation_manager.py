@@ -34,10 +34,10 @@ class ObfuscationManager:
         # return the path
 
         file_frames_video = cv2.VideoCapture(file_frames_path)
-        assert file_frames_video.isOpened(), "Could not open file_frames_path"
+        assert file_frames_video.isOpened(), f"Could not open file_frames_path {file_frames_path}"
 
         cover_video = cv2.VideoCapture(cover_video_path)
-        assert cover_video.isOpened(), "Could not open cover_video_path"
+        assert cover_video.isOpened(), f"Could not open cover_video_path {cover_video_path}"
 
         # Get video properties
         fps = file_frames_video.get(cv2.CAP_PROP_FPS)
@@ -45,6 +45,7 @@ class ObfuscationManager:
         height = int(file_frames_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         out_path = (FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}.mp4").as_posix()
+
         fourcc  = cv2.VideoWriter.fourcc(*fourcc)
         out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
         counter = 0
@@ -85,7 +86,7 @@ class ObfuscationManager:
         # return the path
 
         obsv = cv2.VideoCapture(obfuscated_video_path)
-        assert obsv.isOpened(), "Could not open obfuscated_video_path"
+        assert obsv.isOpened(), f"Could not open obfuscated video: {obfuscated_video_path}"
 
         fps = obsv.get(cv2.CAP_PROP_FPS)
         width = int(obsv.get(cv2.CAP_PROP_FRAME_WIDTH))
