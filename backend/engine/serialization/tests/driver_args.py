@@ -26,33 +26,40 @@ class DriverArgs:
         # serialize
         cover_vid_path = self.__choose_cover_video(zipped_path)
         out_vid_path = f"{zipped_path}.mp4"
+        print('out_vid_path', out_vid_path)
         self.__serializer.serialize(zipped_path, cover_vid_path, out_vid_path, jobId)
-        # os.remove(zipped_path)
+        os.remove(zipped_path)
         # obfuscate
         obfuscated_vid_path = self.__obfuscator.obfuscate(out_vid_path, cover_vid_path, self.__serializer.fourcc)
         Tracker.set_progress(jobId, 1)
-        # os.remove(out_vid_path)
+        os.remove(out_vid_path)
         return obfuscated_vid_path, zipped_file_size
 
-    def process_video_to_file(self, video_path: str, compressed_file_size: int, jobId: uuid) -> str:
+    def process_video_to_file(self, video_path: str, compressed_file_size: int, jobId: uuid,fourcc:str) -> str:
         # untangle
-        serialized_file_as_video_path = self.__obfuscator.untangle(video_path)
+
+        serialized_file_as_video_path = self.__obfuscator.untangle(video_path,fourcc)
         Tracker.set_progress(jobId, 0.15)
         # deserialize
         zipped_file_path = self.__serializer.deserialize(serialized_file_as_video_path, compressed_file_size, jobId)
+        #### zipped_file_path = self.__serializer.deserialize(video_path, compressed_file_size, jobId)
         # unzip
-        # os.remove(serialized_file_as_video_path)
+        os.remove(serialized_file_as_video_path)
         unzipped_file_path = self.__ungzip_it(zipped_file_path)
         Tracker.set_progress(jobId, 1)
-        # os.remove(zipped_file_path)
+        os.remove(zipped_file_path)
         return unzipped_file_path
 
     def __gzip_it(self, file_to_upload_path: str) -> str:
-        gzipped_path = f"{file_to_upload_path}.gz"
+        gzipped_path = f"{file_to_upload_path}_enc.gz"
         file_name_with_extension = Path(gzipped_path).name
         tmp_path = Path(TMP_WORK_DIR) / file_name_with_extension
         with open(file_to_upload_path, 'rb') as f_in, gzip.open(tmp_path, 'wb') as f_out:
+
             f_out.writelines(f_in)
+            f_out.flush()
+            f_out.close()
+            f_in.close()
         return tmp_path.as_posix()
 
     def __choose_cover_video(self, zipped_path: str) -> str:
