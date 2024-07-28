@@ -10,6 +10,7 @@ import numpy as np
 from more_itertools import consume
 from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, TMP_WORK_DIR
 from engine.progress_tracker import Tracker
+from engine.serialization.ffmpeg.video_write import VideoWriter
 from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 from engine.serialization.strategy.impl.bit_to_block import BitToBlock
 
@@ -118,7 +119,7 @@ class StatelessSerializer:
             Tracker.set_progress(jobId, 0.75)
         StatelessSerializer.ser_logger.debug("waiting for workers to finish processing chunks...")
 
-        output_video = cv2.VideoWriter(out_vid_path, context.encoding, context.fps, context.dims)
+        output_video = VideoWriter(out_vid_path, context.encoding, context.fps, context.dims)
         Tracker.set_progress(jobId, 0.85)
         file_to_serialize.close()
 
