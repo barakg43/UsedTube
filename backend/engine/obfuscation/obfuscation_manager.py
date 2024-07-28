@@ -4,6 +4,7 @@ import uuid
 import cv2
 
 from engine.constants import FILES_READY_FOR_STORAGE_DIR, GENERAL_LOGGER, TMP_WORK_DIR
+from engine.serialization.ffmpeg.video_write import VideoWriter
 
 
 class ObfuscationManager:
@@ -21,7 +22,7 @@ class ObfuscationManager:
         self.logger = logging.Logger(GENERAL_LOGGER)
         self.logger.setLevel(logging.DEBUG)
 
-    def obfuscate(self, file_frames_path: str, cover_video_path: str, fourcc: int) -> str:
+    def obfuscate(self, file_frames_path: str, cover_video_path: str, fourcc: str) -> str:
         # open 2 video as streams file_frames as ff, cover_video as cov
         # create new video container as out
         # do:
@@ -44,12 +45,12 @@ class ObfuscationManager:
         width = int(file_frames_video.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(file_frames_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        out_path = (FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}.mp4").as_posix()
+        out_path = (FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}_{fourcc}.mp4").as_posix()
 
-        fourcc  = cv2.VideoWriter.fourcc(*fourcc)
-        out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
+        # fourcc  = cv2.VideoWriter.fourcc(*fourcc)
+        out = VideoWriter(out_path, fourcc,int( fps), (width, height))
         counter = 0
-        while True and counter < 1800:
+        while True:
             ret_ff, frame_ff = file_frames_video.read()
             if not ret_ff:
                 self.logger.info("loop ended. No more frames in file_frames")
@@ -74,7 +75,7 @@ class ObfuscationManager:
         return out_path
 
 
-    def untangle(self, obfuscated_video_path:str ) -> str:
+    def untangle(self, obfuscated_video_path:str,fourcc:str="mp4v" ) -> str:
         # open the obfuscated_video as obsv
         # create a new out video container as out
         # do:
@@ -93,8 +94,8 @@ class ObfuscationManager:
         height = int(obsv.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         out_path = (TMP_WORK_DIR / f"{uuid.uuid4()}.mp4").as_posix()  # Generate unique filename using UUID
-        fourcc = cv2.VideoWriter.fourcc(*'mp4v')
-        out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
+        # fourcc = cv2.VideoWriter.fourcc(*fourcc)
+        out = VideoWriter(out_path, fourcc, int(fps), (width, height))
 
         while True:
             ret, frame = obsv.read()
