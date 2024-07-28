@@ -68,12 +68,12 @@ class Serializer:
         serialized_frames = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=object)
         futures = np.empty(int(np.ceil(self.file_size / self.chunk_size)), dtype=concurrent.futures.Future)
         self.ser_logger.debug(f"about to process {len(futures)} chunks")
-        # read chunks sequentially and start strategy.serializ
+        # read chunks sequentially and start strategy.serialize
         bytes_chunk = file_to_serialize.read(self.chunk_size)
         self.strategy.frames_amount = np.ceil(self.file_size / self.chunk_size)
         chunk_number = 0
         while bytes_chunk:
-            # use serializ without ThreadPool
+            # use serialize without ThreadPool
             if self.workers:
                 futures[chunk_number] = self.workers.submit(self.strategy.serialize, bytes_chunk, serialized_frames,
                                                             chunk_number)
