@@ -43,9 +43,10 @@ class VideoWriter:
     def __init__(self, out_video_path, fourcc: str, fps: int, frame_size: (int, int),
                  logging_stdout=False):
         self.output_video = av.open(out_video_path, mode='w')
-        self.video_stream = self.output_video.add_stream("mpeg4", rate=fps)
+        self.video_stream = self.output_video.add_stream(fourcc, rate=fps)
         self.video_stream.width = frame_size[0]
         self.video_stream.height = frame_size[1]
+        # print(f"{fourcc} result codec:",self.video_stream.codec_context.name)
         # self.video_stream.bit_rate = 8000 * kbps
 
         # self.path = out_video_path
