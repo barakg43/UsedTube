@@ -59,7 +59,8 @@ class VideoWriter:
         # )
 
     def write(self, frame):
-        frame_av = av.VideoFrame.from_ndarray(frame, format='bgr24')
+
+        frame_av = av.VideoFrame.from_ndarray(frame)
         # packet = self.video_stream.encode(frame_av)
 
         for packet in self.video_stream.encode(frame_av):
