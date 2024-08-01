@@ -28,7 +28,7 @@ class DriverArgs:
         out_vid_path = f"{zipped_path}.mp4"
         print('out_vid_path', out_vid_path)
         self.__serializer.serialize(zipped_path, cover_vid_path, out_vid_path, jobId)
-        os.remove(zipped_path)
+        # os.remove(zipped_path)
         # obfuscate
         obfuscated_vid_path = self.__obfuscator.obfuscate(out_vid_path, cover_vid_path, self.__serializer.fourcc)
         Tracker.set_progress(jobId, 1)
@@ -47,10 +47,11 @@ class DriverArgs:
         os.remove(serialized_file_as_video_path)
         unzipped_file_path = self.__ungzip_it(zipped_file_path)
         Tracker.set_progress(jobId, 1)
-        os.remove(zipped_file_path)
+        # os.remove(zipped_file_path)
         return unzipped_file_path
 
     def __gzip_it(self, file_to_upload_path: str) -> str:
+        return file_to_upload_path
         gzipped_path = f"{file_to_upload_path}_enc.gz"
         file_name_with_extension = Path(gzipped_path).name
         tmp_path = Path(TMP_WORK_DIR) / file_name_with_extension
@@ -68,6 +69,7 @@ class DriverArgs:
         return (COVER_VIDEOS_DIR / "cover-video.mp4").as_posix()
 
     def __ungzip_it(self, gzipped_file_path: str) -> str:
+        return gzipped_file_path
         unzipped_path = Path(
             FILES_READY_FOR_RETRIEVAL_DIR / Path(gzipped_file_path[:-3]).stem).as_posix()  # Remove the '.gz' extension
         with gzip.open(gzipped_file_path, 'rb') as f_in, open(unzipped_path, 'wb') as f_out:
