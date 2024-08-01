@@ -4,6 +4,7 @@ import uuid
 import cv2
 
 from engine.constants import FILES_READY_FOR_STORAGE_DIR, GENERAL_LOGGER, TMP_WORK_DIR
+from engine.serialization.ffmpeg.video_capture import VideoCapture
 from engine.serialization.ffmpeg.video_write import VideoWriter
 
 
@@ -34,21 +35,24 @@ class ObfuscationManager:
         # save out to a generated path, using UUID to avoid collisions?
         # return the path
 
-        file_frames_video = cv2.VideoCapture(file_frames_path)
+        file_frames_video = VideoCapture(file_frames_path)
         assert file_frames_video.isOpened(), f"Could not open file_frames_path {file_frames_path}"
 
-        cover_video = cv2.VideoCapture(cover_video_path)
+        cover_video = VideoCapture(cover_video_path)
         assert cover_video.isOpened(), f"Could not open cover_video_path {cover_video_path}"
 
         # Get video properties
-        fps = file_frames_video.get(cv2.CAP_PROP_FPS)
-        width = int(file_frames_video.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(file_frames_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        file_frames_video_props=file_frames_video.get_video_props()
+        fps=file_frames_video_props["fps"]
+        width, height = file_frames_video_props["width"], file_frames_video_props["height"]
+        # fps = file_frames_video.get(cv2.CAP_PROP_FPS)
+        # width = int(file_frames_video.get(cv2.CAP_PROP_FRAME_WIDTH))
+        # height = int(file_frames_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         out_path = (FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}_{fourcc}.mp4").as_posix()
 
-        # fourcc  = cv2.VideoWriter.fourcc(*fourcc)
-        out = VideoWriter(out_path, fourcc,int( fps), (width, height))
+        fourcc  = cv2.VideoWriter.fourcc(*fourcc)
+        out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
         counter = 0
         while True:
             ret_ff, frame_ff = file_frames_video.read()
@@ -86,16 +90,19 @@ class ObfuscationManager:
         # save out to a generated path, using UUID to avoid collisions?
         # return the path
 
-        obsv = cv2.VideoCapture(obfuscated_video_path)
+        obsv = VideoCapture(obfuscated_video_path)
         assert obsv.isOpened(), f"Could not open obfuscated video: {obfuscated_video_path}"
-
-        fps = obsv.get(cv2.CAP_PROP_FPS)
-        width = int(obsv.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(obsv.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        obsv_props=obsv.get_video_props()
+        fps = obsv_props["fps"]
+        width = obsv_props["width"]
+        height =obsv_props["height"]
+        # fps = obsv.get(cv2.CAP_PROP_FPS)
+        # width = int(obsv.get(cv2.CAP_PROP_FRAME_WIDTH))
+        # height = int(obsv.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         out_path = (TMP_WORK_DIR / f"{uuid.uuid4()}.mp4").as_posix()  # Generate unique filename using UUID
-        # fourcc = cv2.VideoWriter.fourcc(*fourcc)
-        out = VideoWriter(out_path, fourcc, int(fps), (width, height))
+        fourcc = cv2.VideoWriter.fourcc(*fourcc)
+        out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
 
         while True:
             ret, frame = obsv.read()
