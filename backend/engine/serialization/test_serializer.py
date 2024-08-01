@@ -28,7 +28,7 @@ class SerializerTest(unittest.TestCase):
 
     def paths_dict(self):
         original_file_ext = "pdf"
-        paths_dict = {PDF_PATH: (TEST_RESOURCES_DIR / SAMPLE_FILE_3).as_posix(),
+        paths_dict = {PDF_PATH: (TEST_RESOURCES_DIR / SAMPLE_FILE_1).as_posix(),
                       ENC_OUT_VID_PATH: (
                               TEST_OUTPUT_DIR / "output-video_{fourcc}.{out_format}")
                       .as_posix(),
