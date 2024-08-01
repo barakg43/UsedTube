@@ -54,7 +54,7 @@ class StatelessSerializerArgs:
             int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         )
         context.fps = cover_video.get(cv2.CAP_PROP_FPS)
-        context.encoding =self.strategy.fourcc # cv2.VideoWriter.fourcc(*self.strategy.fourcc)
+        context.encoding = cv2.VideoWriter.fourcc(*self.strategy.fourcc) #self.strategy.fourcc
         if context.dims[0] == 0 or context.dims[1] == 0:
             raise Exception(f"invalid video dimensions: {context.dims} on file {cover_video}")
         context.dims_multiplied = np.multiply(*context.dims)
@@ -118,7 +118,7 @@ class StatelessSerializerArgs:
             Tracker.set_progress(jobId, 0.75)
         StatelessSerializerArgs.ser_logger.debug("waiting for workers to finish processing chunks...")
 
-        output_video = VideoWriter(out_vid_path, context.encoding, context.fps, context.dims)
+        output_video = cv2.VideoWriter(out_vid_path, context.encoding, context.fps, context.dims)
         Tracker.set_progress(jobId, 0.85)
         file_to_serialize.close()
 
