@@ -14,84 +14,94 @@ import { useCallback, useState } from "react";
 import { useFolderClick } from "../../useFolderClick";
 
 const Space = () => {
-  return <div className='w-[8px]' />;
+    return <div className="w-[8px]" />;
 };
 
 const TreeContainer: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
-  return <div className='flex flex-col text-left'>{children}</div>;
+    return <div className="flex flex-col text-left">{children}</div>;
 };
 
 type MyProps = {
-  node: FSNode;
-  spaces: number;
+    node: FSNode;
+    spaces: number;
 };
 
 export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
-  const [, updateState] = useState<object>();
-  const forceUpdate = useCallback(() => updateState({}), []);
-  const onLabelClick = useFolderClick();
-  const dispatch = useAppDispatch();
-  const activeDirectory = useAppSelector(
-    (state: RootState) => state.items.activeDirectoryId
-  );
-  const handleArrowToggle = (node: FSNode): void => {
-    dispatch(toggleIsOpened(node));
-    // console.log(node, forceUpdate);
-    forceUpdate();
-  };
+    const [, updateState] = useState<object>();
+    const forceUpdate = useCallback(() => updateState({}), []);
+    const onLabelClick = useFolderClick();
+    const dispatch = useAppDispatch();
+    const activeDirectory = useAppSelector(
+        (state: RootState) => state.items.activeDirectoryId
+    );
+    const handleArrowToggle = (node: FSNode): void => {
+        dispatch(toggleIsOpened(node));
+        // console.log(node, forceUpdate);
+        forceUpdate();
+    };
 
-  if (!node) return null;
-  const hasChildren = (node?.children?.length ?? 0) > 0;
-  const isActiveFolder =
-    (node.name === "My Drive" && activeDirectory === "") ||
-    activeDirectory === node?.id;
-  return (
-    <TreeContainer>
-      <div
-        className={`  flex cursor-pointer  text-black ${
-          isActiveFolder && " bg-dustyPaperEvenDarker"
-        } hover:bg-dustyPaperDarkest rounded-xl `}
-      >
-        {spaces > 0 &&
-          new Array(spaces).fill(0).map((_, index) => <Space key={index} />)}
-
-        {hasChildren ? (
-          node?.isOpened ? (
-            <>
-              <ArrowDropDownIcon onClick={() => handleArrowToggle(node)} />
-              <FolderOpenIcon />
-            </>
-          ) : (
-            <>
-              <ArrowRightIcon onClick={() => handleArrowToggle(node)} />
-              <FolderIcon className='text-gray-500' />
-            </>
-          )
-        ) : (
-          <>
-            <ChevronRightIcon fontSize='small' />
-            <FolderOpenIcon />
-          </>
-        )}
-
-        {
-          <span
-            className={`text-left text-ellipsis flex-grow w-[24px]  `}
-            onClick={() => onLabelClick(node.id)}
-          >{`${node.name}`}</span>
-        }
-      </div>
-      {node?.isOpened && hasChildren && (
+    if (!node) return null;
+    const hasChildren = (node?.children?.length ?? 0) > 0;
+    const isActiveFolder =
+        (node.name === "My Drive" && activeDirectory === "") ||
+        activeDirectory === node?.id;
+    return (
         <TreeContainer>
-          {node?.children?.map((child: FSNode, index: number) => {
-            return (
-              <TreeFragment key={index} spaces={spaces + 1} node={child} />
-            );
-          })}
+            <div
+                className={`  flex cursor-pointer  text-black ${
+                    isActiveFolder && " bg-dustyPaper"
+                } hover:bg-dustyPaperDark rounded-xl `}
+            >
+                {spaces > 0 &&
+                    new Array(spaces)
+                        .fill(0)
+                        .map((_, index) => <Space key={index} />)}
+
+                {hasChildren ? (
+                    node?.isOpened ? (
+                        <>
+                            <ArrowDropDownIcon
+                                onClick={() => handleArrowToggle(node)}
+                            />
+                            <FolderOpenIcon />
+                        </>
+                    ) : (
+                        <>
+                            <ArrowRightIcon
+                                onClick={() => handleArrowToggle(node)}
+                            />
+                            <FolderIcon className="text-gray-500" />
+                        </>
+                    )
+                ) : (
+                    <>
+                        <ChevronRightIcon fontSize="small" />
+                        <FolderOpenIcon />
+                    </>
+                )}
+
+                {
+                    <span
+                        className={`text-left text-ellipsis flex-grow w-[24px]  `}
+                        onClick={() => onLabelClick(node.id)}
+                    >{`${node.name}`}</span>
+                }
+            </div>
+            {node?.isOpened && hasChildren && (
+                <TreeContainer>
+                    {node?.children?.map((child: FSNode, index: number) => {
+                        return (
+                            <TreeFragment
+                                key={index}
+                                spaces={spaces + 1}
+                                node={child}
+                            />
+                        );
+                    })}
+                </TreeContainer>
+            )}
         </TreeContainer>
-      )}
-    </TreeContainer>
-  );
+    );
 };
 
 export default TreeFragment;

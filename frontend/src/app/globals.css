@@ -1,7 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap");
+@import "react-toastify/dist/ReactToastify.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 /*
 :root {
   --foreground-rgb: 0, 0, 0;

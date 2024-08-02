@@ -1,5 +1,5 @@
 "use client";
-import { useToaster } from "@/app/(common)/useToaster";
+import { useToaster } from "@/app/(common)/(hooks)/(toaster)/useToaster";
 import { useFolderContentQuery } from "@/redux/api/driveApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
@@ -7,7 +7,7 @@ import { Typography } from "@mui/material";
 import ItemsDisplay from "../../(itemsDisplay)/Display";
 import ItemsDisplayToggle from "../../(itemsDisplay)/ItemsDisplayToggle";
 import CreateNewFolder from "./CreateNewFolder";
-import Loading from "@/app/(common)/Loading";
+import Loading from "@/app/(common)/(components)/Loading";
 import { useEffect } from "react";
 import { setActiveDirectory } from "@/redux/slices/itemsSlice";
 import ParentsRow from "./ParentsRow";
