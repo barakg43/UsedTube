@@ -1,4 +1,7 @@
-import { useToaster, Variants } from "@/app/(common)/useToaster";
+import {
+    useToaster,
+    Variants,
+} from "@/app/(common)/(hooks)/(toaster)/useToaster";
 import { FOLDER } from "@/constants";
 import {
     useDeleteNodeMutation,

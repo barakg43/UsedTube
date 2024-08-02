@@ -1,0 +1,25 @@
+/* toaster.css */
+.custom-toast {
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    z-index: 9999;
+}
+
+.custom-toast-success {
+    background-color: #4caf50;
+}
+
+.custom-toast-error {
+    background-color: #f44336;
+}
+
+.custom-toast-warning {
+    background-color: #ff9800;
+}
+
+.custom-toast-info {
+    background-color: #2196f3;
+}
