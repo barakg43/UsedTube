@@ -1,19 +1,15 @@
 import os
-import sys
-from threading import Thread
-import time
 import random
+import time
 from urllib.request import Request
+from uuid import uuid4
+
 import httplib2
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
 from googleapiclient.errors import HttpError
-from oauth2client.file import Storage
-from oauth2client.tools import run_flow
-from oauth2client.client import flow_from_clientsecrets
-from uuid import uuid4
+from googleapiclient.http import MediaFileUpload
 
 from engine.uploader.definition import Uploader
 
@@ -28,7 +24,8 @@ YOUTUBE_UPLOAD_SCOPE = "https://www.googleapis.com/auth/youtube.upload"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 YOUTUBE_TOKEN = 'youtube_token.json'
-YOUTUBE_CREDENTIALS = os.path.join(os.path.dirname(__file__),'client_secrets.json')
+YOUTUBE_CREDENTIALS = os.path.join(os.path.dirname(__file__), 'client_secrets.json')
+
 
 class YouTubeUploader(Uploader):
     def __init__(self, uuid, tracker):
@@ -42,7 +39,7 @@ class YouTubeUploader(Uploader):
         credentials = None
         if os.path.exists(YOUTUBE_TOKEN):
             credentials = Credentials.from_authorized_user_file(YOUTUBE_TOKEN, [YOUTUBE_UPLOAD_SCOPE])
-        
+
         if not credentials or not credentials.valid:
             if credentials and credentials.expired and credentials.refresh_token:
                 credentials.refresh(Request())
@@ -51,7 +48,7 @@ class YouTubeUploader(Uploader):
                 credentials = flow.run_local_server(port=0)
                 with open(YOUTUBE_TOKEN, 'w') as token:
                     token.write(credentials.to_json())
-        
+
         return credentials
 
     def upload_video(self, video_path: str):

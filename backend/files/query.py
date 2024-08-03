@@ -1,5 +1,4 @@
-from django.contrib.sites import requests
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, ValidationError
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 
 from account.models import AppUser
 from files.models import Folder, File
@@ -45,6 +44,6 @@ def __get_folder_tree_rec(root_folder: Folder):
     return {
         "id": root_folder.id,
         "name": root_folder.name,
-        "isOpened":False,
+        "isOpened": False,
         "children": children_array
     }

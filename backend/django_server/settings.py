@@ -13,6 +13,7 @@ from os import path, getenv
 from pathlib import Path
 
 import dotenv
+
 # from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,7 +21,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SITE_NAME = 'Full Auth'
 dotenv_path = BASE_DIR / '.env.local'
 if path.isfile(dotenv_path):
-
     dotenv.load_dotenv(dotenv_path)
 
 # Quick-start development settings - unsuitable for production
@@ -177,7 +177,6 @@ DJOSER = {
 CORS_ALLOWED_ORIGINS = getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",")
 CORS_ALLOW_CREDENTIALS = True
 AUTH_USER_MODEL = 'account.AppUser'
-
 
 AUTH_COOKIE_KEY = "access"
 AUTH_REFRESH_KEY = "refresh"

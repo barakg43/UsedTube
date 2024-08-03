@@ -5,9 +5,11 @@ import os
 import uuid
 from concurrent.futures import ThreadPoolExecutor, wait
 from typing import IO
+
 import cv2
 import numpy as np
 from more_itertools import consume
+
 from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, TMP_WORK_DIR
 from engine.progress_tracker import Tracker
 from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
@@ -102,14 +104,15 @@ class StatelessSerializer:
             # use serialize without ThreadPool
             if StatelessSerializer.workers:
                 futures[chunk_number] = StatelessSerializer.workers.submit(StatelessSerializer.strategy.serialize,
-                                                                            bytes_chunk, serialized_frames,
-                                                                            chunk_number, context)
+                                                                           bytes_chunk, serialized_frames,
+                                                                           chunk_number, context)
             else:
                 futures[chunk_number] = StatelessSerializer.strategy.serialize(bytes_chunk, serialized_frames,
-                                                                                chunk_number, context)
+                                                                               chunk_number, context)
             # read next chunk
             chunk_number += 1
-            StatelessSerializer.ser_logger.debug(f"serializer submitted chunk number #{chunk_number} ({len(bytes_chunk)} bytes) for serialization")
+            StatelessSerializer.ser_logger.debug(
+                f"serializer submitted chunk number #{chunk_number} ({len(bytes_chunk)} bytes) for serialization")
             bytes_chunk = file_to_serialize.read(context.chunk_size)
 
         StatelessSerializer.ser_logger.debug(f"total of {chunk_number} chunks were submitted to workers")
@@ -150,8 +153,8 @@ class StatelessSerializer:
         StatelessSerializer.strategy.frames_amount = frames_count
 
         frame_number = StatelessSerializer.deserialize_frame_after_frame(bytes_left_to_read, context,
-                                                                            deserialized_bytes, frame_number, futures,
-                                                                            serialized_file_videocap)
+                                                                         deserialized_bytes, frame_number, futures,
+                                                                         serialized_file_videocap)
 
         StatelessSerializer.deser_logger.debug(f"total of {frame_number} frames were submitted to workers")
 
@@ -170,26 +173,26 @@ class StatelessSerializer:
 
     @staticmethod
     def deserialize_frame_after_frame(bytes_left_to_read, context, deserialized_bytes, frame_number, futures,
-                                        serialized_file_videocap):
+                                      serialized_file_videocap):
         while bytes_left_to_read > 0:
             ret, serialized_frame = serialized_file_videocap.read()
             if not ret:
                 break
 
             bytes_amount_to_read = StatelessSerializer.calculate_bytes_amount_to_read(bytes_left_to_read,
-                                                                                        context,
-                                                                                        StatelessSerializer.strategy.bytes_2_pixels_ratio)
+                                                                                      context,
+                                                                                      StatelessSerializer.strategy.bytes_2_pixels_ratio)
             bytes_left_to_read -= bytes_amount_to_read
 
             if StatelessSerializer.workers:
                 futures[frame_number] = StatelessSerializer.workers.submit(StatelessSerializer.strategy.deserialize,
-                                                                            bytes_amount_to_read,
-                                                                            serialized_frame,
-                                                                            deserialized_bytes, frame_number, context)
+                                                                           bytes_amount_to_read,
+                                                                           serialized_frame,
+                                                                           deserialized_bytes, frame_number, context)
             else:
                 futures[frame_number] = StatelessSerializer.strategy.deserialize(bytes_amount_to_read, serialized_frame,
-                                                                            deserialized_bytes, frame_number,
-                                                                            context)
+                                                                                 deserialized_bytes, frame_number,
+                                                                                 context)
             frame_number += 1
             StatelessSerializer.deser_logger.debug(
                 f"serializer submitted chunk {bytes_amount_to_read} bytes #{frame_number} for deserialization")

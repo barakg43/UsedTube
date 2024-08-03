@@ -1,6 +1,5 @@
 from files.models import Folder
 
-
 tpos = Folder.objects.all()
 for x in tpos:
     print(x)

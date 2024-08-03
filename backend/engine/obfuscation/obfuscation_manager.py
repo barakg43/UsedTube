@@ -8,7 +8,7 @@ from engine.constants import FILES_READY_FOR_STORAGE_DIR, GENERAL_LOGGER, TMP_WO
 
 class ObfuscationManager:
 
-    def __init__(self, intermeshing_cycle: int=5):
+    def __init__(self, intermeshing_cycle: int = 5):
         """
         Mix serialized frames with frames of a real video inorder to make
         the serialized videos hard to notice.
@@ -45,14 +45,14 @@ class ObfuscationManager:
         height = int(file_frames_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         out_path = (FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}.mp4").as_posix()
-        fourcc  = cv2.VideoWriter.fourcc(*fourcc)
+        fourcc = cv2.VideoWriter.fourcc(*fourcc)
         out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
         counter = 0
         while True and counter < 1800:
             ret_ff, frame_ff = file_frames_video.read()
             if not ret_ff:
                 self.logger.info("loop ended. No more frames in file_frames")
-                break  
+                break
 
             out.write(frame_ff)
             counter += 1
@@ -62,18 +62,17 @@ class ObfuscationManager:
                 if not ret_cov:
                     self.logger.info("No more frames in cover_video")
                     break
-                counter+=1
-                out.write(frame_cov)  
+                counter += 1
+                out.write(frame_cov)
 
-        # Release video capture and writer
+                # Release video capture and writer
         file_frames_video.release()
         cover_video.release()
         out.release()
 
         return out_path
 
-
-    def untangle(self, obfuscated_video_path:str ) -> str:
+    def untangle(self, obfuscated_video_path: str) -> str:
         # open the obfuscated_video as obsv
         # create a new out video container as out
         # do:
@@ -100,12 +99,11 @@ class ObfuscationManager:
             if not ret:
                 break
 
-            out.write(frame)  
+            out.write(frame)
 
             # Skip {cycle} frames
             for _ in range(self.cycle):
-                 _ = obsv.read()
-
+                _ = obsv.read()
 
         # Release video capture and writer
         obsv.release()
