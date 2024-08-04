@@ -74,7 +74,8 @@ class JobDetails:
 
     def get_user(self):
         return self.user
-
+    def get_future(self):
+        return self.future
     def set_error(self, error: str):
         self.error = error
 
