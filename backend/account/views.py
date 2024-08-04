@@ -1,5 +1,6 @@
 import datetime
 from uuid import uuid4
+
 from django.http import HttpRequest, JsonResponse
 from django.views import View
 from djoser.social.views import ProviderAuthView
@@ -7,7 +8,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView, TokenRefreshView
-from account.models import APIProvider, AppUser
+
+from account.models import AppUser
 from constants import ERROR, MESSAGE
 from django_server import settings
 from django_server.settings import AUTH_REFRESH_KEY, AUTH_COOKIE_KEY
@@ -20,6 +22,7 @@ from utils import convert_body_json_to_dict
 
 class Register(View):
     permission_classes = ([])
+
     def __additional_registration_actions(self, user: AppUser):
         # set used space to 0
 
@@ -37,7 +40,7 @@ class Register(View):
         username = body_dict.get('username')
         password = body_dict.get('password')
         email = body_dict.get('email')
-        
+
         # add empty cases handle
         # Check if username or email already exists
         if AppUser.objects.filter(username=username).exists():
@@ -47,20 +50,20 @@ class Register(View):
 
         # Create user
         user = AppUser.objects.create_user(username=username, email=email, password=password,
-                                        first_name=body_dict.get('firstName'),
-                                        last_name=body_dict.get('lastName'),storage_usage=0)
+                                           first_name=body_dict.get('firstName'),
+                                           last_name=body_dict.get('lastName'), storage_usage=0)
 
         # providers_to_keys = body_dict.get('providers')
         # for provider in providers_to_keys:
         #     APIProvider.objects.create(provider_name=provider, api_key=providers_to_keys[provider], user=user)
-            
+
         self.__additional_registration_actions(user)
 
         return JsonResponse({MESSAGE: 'User registered successfully'})
 
     def delete(self, request: HttpRequest):
         # Get current user
-        user =get_user_object(request)
+        user = get_user_object(request)
 
         if not user.is_authenticated:
             return JsonResponse({ERROR: 'User is not authenticated'}, status=401)
@@ -68,7 +71,7 @@ class Register(View):
         user.delete()
 
         return JsonResponse({'message': 'User account deleted successfully'})
-    
+
 
 class Validate(View):
     def post(self, request: HttpRequest):
@@ -183,6 +186,7 @@ class CustomTokenVerifyView(TokenVerifyView):
 
 class LogoutView(APIView):
     permission_classes = ([])
+
     def post(self, request, *args, **kwargs):
         response = Response(status=status.HTTP_204_NO_CONTENT)
         response.delete_cookie(AUTH_COOKIE_KEY)

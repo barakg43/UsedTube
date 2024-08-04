@@ -1,6 +1,7 @@
+import youtube_dl
+
 from engine.constants import ITEMS_READY_FOR_PROCESSING
 from engine.downloader.definition import Downloader
-import youtube_dl
 
 
 class DailymotionDownloader(Downloader):

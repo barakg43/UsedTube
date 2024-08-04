@@ -1,7 +1,8 @@
 import uuid
 
-from account.models import AppUser
 from django.db import models
+
+from account.models import AppUser
 
 
 class Folder(models.Model):
@@ -27,6 +28,7 @@ class File(models.Model):
     name = models.CharField(max_length=255)
     extension = models.CharField(max_length=10)
     size = models.IntegerField()  # in bytes
+    compressed_size = models.IntegerField(null=True)  # in bytes
     folder = models.ForeignKey(Folder, on_delete=models.CASCADE, related_name="files")
     owner = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name="files")
     url = models.URLField(null=False)

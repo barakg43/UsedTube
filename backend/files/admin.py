@@ -14,7 +14,7 @@ class FolderAdmin(admin.ModelAdmin):
 
 @admin.register(File)
 class FileAdmin(admin.ModelAdmin):
-    list_display = ('name', 'extension', 'size', 'folder', 'owner', 'created_at', 'updated_at')
+    list_display = ('name', 'extension', 'size', 'url', 'folder', 'owner', 'created_at', 'updated_at')
     search_fields = ('name',)
     list_filter = ('folder', 'owner', 'created_at')
     raw_id_fields = ('folder', 'owner')
@@ -22,7 +22,7 @@ class FileAdmin(admin.ModelAdmin):
 
 @admin.register(SharedItem)
 class SharedItemAdmin(admin.ModelAdmin):
-    list_display = ('folder_item','file_item', 'shared_with', 'shared_at')
+    list_display = ('folder_item', 'file_item', 'shared_with', 'shared_at')
     search_fields = ('item__name', 'shared_with__username')
     list_filter = ('shared_with',)
     raw_id_fields = ('folder_item', 'file_item', 'shared_with')

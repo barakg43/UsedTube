@@ -1,9 +1,10 @@
 import gzip
 import os
 import shutil
+import uuid
 from pathlib import Path
 from typing import Tuple
-import uuid
+
 from engine.constants import _4_MiB, COVER_VIDEOS_DIR, TMP_WORK_DIR, FILES_READY_FOR_RETRIEVAL_DIR
 from engine.obfuscation.obfuscation_manager import ObfuscationManager
 from engine.progress_tracker import Tracker
@@ -16,11 +17,11 @@ class Driver:
         self.__serializer = StatelessSerializer()
         self.__obfuscator = ObfuscationManager()
 
-    def process_file_to_video(self, file_path: str, jobId: uuid) -> Tuple[str, int]:
+    def process_file_to_video(self, file_path: str, jobId: uuid, progress_tracker=None) -> Tuple[str, int]:
         # zip
         zipped_path = self.__gzip_it(file_path)
         Tracker.set_progress(jobId, 0.1)
-        
+
         zipped_file_size = os.path.getsize(zipped_path)
         Tracker.set_progress(jobId, 0.15)
         # serialize

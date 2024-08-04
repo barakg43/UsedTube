@@ -8,12 +8,14 @@ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, Validat
 from django.http import HttpRequest, FileResponse, JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
+
 from constants import FILE, ERROR, JOB_ID, MESSAGE
-from engine.constants import SF_4_SIZE, ITEMS_READY_FOR_PROCESSING
+from engine.constants import SF_4_SIZE
 from engine.downloader.YouTubeDownloader import YouTubeDownloader
 from engine.downloader.definition import Downloader
 from engine.driver import Driver
 from engine.manager import Mr_EngineManager
+from files.controller import file_controller
 from files.models import File, Folder
 from files.query import select_folder_subitems, get_folder_tree, get_parent_tree_array
 from utils import get_user_object
@@ -33,6 +35,7 @@ class DownloadView(APIView):
         # It is later used when returning the `FileResponse` in the `get` method of the `DownloadView`
         # class to provide the downloaded file with a specific filename when it is sent back to the
         # user for download.
+
         file_name = "sample-file2.pdf"
         # from the db extract video_url, compressed_file_size, content-type
         compressed_file_size = SF_4_SIZE  # in Bytes
@@ -54,6 +57,7 @@ class DownloadView(APIView):
             content_type=None,
         )
 
+
 class SerializationProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
         if Mr_EngineManager.is_processing_done(job_id):
@@ -61,27 +65,35 @@ class SerializationProgressView(APIView):
             Mr_EngineManager.upload_video_to_providers(job_id, path)
             return JsonResponse({"progress": 1})
         return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
-    
+
+
 class UploadProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
-        if Mr_EngineManager.is_processing_done(job_id):
-            # get the file id from the cache
-            file_id = cache.get(job_id)
-            
-            # set url to the file
-            file = File.objects.get(id=file_id)
-            url = Mr_EngineManager.get_url(job_id)
-            if url:
-                file.url = url
-                file.save()
-                cache.delete(job_id)
-                return JsonResponse({MESSAGE: "upload successful"})
-            else:
-                File.objects.delete(id=file_id)
-                return JsonResponse({ERROR: 'upload failed'}, status=400)
+        job_owner=file_controller.get_user_for_job(job_id)
+        if request.user != job_owner:
+            return JsonResponse({ERROR:"Not authorized to view this upload job status"},status=status.HTTP_403_FORBIDDEN)
+        job_error=file_controller.get_job_error(job_id)
+        if job_error is not None:
+            return JsonResponse({ERROR:job_error},status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # if Mr_EngineManager.is_processing_done(job_id):
+        #     # get the file id from the cache
+        #     path, compressed_file_size = Mr_EngineManager.get_processed_item_path_size(job_id)
+        #     file_id = cache.get(job_id)
+        #     # set url to the file
+        #     file = File.objects.get(id=file_id)
+        #     url = Mr_EngineManager.get_url(job_id)
+        #     if url:
+        #         file.url = url
+        #         file.save()
+        #         cache.delete(job_id)
+        #         return JsonResponse({MESSAGE: "upload successful"})
+        #     else:
+        #         File.objects.delete(id=file_id)
+        #         return JsonResponse({ERROR: 'upload failed'}, status=400)
 
         return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
-    
+
+
 # class RetrieveProcessedItemView(APIView):
 #     def get(self, request: HttpRequest, job_id: str):
 #         if Mr_EngineManager.is_processing_done(job_id):
@@ -98,26 +110,16 @@ class UploadView(APIView):
     def post(self, request: HttpRequest, folder_id: str):
         if FILE not in request.FILES:
             return JsonResponse({ERROR: "no file provided"}, status=400)
+        folder=Folder.objects.filter(id=folder_id).get()
+        if folder.owner != request.user:
+            return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_403_FORBIDDEN)
 
         uploaded_file = request.FILES[FILE]
-
-        # Save the uploaded file to disk
-        file_path = os.path.join(ITEMS_READY_FOR_PROCESSING, uploaded_file.name)
-        with open(file_path, "wb") as destination:
-            for chunk in uploaded_file.chunks():
-                destination.write(chunk)
-                
-        
-        created_file = File.objects.create(name=uploaded_file.name, size=uploaded_file.size, folder_id=folder_id, owner=request.user, url='')
-        job_id = Mr_EngineManager.process_file_to_video_async(str(file_path))
-        
-        cache.set(job_id, created_file.id, timeout=None)
-        
-        return JsonResponse({JOB_ID: job_id})
+        job_id = file_controller.save_file_to_video_provider_async(request.user, uploaded_file, folder_id)
+        return JsonResponse({JOB_ID: job_id}, status=201)
 
 
-
-class UsedSpaceView(APIView):  #
+class UsedSpaceView(APIView):
     def get(self, request: HttpRequest):
         used_space = request.user.used_space.first()
         return JsonResponse({"value": used_space.value})
@@ -175,8 +177,9 @@ class CreateNewFolderView(APIView):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
 
+
 class DeleteNodeView(APIView):
-    
+
     def __delete_folder(self, folder: Folder):
         
         folder.files.all().delete()
@@ -185,19 +188,18 @@ class DeleteNodeView(APIView):
         for item in subfolders:
             self.__delete_folder(item)
         folder.delete()
-        
+
     def delete(self, request: HttpRequest, node_id: str):
         if not node_id:
             return JsonResponse({"error": "node id is required"}, status=400)
-        
+
         if File.objects.filter(id=node_id).exists():
             File.objects.filter(id=node_id).delete()
             return JsonResponse({"message": "file deleted successfully"}, status=200)
-        
+
         if Folder.objects.filter(id=node_id).exists():
             folder = Folder.objects.filter(id=node_id).get()
             self.__delete_folder(folder)
             return JsonResponse({"message": "folder deleted successfully"}, status=200)
-        
+
         return JsonResponse({"error": "node not found"}, status=404)
-        

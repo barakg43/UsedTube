@@ -99,7 +99,6 @@ class Serializer:
         output_video.release()
         cv2.destroyAllWindows()
 
-
     def generateSha256ForFile(self, file_bytes: IO):
         file_bytes.seek(0)
         sha256Hashed = hashlib.file_digest(file_bytes, 'sha256').hexdigest()
@@ -111,8 +110,8 @@ class Serializer:
     def deserialize(self, serialized_file_as_video_path: str):
         deserialized_file_out_path = (FILES_READY_FOR_RETRIEVAL_DIR / f"des-{serialized_file_as_video_path}").as_posix()
         self.deserialize(serialized_file_as_video_path,
-                          os.path.getsize(serialized_file_as_video_path),
-                          deserialized_file_out_path)
+                         os.path.getsize(serialized_file_as_video_path),
+                         deserialized_file_out_path)
         return deserialized_file_out_path
 
     @dispatch(str, int, str)
