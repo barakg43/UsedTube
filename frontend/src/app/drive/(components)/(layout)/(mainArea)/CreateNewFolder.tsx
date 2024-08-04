@@ -6,15 +6,12 @@ import { Button, TextField, Typography, IconButton } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAppDispatch } from "@/redux/hooks";
-import { setAuth } from "@/redux/slices/authSlice";
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "./theme";
 import { useAppSelector } from "@/redux/hooks";
-import { useToaster } from "@/app/(common)/useToaster";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { setActiveDirectory } from "@/redux/slices/itemsSlice";
 
 function CreateNewFolder() {
   const [isInputVisible, setInputVisible] = useState(false);
