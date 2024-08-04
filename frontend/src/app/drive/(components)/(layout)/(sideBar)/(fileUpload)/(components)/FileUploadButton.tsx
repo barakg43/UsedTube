@@ -34,7 +34,7 @@ const FileUploadButton = () => {
     return (
         <ThemeProvider theme={theme}>
             <Button
-                className="hover:bg-transparent normal-case text-black flex justify-left"
+                className="hover:bg-transparent normal-case text-black flex"
                 component="label"
                 variant="text"
                 size="small"
@@ -47,8 +47,8 @@ const FileUploadButton = () => {
                     },
                 }}
             >
-                <UploadFileIcon className="mr-2 ml-4" fontSize="small" />
-                <Typography>Upload File</Typography>
+                <UploadFileIcon className="mr-2 ml-5" fontSize="small" />
+                Upload file
                 <input
                     type="file"
                     ref={fileInputRef}

@@ -10,6 +10,7 @@ import { RootState } from "@/redux/store";
 import { FSNode } from "@/types";
 import { useCallback, useState } from "react";
 import { useFolderClick } from "../../useFolderClick";
+import { Button } from "@mui/material";
 
 const Space = () => {
     return <div className="w-[8px]" />;
@@ -44,7 +45,18 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
         (node.name === "My Drive" && activeDirectory === "") ||
         activeDirectory === node?.id;
     return (
-        <TreeContainer>
+        // <TreeContainer>
+        <Button
+            className="flex justify-start text-black normal-case"
+            component="label"
+            variant="text"
+            size="small"
+            sx={{
+                "&:hover": {
+                    backgroundColor: "transparent",
+                },
+            }}
+        >
             <div
                 className={`  flex cursor-pointer  text-black ${
                     isActiveFolder && ""
@@ -79,13 +91,6 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
                         </>
                     )}
                 </div>
-
-                {
-                    <span
-                        className={`text-left text-ellipsis flex-grow w-[24px]  `}
-                        onClick={() => onLabelClick(node.id)}
-                    >{`${node.name}`}</span>
-                }
             </div>
             {node?.isOpened && hasChildren && (
                 <TreeContainer>
@@ -100,7 +105,12 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
                     })}
                 </TreeContainer>
             )}
-        </TreeContainer>
+            <span
+                className={`text-left text-ellipsis`}
+                onClick={() => onLabelClick(node.id)}
+            >{`${node.name}`}</span>
+        </Button>
+        //</TreeContainer>
     );
 };
 
