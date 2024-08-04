@@ -40,8 +40,10 @@ export const useHandleMenuItemClick = () => {
             .catch((_) => {
                 message = `failed to delete ${name}`;
                 variant = "error";
+            })
+            .finally(() => {
+                toaster(message, variant);
             });
-        toaster(message, variant);
     };
 
     const handleMenuItemClick = (node: FSNode, action: ContextMenuAction) => {

@@ -178,11 +178,12 @@ class CreateNewFolderView(APIView):
 class DeleteNodeView(APIView):
     
     def __delete_folder(self, folder: Folder):
-        for item in folder.items.all():
-            if isinstance(item, Folder):
-                self.__delete_folder(item)
-            else:
-                item.delete()
+        
+        folder.files.all().delete()
+        subfolders = Folder.objects.filter(parent=folder)
+        
+        for item in subfolders:
+            self.__delete_folder(item)
         folder.delete()
         
     def delete(self, request: HttpRequest, node_id: str):
