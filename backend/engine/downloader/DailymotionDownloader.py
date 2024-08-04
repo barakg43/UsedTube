@@ -8,13 +8,13 @@ from engine.downloader.definition import Downloader
 
 class DailymotionDownloader(Downloader):
     def __init__(self):
-        self.download_percent = 0
+        self.download_percent = 0.0
         pass
 
     def download_hook(self, downloader):
         if downloader['status'] == 'downloading':
             percent_str = downloader.get('_percent_str', '0%').strip().replace('%', '')
-            self.download_percent = int(percent_str)
+            self.download_percent = float(percent_str)
             # print(f"Download progress: {percent_str}")
 
     def download(self, video_url: str):
