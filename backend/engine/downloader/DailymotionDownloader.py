@@ -1,3 +1,5 @@
+import uuid
+
 import youtube_dl
 
 from engine.constants import ITEMS_READY_FOR_PROCESSING
@@ -17,7 +19,7 @@ class DailymotionDownloader(Downloader):
 
     def download(self, video_url: str):
         ydl_opts = {
-            'outtmpl': f'{ITEMS_READY_FOR_PROCESSING}/%(title)s.%(ext)s',
+            'outtmpl': f'{ITEMS_READY_FOR_PROCESSING}/{uuid.uuid1()}_%(title)s.%(ext)s',
             'progress_hooks': [self.download_hook],
         }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -25,3 +27,4 @@ class DailymotionDownloader(Downloader):
 
     def get_download_percent(self):
         return self.download_percent
+
