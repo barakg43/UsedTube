@@ -14,14 +14,18 @@ type ItemsDisplayProp = {
 function ItemsDisplay({ files, folders, parent }: ItemsDisplayProp) {
     const onFolderClick = useFolderClick();
 
-    const filesWithType: FSNode[] = files.map((fileItem) => ({
-        ...fileItem,
-        type: "file",
-    }));
-    const folderWithType: FSNode[] = folders.map((folderItem) => ({
-        ...folderItem,
-        type: "folder",
-    }));
+    const filesWithType: FSNode[] = files
+        ? files.map((fileItem) => ({
+              ...fileItem,
+              type: "file",
+          }))
+        : [];
+    const folderWithType: FSNode[] = folders
+        ? folders.map((folderItem) => ({
+              ...folderItem,
+              type: "folder",
+          }))
+        : [];
     const items = [
         parent ? { name: "..", id: parent?.id || "", type: "folder" } : null,
         ...folderWithType,

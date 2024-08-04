@@ -23,7 +23,7 @@ export type FSItems = {
 export type ItemsState = {
     myItems: FSNode;
     sharedItems: FSNode[] | null;
-    activeDirectoryId: string | undefined;
+    activeDirectoryId: string;
     displayType: DisplayType;
 };
 
