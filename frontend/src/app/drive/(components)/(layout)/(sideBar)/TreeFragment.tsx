@@ -2,11 +2,9 @@
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-
 import { toggleIsOpened } from "@/redux/slices/itemsSlice";
 import { RootState } from "@/redux/store";
 import { FSNode } from "@/types";
@@ -36,7 +34,7 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
     );
     const handleArrowToggle = (node: FSNode): void => {
         dispatch(toggleIsOpened(node));
-        // console.log(node, forceUpdate);
+
         forceUpdate();
     };
 
@@ -49,36 +47,38 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
         <TreeContainer>
             <div
                 className={`  flex cursor-pointer  text-black ${
-                    isActiveFolder && " bg-dustyPaper"
+                    isActiveFolder && ""
                 } hover:bg-dustyPaperDark rounded-xl `}
             >
                 {spaces > 0 &&
                     new Array(spaces)
                         .fill(0)
                         .map((_, index) => <Space key={index} />)}
-
-                {hasChildren ? (
-                    node?.isOpened ? (
-                        <>
-                            <ArrowDropDownIcon
-                                onClick={() => handleArrowToggle(node)}
-                            />
-                            <FolderOpenIcon />
-                        </>
+                <div className="mr-2">
+                    {hasChildren ? (
+                        node?.isOpened ? (
+                            <>
+                                <ArrowDropDownIcon
+                                    onClick={() => handleArrowToggle(node)}
+                                />
+                                <FolderOpenIcon fontSize="small" />
+                            </>
+                        ) : (
+                            <>
+                                <ArrowRightIcon
+                                    fontSize="small"
+                                    onClick={() => handleArrowToggle(node)}
+                                />
+                                <FolderIcon fontSize="small" />
+                            </>
+                        )
                     ) : (
                         <>
-                            <ArrowRightIcon
-                                onClick={() => handleArrowToggle(node)}
-                            />
-                            <FolderIcon className="text-gray-500" />
+                            <ChevronRightIcon fontSize="small" />
+                            <FolderOpenIcon />
                         </>
-                    )
-                ) : (
-                    <>
-                        <ChevronRightIcon fontSize="small" />
-                        <FolderOpenIcon />
-                    </>
-                )}
+                    )}
+                </div>
 
                 {
                     <span

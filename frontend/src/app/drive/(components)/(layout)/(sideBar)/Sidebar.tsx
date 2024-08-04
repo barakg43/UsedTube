@@ -5,6 +5,7 @@ import { FC, ReactNode } from "react";
 import FolderTree from "./FolderTree";
 import FileUploadButton from "./(fileUpload)/(components)/FileUploadButton";
 import SelectedFileCard from "./(fileUpload)/(components)/SelectedFileCard";
+import SharedWithMe from "./SharedWithMe";
 
 const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
     children,
@@ -12,7 +13,7 @@ const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
 }) => {
     return (
         <div
-            className={`rounded-2xl bg-dustyPaper ${
+            className={`rounded-2xl  ${
                 hoverStyle
                     ? " hover:bg-dustyPaperDark  cursor-pointer"
                     : "cursor-default"
@@ -28,7 +29,7 @@ const Sidebar = () => {
         (state: RootState) => state.fileUpload.fileToUpload
     );
     return (
-        <nav className="h-full w-[200px] flex flex-col px-2">
+        <nav className="h-full w-[200px] flex flex-col px-2 pt-4">
             <SideBarItem>
                 <FileUploadButton />
             </SideBarItem>
@@ -40,7 +41,9 @@ const Sidebar = () => {
             <SideBarItem hoverStyle={false}>
                 <FolderTree />
             </SideBarItem>
-            <SideBarItem>Shared with me</SideBarItem>
+            <SideBarItem>
+                <SharedWithMe />
+            </SideBarItem>
             <SideBarItem>Quota and storage left</SideBarItem>
         </nav>
     );

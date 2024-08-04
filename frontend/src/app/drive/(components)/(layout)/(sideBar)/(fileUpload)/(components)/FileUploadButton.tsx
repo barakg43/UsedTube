@@ -34,19 +34,20 @@ const FileUploadButton = () => {
     return (
         <ThemeProvider theme={theme}>
             <Button
-                className="hover:bg-transparent normal-case text-black flex flex-row justify-left"
+                className="hover:bg-transparent normal-case text-black flex justify-left"
                 component="label"
                 variant="text"
                 size="small"
                 disabled={isUploading}
                 sx={{
+                    justifyContent: "flex-start",
                     "&:disabled": {
                         background: "transparent !important",
                         cursor: "default !important",
                     },
                 }}
             >
-                <UploadFileIcon />
+                <UploadFileIcon className="mr-2 ml-4" fontSize="small" />
                 <Typography>Upload File</Typography>
                 <input
                     type="file"

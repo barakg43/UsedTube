@@ -94,16 +94,6 @@ class UploadProgressView(APIView):
         return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
 
 
-# class RetrieveProcessedItemView(APIView):
-#     def get(self, request: HttpRequest, job_id: str):
-#         if Mr_EngineManager.is_processing_done(job_id):
-#             processed_item_path = Mr_EngineManager.get_processed_item_path(job_id)
-#             file_size = os.path.getsize(processed_item_path)
-#             response = FileResponse(open(processed_item_path, 'rb'), as_attachment=True)
-#             response.data = {'size': file_size}
-#             return response
-#         else:
-#             return JsonResponse({ERROR: 'processing not done yet'}, status=400)
 
 
 class UploadView(APIView):
@@ -144,6 +134,7 @@ class DirectoryContentView(APIView):
         try:
             folder_subitems_dict = select_folder_subitems(user, folder_id)
             folder_subitems_dict["parents"] = get_parent_tree_array(user, folder_id)
+            folder_subitems_dict["quota"] = user.storage_usage
         except PermissionDenied as e:
             return JsonResponse({ERROR: e.args[0]}, status=status.HTTP_403_FORBIDDEN)
         except (ObjectDoesNotExist, ValidationError) as e:
