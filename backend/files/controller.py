@@ -48,4 +48,20 @@ class FileController:
                             url=url_result)
 
 
+class JobDetails:
+    def __init__(self, user: AppUser):
+        self.error: str = None
+        self.user: AppUser = user
+        self.uuid_to_error: Dict[uuid1, str] = {}
+
+    def get_error(self):
+        return self.error
+
+    def get_user(self):
+        return self.user
+
+    def set_error(self, error: str):
+        self.error = error
+
+
 file_controller = FileController()
