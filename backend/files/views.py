@@ -66,21 +66,27 @@ class SerializationProgressView(APIView):
 
 class UploadProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
-        if Mr_EngineManager.is_processing_done(job_id):
-            # get the file id from the cache
-            path, compressed_file_size = Mr_EngineManager.get_processed_item_path_size(job_id)
-            file_id = cache.get(job_id)
-            # set url to the file
-            file = File.objects.get(id=file_id)
-            url = Mr_EngineManager.get_url(job_id)
-            if url:
-                file.url = url
-                file.save()
-                cache.delete(job_id)
-                return JsonResponse({MESSAGE: "upload successful"})
-            else:
-                File.objects.delete(id=file_id)
-                return JsonResponse({ERROR: 'upload failed'}, status=400)
+        job_owner=file_controller.get_user_for_job(job_id)
+        if request.user != job_owner:
+            return JsonResponse({ERROR:"Not authorized to view this upload job status"},status=status.HTTP_403_FORBIDDEN)
+        job_error=file_controller.get_job_error(job_id)
+        if job_error is not None:
+            return JsonResponse({ERROR:job_error},status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # if Mr_EngineManager.is_processing_done(job_id):
+        #     # get the file id from the cache
+        #     path, compressed_file_size = Mr_EngineManager.get_processed_item_path_size(job_id)
+        #     file_id = cache.get(job_id)
+        #     # set url to the file
+        #     file = File.objects.get(id=file_id)
+        #     url = Mr_EngineManager.get_url(job_id)
+        #     if url:
+        #         file.url = url
+        #         file.save()
+        #         cache.delete(job_id)
+        #         return JsonResponse({MESSAGE: "upload successful"})
+        #     else:
+        #         File.objects.delete(id=file_id)
+        #         return JsonResponse({ERROR: 'upload failed'}, status=400)
 
         return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
 
@@ -101,6 +107,9 @@ class UploadView(APIView):
     def post(self, request: HttpRequest, folder_id: str):
         if FILE not in request.FILES:
             return JsonResponse({ERROR: "no file provided"}, status=400)
+        folder=Folder.objects.filter(id=folder_id).get()
+        if folder.owner != request.user:
+            return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_403_FORBIDDEN)
 
         uploaded_file = request.FILES[FILE]
         job_id = file_controller.save_file_to_video_provider_async(request.user, uploaded_file, folder_id)
