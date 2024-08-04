@@ -1,5 +1,5 @@
 // "use client";
-import Logo from "@/app/(common)/Logo";
+import Logo from "@/app/(common)/(components)/Logo";
 import Link from "next/link";
 import LoginForm from "./(components)/LoginForm";
 

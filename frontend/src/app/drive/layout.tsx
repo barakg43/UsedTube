@@ -1,5 +1,5 @@
 "use client";
-import RequireAuth from "../(common)/RequireAuth";
+import RequireAuth from "../(common)/(hooks)/RequireAuth";
 
 interface Props {
     children: React.ReactNode;
