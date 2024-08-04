@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import styles from "../about.module.css"; // Import CSS module
-import Logo from "@/app/(common)/Logo";
+import Logo from "@/app/(common)/(components)/Logo";
 import "@/app/globals.css";
 
 const AboutComponent: React.FC = () => {

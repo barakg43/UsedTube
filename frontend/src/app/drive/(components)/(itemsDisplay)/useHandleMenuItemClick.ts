@@ -1,4 +1,7 @@
-import { useToaster, Variants } from "@/app/(common)/useToaster";
+import {
+    useToaster,
+    Variants,
+} from "@/app/(common)/(hooks)/(toaster)/useToaster";
 import { FOLDER } from "@/constants";
 import {
     useDeleteNodeMutation,
@@ -37,8 +40,10 @@ export const useHandleMenuItemClick = () => {
             .catch((_) => {
                 message = `failed to delete ${name}`;
                 variant = "error";
+            })
+            .finally(() => {
+                toaster(message, variant);
             });
-        toaster(message, variant);
     };
 
     const handleMenuItemClick = (node: FSNode, action: ContextMenuAction) => {
