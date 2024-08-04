@@ -56,16 +56,16 @@ class ObfuscationManager:
 
             out.write(frame_ff)
             frame_counter += 1
-            frame_counter += self.__write_frames_from_obfuscated_to_output_video(out, cover_video, self.cycle)
+            frame_counter += self.__write_frames_from_cover_to_output_video(out, cover_video, self.cycle)
         if frame_counter < MINIMUM_VIDEO_FRAME_AMOUNT: #make the output video at least 'MINIMUM_VIDEO_FRAME_AMOUNT' frames
-            self.__write_frames_from_obfuscated_to_output_video( out, cover_video, MINIMUM_VIDEO_FRAME_AMOUNT - frame_counter)
+            self.__write_frames_from_cover_to_output_video(out, cover_video, MINIMUM_VIDEO_FRAME_AMOUNT - frame_counter)
                 # Release video capture and writer
         file_frames_video.release()
         cover_video.release()
         out.release()
 
         return out_path
-    def __write_frames_from_obfuscated_to_output_video(self, obfuscated_video_out: cv2.VideoWriter, cover_video:  cv2.VideoCapture,frame_amount:int):
+    def __write_frames_from_cover_to_output_video(self, obfuscated_video_out: cv2.VideoWriter, cover_video:  cv2.VideoCapture, frame_amount:int):
         frame_write_counter = 0
         for _ in range(frame_amount):
             ret_cov, frame_cov = cover_video.read()
