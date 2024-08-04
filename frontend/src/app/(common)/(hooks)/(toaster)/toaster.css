@@ -1,25 +1,32 @@
 /* toaster.css */
-.custom-toast {
+.Toastify__toast-container {
+    font-family: Arial, sans-serif;
+}
+
+.Toastify__toast {
     border-radius: 8px;
     padding: 16px;
     font-size: 14px;
-    font-family: Arial, sans-serif;
-    color: #fff;
-    z-index: 9999;
+    background-color: #f0ebe3 !important;
+    color: #000; /* Adjust text color as needed */
+}
+
+.Toastify__toast-body {
+    background-color: transparent;
 }
 
 .custom-toast-success {
-    background-color: #4caf50;
+    background-color: #4caf50 !important;
 }
 
 .custom-toast-error {
-    background-color: #f44336;
+    background-color: #f44336 !important;
 }
 
 .custom-toast-warning {
-    background-color: #ff9800;
+    background-color: #ff9800 !important;
 }
 
 .custom-toast-info {
-    background-color: #2196f3;
+    background-color: #2196f3 !important;
 }

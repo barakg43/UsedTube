@@ -7,9 +7,13 @@ import CreateNewFolder from "./CreateNewFolder";
 import Loading from "@/app/(common)/(components)/Loading";
 import ParentsRow from "./ParentsRow";
 import { FSNode, FileNode } from "@/types";
+import ShareItem from "./ShareItem";
 
-const MainArea = ({ folderId }: { folderId: string | undefined }) => {
-    const { data, error, isLoading } = useFolderContentQuery({ folderId });
+const MainArea = ({ folderId }: { folderId: string }) => {
+    const { data, error, isLoading } = useFolderContentQuery(
+        { folderId },
+        { skip: folderId === "" }
+    );
     const {
         files,
         folders,
@@ -27,14 +31,15 @@ const MainArea = ({ folderId }: { folderId: string | undefined }) => {
                     <ParentsRow parents={parents?.slice().reverse()} />
                 </Typography>
                 <div className="flex flex-row justify-between">
+                    <ShareItem />
                     <CreateNewFolder />
                     <ItemsDisplayToggle />
                 </div>
             </div>
             <ItemsDisplay
                 parent={parents && parents[1]}
-                folders={folders || []}
-                files={files || []}
+                folders={folders}
+                files={files}
             />
         </div>
     );
