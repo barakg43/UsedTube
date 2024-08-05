@@ -14,7 +14,6 @@ const useContextMenu = () => {
         event.stopPropagation();
         setAnchorPosition({ top: event.clientY, left: event.clientX });
         setNode(node);
-        alert(node.created_at);
     };
     const closeContextMenu = () => {
         setAnchorPosition({ top: 0, left: 0 });
