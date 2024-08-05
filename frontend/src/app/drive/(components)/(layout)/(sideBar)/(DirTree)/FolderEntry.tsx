@@ -36,17 +36,7 @@ const FolderEntry: FC<FolderEntryProps> = ({ node }) => {
                 <FolderIcon fontSize="small" />
             </>
         );
-    } else if (node.isOpened && hasSubFolders) {
-        prefix = (
-            <>
-                <ArrowDropDownIcon
-                    onClick={() => handleArrowToggle(node)}
-                    fontSize="small"
-                />
-                <FolderOpenIcon fontSize="small" />
-            </>
-        );
-    } else if (node.isOpened && !hasSubFolders) {
+    } else {
         prefix = (
             <>
                 <ArrowDropDownIcon
@@ -61,7 +51,7 @@ const FolderEntry: FC<FolderEntryProps> = ({ node }) => {
         <>
             {prefix}
             <div
-                className={`text-left text-ellipsis ml-3`}
+                className={`text-left text-ellipsis ml-3 overflow-hidden whitespace-nowrap`}
                 onClick={() => onLabelClick(node.id)}
             >{`${node.name}`}</div>
         </>
