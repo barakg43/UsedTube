@@ -1,8 +1,7 @@
 import { FSNode } from "@/types";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 import { useFolderClick } from "../../../useFolderClick";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { RootState } from "@/redux/store";
+import { useAppDispatch } from "@/redux/hooks";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { toggleIsOpened } from "@/redux/slices/itemsSlice";
@@ -15,7 +14,7 @@ interface FolderEntryProps {
 
 const FolderEntry: FC<FolderEntryProps> = ({ node }) => {
     const dispatch = useAppDispatch();
-    const [state, updateState] = useState<object>();
+    const [, updateState] = useState<object>();
     const forceUpdate = useCallback(() => updateState({}), []);
     const onLabelClick = useFolderClick();
     const hasSubFolders = (node?.children?.length ?? 0) > 0;
@@ -23,9 +22,6 @@ const FolderEntry: FC<FolderEntryProps> = ({ node }) => {
         dispatch(toggleIsOpened(node));
         forceUpdate();
     };
-
-    useEffect(() => {}, [state]);
-
     let prefix;
 
     if (!node.isOpened && !hasSubFolders) {
