@@ -2,6 +2,7 @@ import uuid
 
 import youtube_dl
 
+from django_server.settings import DEBUG
 from engine.constants import ITEMS_READY_FOR_PROCESSING
 from engine.downloader.definition import Downloader
 
@@ -22,12 +23,14 @@ class DailymotionDownloader(Downloader):
             self.video_downloaded_path=downloader["filename"]
 
 
-    def download(self, video_url: str):
+    def download(self, video_url: str,debug=False) -> str:
 
         ydl_opts = {
             'outtmpl': f'{ITEMS_READY_FOR_PROCESSING}/{uuid.uuid1()}_%(title)s.%(ext)s',
             'progress_hooks': [self.download_hook],
-            "logger":self.logger
+            "logger":self.logger,
+            "verbose":debug,
+            "format":"bestvideo[ext=mp4]/mp4"
         }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url.strip()])

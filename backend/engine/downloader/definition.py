@@ -6,7 +6,7 @@ class Downloader(ABC):
 
     # @staticmethod
     @abstractmethod
-    def download(self, video_url: str) -> Path:
+    def download(self, video_url: str,debug=False) -> Path:
         pass
 
     @abstractmethod
