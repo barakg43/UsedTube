@@ -5,7 +5,7 @@ import ItemsDisplay from "../../(itemsDisplay)/Display";
 import ItemsDisplayToggle from "../../(itemsDisplay)/ItemsDisplayToggle";
 import CreateNewFolder from "./CreateNewFolder";
 import Loading from "@/app/(common)/(components)/Loading";
-import ParentsRow from "./ParentsRow";
+import PathTrace from "./PathTrace";
 import { FSNode, FileNode } from "@/types";
 import ShareItem from "./ShareItem";
 
@@ -28,7 +28,7 @@ const MainArea = ({ folderId }: { folderId: string }) => {
         <div className="flex flex-col flex-grow px-4 py-4 mb-4 mr-4 rounded-3xl">
             <div className="flex flex-row justify-between w-full">
                 <Typography variant="h4">
-                    <ParentsRow parents={parents?.slice().reverse()} />
+                    <PathTrace parents={parents?.slice().reverse()} />
                 </Typography>
                 <div className="flex flex-row justify-between">
                     <ShareItem />

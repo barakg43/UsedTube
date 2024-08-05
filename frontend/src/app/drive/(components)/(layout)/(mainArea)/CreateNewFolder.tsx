@@ -39,6 +39,7 @@ function CreateNewFolder() {
                 "success"
             );
             refetch();
+            setInputVisible(false);
         } catch {
             toaster(`failed to create folder ${folderName}`, "error");
         }

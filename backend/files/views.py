@@ -111,7 +111,7 @@ class UploadView(APIView):
 
 class UsedSpaceView(APIView):
     def get(self, request: HttpRequest):
-        used_space = request.user.used_space.first()
+        used_space = request.user
         return JsonResponse({"value": used_space.value})
 
 

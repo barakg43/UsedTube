@@ -2,7 +2,7 @@
 import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
 import { FC, ReactNode } from "react";
-import FolderTree from "./FolderTree";
+import FolderTree from "./(DirTree)/FolderTree";
 import FileUploadButton from "./(fileUpload)/(components)/FileUploadButton";
 import SelectedFileCard from "./(fileUpload)/(components)/SelectedFileCard";
 import SharedWithMe from "./SharedWithMe";
