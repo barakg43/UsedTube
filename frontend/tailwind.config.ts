@@ -9,9 +9,9 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
-                paper: "#F6F5F2",
-                dustyPaper: "#F0EBE3",
-                dustyPaperDark: "#E3DED6",
+                paper: "#F8FAFC",
+                highlighted: "#E4E4E7",
+                highlighted_2: "#E4E4E7",
                 dustyPaperEvenDarker: "#D6D1C9",
                 dustyPaperDarkest: "#776B5D",
             },

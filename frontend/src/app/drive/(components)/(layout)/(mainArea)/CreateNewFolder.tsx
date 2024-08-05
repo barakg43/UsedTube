@@ -75,7 +75,7 @@ function CreateNewFolder() {
                     </div>
                 ) : (
                     <Button
-                        className="hover:bg-dustyPaperDark text-black flex flex-row justify-left h-[47.33px]"
+                        className="bg-paper hover:highlighted text-black flex flex-row justify-left h-[47.33px]"
                         component="label"
                         variant="outlined"
                         size="small"

@@ -24,7 +24,7 @@ const ItemsDisplayNode: FC<{ node: FSNode; onEntryClick: Function }> = ({
     return (
         <>
             <div
-                className="cursor-pointer flex-grow flex flex-row rounded-3xl px-2 py-2 mt-2 mr-6 bg-dustyPaper hover:bg-dustyPaperDark border"
+                className="cursor-pointer flex-grow flex flex-row items-center rounded-2xl px-2 py-2 mt-2 mr-6 bg-dustyPaper hover:bg-dustyPaperDark border max-w-150px text-ellipsis overflow-hidden whitespace-nowrap"
                 onClick={(e) => (onEntryClick(node) ? null : handleClick(e))}
                 onContextMenu={(e) => {
                     e.preventDefault();
@@ -39,8 +39,10 @@ const ItemsDisplayNode: FC<{ node: FSNode; onEntryClick: Function }> = ({
                 <Typography className="text-ellipsis flex-grow">
                     {node.name}
                 </Typography>
-                {node.type === FILE && (
-                    <MoreVertIcon className="hover:bg-dustyPaperEvenDarker rounded-full" />
+                {node.name !== ".." && (
+                    <div onClick={handleClick}>
+                        <MoreVertIcon className="hover:bg-dustyPaperEvenDarker rounded-full" />
+                    </div>
                 )}
             </div>
             <Menu

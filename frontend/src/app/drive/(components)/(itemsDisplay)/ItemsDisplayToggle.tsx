@@ -25,6 +25,7 @@ const ItemsDisplayToggle = () => {
             value={displayType}
             exclusive
             onChange={handleToggle}
+            color="primary"
         >
             <ToggleButton value={ROW}>
                 <ViewHeadlineSharpIcon />
