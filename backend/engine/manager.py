@@ -1,8 +1,11 @@
+import os
 from concurrent.futures import ThreadPoolExecutor, Future
 from threading import Lock
 from typing import Dict, Tuple
 from uuid import uuid1
 
+from engine.downloader.DailymotionDownloader import DailymotionDownloader
+from engine.downloader.definition import Downloader
 from engine.driver import Driver
 from engine.progress_tracker import Tracker
 from engine.uploader.Dailymotion.uploader import DailymotionUploader
@@ -48,7 +51,14 @@ class EngineManager:
         self.uuid_to_future[uuid] = self.workers.submit(Driver().process_video_to_file, video_path,
                                                         compressed_file_size, uuid)
         return uuid
-
+    def process_video_to_file_with_download(self, video_url: str, compressed_file_size: int, job_id: uuid1) -> str:
+        downloader: Downloader = DailymotionDownloader()  # choose based on URL
+        downloaded_video_path = downloader.download(video_url)
+        restored_file_path = Driver().process_video_to_file(
+            downloaded_video_path, compressed_file_size, job_id
+        )
+        # os.remove(downloaded_video_path)
+        return restored_file_path
     def get_processed_item_path_size(self, uuid) -> Tuple[str, int] | str:
         future = self.uuid_to_future[uuid]
         results = future.result()
