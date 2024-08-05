@@ -38,10 +38,10 @@ function CreateNewFolder() {
     const handleApprove = async () => {
         try {
             await createFolder({ folderName, parentId }).unwrap();
-            toaster(
-                `folder \"${folderName}\" was created successfully`,
-                "success"
-            );
+            // toaster(
+            //     `folder \"${folderName}\" was created successfully`,
+            //     "success"
+            // );
             refetchFolderContent();
             refetchDirsTree();
             setInputVisible(false);

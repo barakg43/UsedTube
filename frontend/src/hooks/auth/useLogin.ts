@@ -12,11 +12,8 @@ import { useEffect } from "react";
 export default function useLogin(setError: Function) {
     const router = useRouter();
     const dispatch = useAppDispatch();
-    const toaster = useToaster();
     const [loginApi, { isLoading, error }] = useLoginMutation();
 
-    //     setFormData({ ...formData, [name]: value });
-    //   };
     useVerifyMutation();
 
     const isAuthenticated = useAppSelector(
@@ -30,7 +27,6 @@ export default function useLogin(setError: Function) {
             .unwrap()
             .then(() => {
                 dispatch(setAuth());
-                toaster("Logged in successfully", "success");
                 router.push("/drive/");
             })
             .catch(() => {

@@ -31,9 +31,14 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
     return (
         <TreeContainer>
             <div
-                className={`  flex cursor-pointer   
+                className={`flex cursor-pointer   
                         ${isActiveFolder ? "bg-blue-200" : ""}
-                    hover:bg-highlighted rounded-full w-full `}
+                        ${
+                            isActiveFolder
+                                ? "hover:bg-blue-300"
+                                : "hover:bg-highlighted"
+                        }
+                        rounded-full w-full`}
                 //${isActiveFolder ? "text-dustyPaperDark" : "text-black"}
             >
                 {spaces > 0 &&

@@ -1,4 +1,4 @@
-import { FSNode, FileNode, ItemsDisplayProp, NodeType } from "@/types";
+import { FSNode, FileNode, NodeType } from "@/types";
 import { DataGrid, GridColDef, GridColTypeDef } from "@mui/x-data-grid";
 import { FC, useState } from "react";
 import ItemIcon from "./ItemIcon";
@@ -16,10 +16,7 @@ const NodeIconType: GridColTypeDef<FSNode> = {
     valueGetter: (value, row) => row,
     renderCell: (params) => <ItemIcon type={params.value?.type} />,
 };
-const ItemsDisplayRow: FC<ItemsDisplayProp<FSNode | FileNode>> = ({
-    items,
-    onEntryClick,
-}) => {
+const ItemsDisplayRow: FC<{ items: FSNode[] }> = ({ items }) => {
     const handleMenuItemClick = useHandleMenuItemClick();
 
     const columns: GridColDef[] = [
@@ -42,7 +39,6 @@ const ItemsDisplayRow: FC<ItemsDisplayProp<FSNode | FileNode>> = ({
                 columns={columns}
                 rows={items}
                 onRowClick={(params, event) => {
-                    if (onEntryClick(params.row)) return;
                     console.log("Row clicked", params.row);
                     setAnchorPosition({
                         top: event.clientY,

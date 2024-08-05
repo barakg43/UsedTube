@@ -38,19 +38,13 @@ export interface FileNode extends FSNode {
 export interface FSNode {
     id: string;
     name: string;
-    createdAt?: string;
-    updatedAt?: string;
+    created_at?: string;
+    updated_at?: string;
     type: NodeType;
     isOpened?: boolean;
     children?: FSNode[];
-    context?: any;
 }
 
 export type DisplayType = "grid" | "row";
-
-export type ItemsDisplayProp<T extends FSNode> = {
-    onEntryClick: Function;
-    items: T[];
-};
 
 export type ContextMenuAction = "download" | "share" | "delete";
