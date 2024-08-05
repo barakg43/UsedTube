@@ -8,18 +8,9 @@ import SelectedFileCard from "./(fileUpload)/(components)/SelectedFileCard";
 import SharedWithMe from "./SharedWithMe";
 import Quota from "./Quota";
 
-const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
-    children,
-    hoverStyle = true,
-}) => {
+const SideBarItem: FC<{ children: ReactNode }> = ({ children }) => {
     return (
-        <div
-            className={`rounded-2xl  ${
-                hoverStyle
-                    ? " hover:bg-highlighted  cursor-pointer"
-                    : "cursor-default"
-            } items-center mb-3 text-black text-center`}
-        >
+        <div className="rounded-2xl cursor-default items-center mb-3 text-black text-center">
             {children}
         </div>
     );

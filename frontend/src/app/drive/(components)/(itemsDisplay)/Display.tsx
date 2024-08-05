@@ -12,8 +12,6 @@ type ItemsDisplayProp = {
     parent: FSNode;
 };
 function ItemsDisplay({ files, folders, parent }: ItemsDisplayProp) {
-    const onFolderClick = useFolderClick();
-
     const filesWithType: FSNode[] = files
         ? files.map((fileItem) => ({
               ...fileItem,
@@ -32,26 +30,16 @@ function ItemsDisplay({ files, folders, parent }: ItemsDisplayProp) {
         ...filesWithType,
     ].filter(Boolean);
     const displayType = useAppSelector((state) => state.items.displayType);
-    const onEntryClick = (node: FSNode) => {
-        // set active directory
-        if (node.type === "folder") {
-            onFolderClick(node.id);
-            return true;
-        }
-        return false;
-    };
 
     return (
         <div className="bg-paper rounded-2xl flex flex-grow w-full h-full">
             {displayType === GRID ? (
                 <ItemsDisplayGrid
-                    onEntryClick={onEntryClick}
                     //@ts-ignore
                     items={items || []}
                 />
             ) : (
                 <ItemsDisplayRow
-                    onEntryClick={onEntryClick}
                     //@ts-ignore
                     items={items || []}
                 />

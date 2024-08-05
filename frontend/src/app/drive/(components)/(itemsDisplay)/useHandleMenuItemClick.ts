@@ -11,8 +11,6 @@ import {
 import { useAppSelector } from "@/redux/hooks";
 import { ContextMenuAction, FSNode } from "@/types";
 
-// # 1
-
 export const useHandleMenuItemClick = () => {
     const toaster = useToaster();
     const folderId = useAppSelector((state) => state.items.activeDirectoryId);

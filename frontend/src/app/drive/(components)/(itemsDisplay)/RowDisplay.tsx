@@ -1,9 +1,9 @@
-import { FSNode, FileNode, ItemsDisplayProp, NodeType } from "@/types";
+import { FSNode } from "@/types";
 import { DataGrid, GridColDef, GridColTypeDef } from "@mui/x-data-grid";
-import { FC, useState } from "react";
+import { FC } from "react";
 import ItemIcon from "./ItemIcon";
-import { Menu, MenuItem } from "@mui/material";
-import { useHandleMenuItemClick } from "./useHandleMenuItemClick";
+import useContextMenu from "@/app/(common)/(hooks)/(contextMenu)/useContextMenu";
+import { useFolderClick } from "../useFolderClick";
 
 const NodeIconType: GridColTypeDef<FSNode> = {
     type: "custom",
@@ -16,76 +16,51 @@ const NodeIconType: GridColTypeDef<FSNode> = {
     valueGetter: (value, row) => row,
     renderCell: (params) => <ItemIcon type={params.value?.type} />,
 };
-const ItemsDisplayRow: FC<ItemsDisplayProp<FSNode | FileNode>> = ({
-    items,
-    onEntryClick,
-}) => {
-    const handleMenuItemClick = useHandleMenuItemClick();
-
+const ItemsDisplayRow: FC<{ items: FSNode[] }> = ({ items }) => {
     const columns: GridColDef[] = [
         { field: "icon", headerName: "", width: 30, ...NodeIconType },
         { field: "name", headerName: "Name", width: 200 },
-        { field: "createdAt", headerName: "Created At", width: 200 },
-        { field: "updatedAt", headerName: "Updated At", width: 200 },
+        { field: "created_at", headerName: "Created At", width: 200 },
+        { field: "updated_at", headerName: "Updated At", width: 200 },
         { field: "type", headerName: "Type", width: 100 },
         { field: "size", headerName: "Size", width: 100 },
     ];
 
-    const [anchorPosition, setAnchorPosition] = useState({ top: 0, left: 0 });
-    const [selectedNode, setSelectedNode] = useState<FSNode>({} as FSNode);
-    const closeContextMenu = () => {
-        setAnchorPosition({ top: 0, left: 0 });
-    };
+    const { openContextMenu, renderContextMenu } = useContextMenu();
+
+    const folderClick = useFolderClick();
+
     return (
         <div className="h-[100%] w-[100%] relative">
             <DataGrid
                 columns={columns}
                 rows={items}
+                slotProps={{
+                    row: {
+                        // @ts-ignore
+                        onContextMenu: (event) => {
+                            event.preventDefault();
+                            const rowId = String(
+                                (
+                                    event.currentTarget as HTMLDivElement
+                                ).getAttribute("data-id")
+                            );
+                            const record = items.find(
+                                (item) => item.id === rowId
+                            );
+                            if (record) openContextMenu(event, record);
+                        },
+                    },
+                }}
                 onRowClick={(params, event) => {
-                    if (onEntryClick(params.row)) return;
-                    console.log("Row clicked", params.row);
-                    setAnchorPosition({
-                        top: event.clientY,
-                        left: event.clientX,
-                    });
-                    setSelectedNode(params.row);
+                    if (params.row.type === "folder") {
+                        folderClick(params.row.id);
+                    } else {
+                        alert("prompt download");
+                    }
                 }}
             />
-            {
-                <Menu
-                    anchorReference="anchorPosition"
-                    anchorPosition={anchorPosition}
-                    open={Boolean(
-                        anchorPosition.top > 0 && anchorPosition.left > 0
-                    )}
-                    onClose={closeContextMenu}
-                >
-                    <MenuItem
-                        onClick={() => {
-                            handleMenuItemClick(selectedNode, "download");
-                            closeContextMenu();
-                        }}
-                    >
-                        Download
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            handleMenuItemClick(selectedNode, "share");
-                            closeContextMenu();
-                        }}
-                    >
-                        Share
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            handleMenuItemClick(selectedNode, "delete");
-                            closeContextMenu();
-                        }}
-                    >
-                        Delete
-                    </MenuItem>
-                </Menu>
-            }
+            {renderContextMenu()}
         </div>
     );
 };
