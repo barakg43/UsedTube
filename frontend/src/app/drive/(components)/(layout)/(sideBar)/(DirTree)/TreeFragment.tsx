@@ -31,7 +31,7 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
     return (
         <TreeContainer>
             <div
-                className={`flex cursor-pointer   
+                className={`flex flex-row cursor-pointer   
                         ${isActiveFolder ? "bg-blue-200" : ""}
                         ${
                             isActiveFolder
@@ -45,7 +45,7 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
                     new Array(spaces)
                         .fill(0)
                         .map((_, index) => <Space key={index} />)}
-                <div className="mr-2 flex flex-row w-full">
+                <div className="mr-2 flex flex-row overflow-hidden whitespace-nowrap w-full">
                     <Button
                         className="hover:bg-transparent normal-case text-black flex justify-start w-full rounded-full"
                         component="label"
