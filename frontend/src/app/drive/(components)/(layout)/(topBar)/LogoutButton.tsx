@@ -7,21 +7,21 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 const LogoutButton = () => {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
-  const { logout } = useLogout();
-  return (
-    <div>
-      <Button
-        className='top-1 right-1'
-        onClick={() => {
-          logout();
-        }}
-      >
-        <Logout />
-      </Button>
-    </div>
-  );
+    const router = useRouter();
+    const dispatch = useAppDispatch();
+    const { logout } = useLogout();
+    return (
+        <div>
+            <Button
+                className="top-1 right-1 bg-paper hover:bg-highlighted"
+                onClick={() => {
+                    logout();
+                }}
+            >
+                <Logout />
+            </Button>
+        </div>
+    );
 };
 
 export default LogoutButton;

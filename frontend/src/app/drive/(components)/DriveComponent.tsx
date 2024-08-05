@@ -8,7 +8,7 @@ function DriveComponent({ folderId }: { folderId: string | undefined }) {
             <TopBar />
             <div className="flex flex-row flex-grow bg-paper w-full h-full">
                 <Sidebar />
-                <MainArea folderId={folderId} />;
+                <MainArea folderId={folderId ?? ""} />;
             </div>
         </div>
     );

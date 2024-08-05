@@ -16,7 +16,7 @@ const SideBarItem: FC<{ children: ReactNode; hoverStyle?: boolean }> = ({
         <div
             className={`rounded-2xl  ${
                 hoverStyle
-                    ? " hover:bg-dustyPaperDark  cursor-pointer"
+                    ? " hover:bg-highlighted  cursor-pointer"
                     : "cursor-default"
             } items-center mb-3 text-black text-center`}
         >
