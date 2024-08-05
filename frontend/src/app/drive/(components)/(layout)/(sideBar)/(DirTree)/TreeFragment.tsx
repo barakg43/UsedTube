@@ -27,15 +27,13 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
     const hasChildren =
         (node?.children?.length ?? //filter((child) => child.type == "folder").
             0) > 0;
-    const isActiveFolder =
-        (node.name === "My Drive" && activeDirectory === "") ||
-        activeDirectory === node?.id;
+    const isActiveFolder = activeDirectory === node?.id;
     return (
         <TreeContainer>
             <div
                 className={`  flex cursor-pointer   
-                    
-                    hover:bg-dustyPaperDark rounded-full w-full `}
+                        ${isActiveFolder ? "bg-blue-200" : ""}
+                    hover:bg-highlighted rounded-full w-full `}
                 //${isActiveFolder ? "text-dustyPaperDark" : "text-black"}
             >
                 {spaces > 0 &&

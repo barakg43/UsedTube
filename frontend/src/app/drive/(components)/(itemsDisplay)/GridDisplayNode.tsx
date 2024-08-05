@@ -24,7 +24,7 @@ const ItemsDisplayNode: FC<{ node: FSNode; onEntryClick: Function }> = ({
     return (
         <>
             <div
-                className="cursor-pointer flex-grow flex flex-row items-center rounded-2xl px-2 py-2 mt-2 mr-6 bg-dustyPaper hover:bg-dustyPaperDark border max-w-150px text-ellipsis overflow-hidden whitespace-nowrap"
+                className="cursor-pointer hover:bg-highlighted flex-grow flex flex-row items-center rounded-2xl px-2 py-2 mt-2 mr-6 bg-dustyPaper hover:bg-dustyPaperDark border max-h-16 text-ellipsis overflow-hidden whitespace-nowrap"
                 onClick={(e) => (onEntryClick(node) ? null : handleClick(e))}
                 onContextMenu={(e) => {
                     e.preventDefault();
@@ -41,7 +41,7 @@ const ItemsDisplayNode: FC<{ node: FSNode; onEntryClick: Function }> = ({
                 </Typography>
                 {node.name !== ".." && (
                     <div onClick={handleClick}>
-                        <MoreVertIcon className="hover:bg-dustyPaperEvenDarker rounded-full" />
+                        <MoreVertIcon className="hover:bg-stone-300 rounded-full" />
                     </div>
                 )}
             </div>

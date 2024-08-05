@@ -34,7 +34,7 @@ const FileUploadButton = () => {
     return (
         <ThemeProvider theme={theme}>
             <Button
-                className="hover:bg-transparent normal-case text-black flex justify-start"
+                className="hover:bg-highlighted_2 normal-case text-black flex justify-start"
                 component="label"
                 variant="text"
                 size="small"
