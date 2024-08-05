@@ -17,7 +17,7 @@ export const useHandleMenuItemClick = () => {
     const toaster = useToaster();
     const folderId = useAppSelector((state) => state.items.activeDirectoryId);
     const [deleteNode] = useDeleteNodeMutation();
-    const { refetch: refetchDirsTree } = useDirectoryTreeQuery({});
+    const { refetch: refetchDirsTree } = useDirectoryTreeQuery(undefined);
     const { refetch: refetchDirContent } = useFolderContentQuery({
         folderId,
     });

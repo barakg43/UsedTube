@@ -38,6 +38,17 @@ export const itemsSlice = createSlice({
             if (nodeWritableDraft) {
                 nodeWritableDraft.isOpened = !nodeWritableDraft.isOpened;
             }
+            if (nodeWritableDraft?.children && !nodeWritableDraft.isOpened) {
+                // change isOpened of all subfolders to false
+                const stack = [...nodeWritableDraft.children];
+                while (stack.length) {
+                    const current = stack.pop();
+                    if (current?.type === "folder") {
+                        current.isOpened = false;
+                        stack.push(...(current.children ?? []));
+                    }
+                }
+            }
         },
     },
 });

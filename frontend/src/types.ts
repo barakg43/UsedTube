@@ -8,8 +8,6 @@ export type UserValues = {
     apiKey: string;
 };
 
-import { FILE, FOLDER } from "./constants";
-
 export type UserCredentials = {
     username: string;
     password: string;

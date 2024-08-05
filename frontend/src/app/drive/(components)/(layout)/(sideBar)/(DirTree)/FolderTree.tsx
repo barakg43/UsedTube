@@ -9,12 +9,14 @@ import { CircularProgress } from "@mui/material";
 function FolderTree() {
     const dispatch = useAppDispatch();
     const { data, isLoading } = useDirectoryTreeQuery(undefined);
-    const { myItems } = useAppSelector((state: RootState) => state.items);
+    const editableItems = useAppSelector(
+        (state: RootState) => state.items.myItems
+    );
     useEffect(() => {
         dispatch(setItems(data));
     }, [data, dispatch]);
     if (isLoading) return <CircularProgress />;
-    return <TreeFragment node={myItems} spaces={0} />;
+    return <TreeFragment node={editableItems} spaces={0} />;
 }
 
 export default FolderTree;
