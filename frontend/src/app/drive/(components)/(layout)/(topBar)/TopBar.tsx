@@ -7,7 +7,7 @@ import Logo from "../../../../(common)/(components)/Logo";
 
 const TopBar = () => {
     return (
-        <div className="bg-paper h-[120px] flex flex-row justify-between">
+        <div className="bg-paper h-[120px] flex flex-row justify-between pb-10">
             <ThemeProvider theme={theme}>
                 <Logo color="dustyPaperDarkest" />
                 <LogoutButton />

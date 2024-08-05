@@ -2,16 +2,15 @@
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-
 import { toggleIsOpened } from "@/redux/slices/itemsSlice";
 import { RootState } from "@/redux/store";
 import { FSNode } from "@/types";
 import { useCallback, useState } from "react";
 import { useFolderClick } from "../../useFolderClick";
+import { Button } from "@mui/material";
 
 const Space = () => {
     return <div className="w-[8px]" />;
@@ -36,7 +35,7 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
     );
     const handleArrowToggle = (node: FSNode): void => {
         dispatch(toggleIsOpened(node));
-        // console.log(node, forceUpdate);
+
         forceUpdate();
     };
 
@@ -46,46 +45,52 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
         (node.name === "My Drive" && activeDirectory === "") ||
         activeDirectory === node?.id;
     return (
-        <TreeContainer>
+        // <TreeContainer>
+        <Button
+            className="flex justify-start text-black normal-case"
+            component="label"
+            variant="text"
+            size="small"
+            sx={{
+                "&:hover": {
+                    backgroundColor: "transparent",
+                },
+            }}
+        >
             <div
                 className={`  flex cursor-pointer  text-black ${
-                    isActiveFolder && " bg-dustyPaper"
+                    isActiveFolder && ""
                 } hover:bg-dustyPaperDark rounded-xl `}
             >
                 {spaces > 0 &&
                     new Array(spaces)
                         .fill(0)
                         .map((_, index) => <Space key={index} />)}
-
-                {hasChildren ? (
-                    node?.isOpened ? (
-                        <>
-                            <ArrowDropDownIcon
-                                onClick={() => handleArrowToggle(node)}
-                            />
-                            <FolderOpenIcon />
-                        </>
+                <div className="mr-2">
+                    {hasChildren ? (
+                        node?.isOpened ? (
+                            <>
+                                <ArrowDropDownIcon
+                                    onClick={() => handleArrowToggle(node)}
+                                />
+                                <FolderOpenIcon fontSize="small" />
+                            </>
+                        ) : (
+                            <>
+                                <ArrowRightIcon
+                                    fontSize="small"
+                                    onClick={() => handleArrowToggle(node)}
+                                />
+                                <FolderIcon fontSize="small" />
+                            </>
+                        )
                     ) : (
                         <>
-                            <ArrowRightIcon
-                                onClick={() => handleArrowToggle(node)}
-                            />
-                            <FolderIcon className="text-gray-500" />
+                            <ChevronRightIcon fontSize="small" />
+                            <FolderOpenIcon />
                         </>
-                    )
-                ) : (
-                    <>
-                        <ChevronRightIcon fontSize="small" />
-                        <FolderOpenIcon />
-                    </>
-                )}
-
-                {
-                    <span
-                        className={`text-left text-ellipsis flex-grow w-[24px]  `}
-                        onClick={() => onLabelClick(node.id)}
-                    >{`${node.name}`}</span>
-                }
+                    )}
+                </div>
             </div>
             {node?.isOpened && hasChildren && (
                 <TreeContainer>
@@ -100,7 +105,12 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
                     })}
                 </TreeContainer>
             )}
-        </TreeContainer>
+            <span
+                className={`text-left text-ellipsis`}
+                onClick={() => onLabelClick(node.id)}
+            >{`${node.name}`}</span>
+        </Button>
+        //</TreeContainer>
     );
 };
 

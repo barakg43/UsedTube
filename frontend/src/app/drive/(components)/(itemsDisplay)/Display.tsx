@@ -42,7 +42,7 @@ function ItemsDisplay({ files, folders, parent }: ItemsDisplayProp) {
     };
 
     return (
-        <div className="bg-paper rounded-2xl px-4 py-4 flex flex-grow w-full h-full">
+        <div className="bg-paper rounded-2xl flex flex-grow w-full h-full">
             {displayType === GRID ? (
                 <ItemsDisplayGrid
                     onEntryClick={onEntryClick}
