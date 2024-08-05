@@ -35,29 +35,31 @@ class DownloadView(APIView):
         # It is later used when returning the `FileResponse` in the `get` method of the `DownloadView`
         # class to provide the downloaded file with a specific filename when it is sent back to the
         # user for download.
-
-        file_name = "sample-file2.pdf"
-        # from the db extract video_url, compressed_file_size, content-type
-        compressed_file_size = SF_4_SIZE  # in Bytes
-        video_url = r"https://www.youtube.com/watch?v=jW9zNLdPH0M&ab_channel=GalAviezri"
-        # use the downloader to download the video from url
-        downloader: Downloader = YouTubeDownloader()  # choose based on URL
-        print("ABOUT TO DOWNLOAD")
-        downloaded_video_path = downloader.download(video_url)
-        print("FINISHED, ABOUT TO TRANSFORM VIDEO TO FILE")
-        restored_file_path = Driver().process_video_to_file(
-            downloaded_video_path, compressed_file_size, ""
-        )
-        print("FINISHED, ABOUT TO SEND RESULTS")
-        os.remove(downloaded_video_path)
-        return FileResponse(
-            open(restored_file_path, "rb"),
-            filename=file_name,
-            as_attachment=True,
-            content_type=None,
-        )
+        file_to_download=File.objects.get(id=file_id)
+        if file_to_download.owner != request.user:
+            return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_403_FORBIDDEN)
+        job_id = file_controller.get_file_from_provider(file_id, user)
+        return JsonResponse({JOB_ID: job_id}, status=status.HTTP_202_ACCEPTED)
 
 
+class DownloadViewProgressView(APIView):
+    def get(self, request: HttpRequest, job_id: str):
+        job_owner=file_controller.get_user_for_job(job_id)
+        if request.user != job_owner:
+            return JsonResponse({ERROR:"Not authorized to view this donwnload job status"},status=status.HTTP_403_FORBIDDEN)
+        job_error=file_controller.get_job_error(job_id)
+        if job_error is not None:
+            return JsonResponse({ERROR:job_error},status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+        if file_controller.is_processing_done(job_id):
+            # get the final file result from the future task
+            bytes_io, file_name = file_controller.get_download_item_bytes_name(job_id)
+            return FileResponse(
+                bytes_io,
+                filename=file_name,
+                as_attachment=True,
+                content_type=None,
+            )
+        return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
 class SerializationProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
         if Mr_EngineManager.is_processing_done(job_id):
