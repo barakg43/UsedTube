@@ -8,44 +8,57 @@ from typing import Tuple
 from engine.constants import _4_MiB, COVER_VIDEOS_DIR, TMP_WORK_DIR, FILES_READY_FOR_RETRIEVAL_DIR
 from engine.obfuscation.obfuscation_manager import ObfuscationManager
 from engine.progress_tracker import Tracker
-from engine.serialization.stateless_serializer import StatelessSerializer
+from engine.serialization.stateless_serializer import StatelessSerializer, serialize_logger
 
 
 class Driver:
 
     def __init__(self):
         self.__serializer = StatelessSerializer()
+        self.__logger=serialize_logger
         self.__obfuscator = ObfuscationManager()
 
     def process_file_to_video(self, file_path: str, jobId: uuid, progress_tracker=None) -> Tuple[str, int]:
         # zip
+        self.__logger.info(f"zipping {file_path}")
         zipped_path = self.__gzip_it(file_path)
         Tracker.set_progress(jobId, 0.1)
 
         zipped_file_size = os.path.getsize(zipped_path)
         Tracker.set_progress(jobId, 0.15)
         # serialize
+
         cover_vid_path = self.__choose_cover_video(zipped_path)
+        self.__logger.info(f"choosing cover {cover_vid_path}")
         out_vid_path = f"{zipped_path}.mp4"
+        self.__logger.info(f"starting serializing to {out_vid_path}")
         self.__serializer.serialize(zipped_path, cover_vid_path, out_vid_path, jobId)
+
         os.remove(zipped_path)
         # obfuscate
+        self.__logger.info(f"starting obfuscating with cover video")
         obfuscated_vid_path = self.__obfuscator.obfuscate(out_vid_path, cover_vid_path, self.__serializer.fourcc)
+
         Tracker.set_progress(jobId, 1)
         os.remove(out_vid_path)
+        self.__logger.info(f"finished processing file to video-result video path {obfuscated_vid_path}")
         return obfuscated_vid_path, zipped_file_size
 
     def process_video_to_file(self, video_path: str, compressed_file_size: int, jobId: uuid) -> str:
         # untangle
+        self.__logger.info(f"{jobId}:untangling {video_path}")
         serialized_file_as_video_path = self.__obfuscator.untangle(video_path)
         Tracker.set_progress(jobId, 0.15)
         # deserialize
+        self.__logger.info(f"{jobId}:deserializing {serialized_file_as_video_path}")
         zipped_file_path = self.__serializer.deserialize(serialized_file_as_video_path, compressed_file_size, jobId)
         # unzip
         os.remove(serialized_file_as_video_path)
+        self.__logger.info(f"{jobId}:unzipping {zipped_file_path}")
         unzipped_file_path = self.__ungzip_it(zipped_file_path)
         Tracker.set_progress(jobId, 1)
         os.remove(zipped_file_path)
+        self.__logger.info(f"{jobId}:finished processing video to file-result file path {unzipped_file_path} with size {os.path.getsize(unzipped_file_path)}")
         return unzipped_file_path
 
     def __gzip_it(self, file_to_upload_path: str) -> str:
