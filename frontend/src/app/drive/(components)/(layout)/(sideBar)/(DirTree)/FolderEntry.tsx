@@ -1,5 +1,5 @@
 import { FSNode } from "@/types";
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { useFolderClick } from "../../../useFolderClick";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
@@ -15,26 +15,21 @@ interface FolderEntryProps {
 
 const FolderEntry: FC<FolderEntryProps> = ({ node }) => {
     const dispatch = useAppDispatch();
-    // const [, updateState] = useState<object>();
-    // const forceUpdate = useCallback(() => updateState({}), []);
+    const [state, updateState] = useState<object>();
+    const forceUpdate = useCallback(() => updateState({}), []);
     const onLabelClick = useFolderClick();
     const hasSubFolders = (node?.children?.length ?? 0) > 0;
-    const activeDirectory = useAppSelector(
-        (state: RootState) => state.items.activeDirectoryId
-    );
-    const isActiveFolder =
-        (node.name === "My Drive" && activeDirectory === "") ||
-        activeDirectory === node?.id;
-
     const handleArrowToggle = (node: FSNode): void => {
         dispatch(toggleIsOpened(node));
-        // forceUpdate();
+        forceUpdate();
     };
+
+    useEffect(() => {}, [state]);
 
     let prefix;
 
     if (!node.isOpened && !hasSubFolders) {
-        prefix = <FolderIcon fontSize="small" className="ml-3" />;
+        prefix = <FolderIcon fontSize="small" className="ml-5" />;
     } else if (!node.isOpened && hasSubFolders) {
         prefix = (
             <>

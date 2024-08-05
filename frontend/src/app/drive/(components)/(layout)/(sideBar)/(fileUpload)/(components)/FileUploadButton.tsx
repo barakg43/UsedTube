@@ -1,5 +1,5 @@
 "use client";
-import { Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import React, { useRef } from "react";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { ThemeProvider } from "@emotion/react";
@@ -34,13 +34,12 @@ const FileUploadButton = () => {
     return (
         <ThemeProvider theme={theme}>
             <Button
-                className="hover:bg-transparent normal-case text-black flex"
+                className="hover:bg-transparent normal-case text-black flex justify-start"
                 component="label"
                 variant="text"
                 size="small"
                 disabled={isUploading}
                 sx={{
-                    justifyContent: "flex-start",
                     "&:disabled": {
                         background: "transparent !important",
                         cursor: "default !important",

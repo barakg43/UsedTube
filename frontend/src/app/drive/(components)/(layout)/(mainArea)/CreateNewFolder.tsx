@@ -3,6 +3,7 @@ import React from "react";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import {
     useCreateFolderMutation,
+    useDirectoryTreeQuery,
     useFolderContentQuery,
 } from "@/redux/api/driveApi";
 import { Button, TextField, Typography, IconButton } from "@mui/material";
@@ -23,7 +24,10 @@ function CreateNewFolder() {
         (state: RootState) => state.items.activeDirectoryId
     );
 
-    const { refetch } = useFolderContentQuery({ folderId: parentId });
+    const { refetch: refetchFolderContent } = useFolderContentQuery({
+        folderId: parentId,
+    });
+    const { refetch: refetchDirsTree } = useDirectoryTreeQuery(undefined);
 
     const toaster = useToaster();
 
@@ -38,7 +42,8 @@ function CreateNewFolder() {
                 `folder \"${folderName}\" was created successfully`,
                 "success"
             );
-            refetch();
+            refetchFolderContent();
+            refetchDirsTree();
             setInputVisible(false);
         } catch {
             toaster(`failed to create folder ${folderName}`, "error");
