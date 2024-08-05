@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import { Button, TextField, Typography, IconButton } from "@mui/material";
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "./theme";
