@@ -1,8 +1,8 @@
 "use client";
 import { useFolderContentQuery } from "@/redux/api/driveApi";
 import { Typography } from "@mui/material";
-import ItemsDisplay from "../../(itemsDisplay)/Display";
-import ItemsDisplayToggle from "../../(itemsDisplay)/ItemsDisplayToggle";
+import ItemsDisplay from "./(itemsDisplay)/Display";
+import ItemsDisplayToggle from "./(itemsDisplay)/ItemsDisplayToggle";
 import CreateNewFolder from "./CreateNewFolder";
 import Loading from "@/app/(common)/(components)/Loading";
 import PathTrace from "./PathTrace";

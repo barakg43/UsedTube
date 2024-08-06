@@ -5,7 +5,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Typography, Tooltip } from "@mui/material";
 import { FC } from "react";
-import { useFolderClick } from "../useFolderClick";
+import { useFolderClick } from "../../../../(hooks)/useFolderClick";
 import useContextMenu from "@/app/(common)/(hooks)/(contextMenu)/useContextMenu";
 
 const ItemsDisplayNode: FC<{ node: FSNode }> = ({ node }) => {

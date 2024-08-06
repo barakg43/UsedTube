@@ -1,6 +1,6 @@
 import { FSNode } from "@/types";
 import React, { FC, useCallback, useState } from "react";
-import { useFolderClick } from "../../../useFolderClick";
+import { useFolderClick } from "../../../../(hooks)/useFolderClick";
 import { useAppDispatch } from "@/redux/hooks";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";

@@ -12,7 +12,7 @@ import { useAppSelector } from "@/redux/hooks";
 import { ContextMenuAction, FSNode } from "@/types";
 
 export const useHandleMenuItemClick = () => {
-    const toaster = useToaster();
+    const { toaster } = useToaster();
     const folderId = useAppSelector((state) => state.items.activeDirectoryId);
     const [deleteNode] = useDeleteNodeMutation();
     const { refetch: refetchDirsTree } = useDirectoryTreeQuery(undefined);

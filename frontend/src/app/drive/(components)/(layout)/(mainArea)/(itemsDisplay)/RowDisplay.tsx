@@ -3,7 +3,7 @@ import { DataGrid, GridColDef, GridColTypeDef } from "@mui/x-data-grid";
 import { FC } from "react";
 import ItemIcon from "./ItemIcon";
 import useContextMenu from "@/app/(common)/(hooks)/(contextMenu)/useContextMenu";
-import { useFolderClick } from "../useFolderClick";
+import { useFolderClick } from "../../../../(hooks)/useFolderClick";
 
 const NodeIconType: GridColTypeDef<FSNode> = {
     type: "custom",

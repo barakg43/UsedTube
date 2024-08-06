@@ -1,7 +1,7 @@
 import { GRID } from "@/constants";
 import { useAppSelector } from "@/redux/hooks";
 import { FSNode, FileNode } from "@/types";
-import { useFolderClick } from "../useFolderClick";
+import { useFolderClick } from "../../../../(hooks)/useFolderClick";
 import ItemsDisplayGrid from "./GridDisplay";
 import ItemsDisplayRow from "./RowDisplay";
 // import { useRouter } from "next/navigation";

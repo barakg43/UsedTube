@@ -1,7 +1,7 @@
-import { useHandleMenuItemClick } from "@/app/drive/(components)/(itemsDisplay)/useHandleMenuItemClick";
 import { FSNode } from "@/types";
 import { Menu, MenuItem } from "@mui/material";
 import React, { useState } from "react";
+import { useHandleMenuItemClick } from "./useHandleMenuItemClick";
 
 const useContextMenu = () => {
     // return Container, activation function which receives node and action, and event
