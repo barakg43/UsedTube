@@ -44,7 +44,6 @@ const FileUploadButton = () => {
                 component="label"
                 variant="text"
                 size="small"
-                disabled={isUploading}
                 sx={{
                     "&:disabled": {
                         background: "transparent !important",

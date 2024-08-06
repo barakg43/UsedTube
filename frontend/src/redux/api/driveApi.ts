@@ -91,4 +91,5 @@ export const {
     useCreateFolderMutation,
     useGetUploadProgressQuery,
     useDeleteNodeMutation,
+    useCancelUploadMutation,
 } = driveApiSlice;
