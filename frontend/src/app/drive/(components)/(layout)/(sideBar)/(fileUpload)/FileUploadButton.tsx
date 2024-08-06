@@ -4,9 +4,9 @@ import React, { useRef } from "react";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { ThemeProvider } from "@emotion/react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setIsUploading } from "@/redux/slices/fileUploadSlice";
 import { theme } from "../theme";
 import { useUploadFileMutation } from "@/redux/api/driveApi";
+import useShowUploadProgress from "@/app/drive/(hooks)/useShowUploadProgress";
 
 const MAX_FILE_SIZE = 100;
 const MiB = 1024 * 1024;
@@ -14,11 +14,11 @@ const MiB = 1024 * 1024;
 const FileUploadButton = () => {
     const dispatch = useAppDispatch();
     const fileInputRef = useRef(null);
-    const isUploading = useAppSelector((state) => state.fileUpload.isUploading);
     const activeDirectoryId = useAppSelector(
         (state) => state.items.activeDirectoryId
     );
     const [uploadFile] = useUploadFileMutation();
+    const { startUploadProgress } = useShowUploadProgress();
     //@ts-ignore
     const onFileBrowserClick = (e) => {
         const _file = e.target.files?.[0];
@@ -26,7 +26,7 @@ const FileUploadButton = () => {
             alert("File is empty, please select a non empty file");
         } else if (_file.size < MAX_FILE_SIZE * MiB) {
             uploadFile({ file: _file, folderId: activeDirectoryId });
-            dispatch(setIsUploading(true));
+            startUploadProgress();
         } else {
             alert(
                 `Currently We only support files with size less than ${MAX_FILE_SIZE}MB`
