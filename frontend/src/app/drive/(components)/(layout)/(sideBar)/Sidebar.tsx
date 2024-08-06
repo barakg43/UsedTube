@@ -1,12 +1,11 @@
 "use client";
-import { useAppSelector } from "@/redux/hooks";
-import { RootState } from "@/redux/store";
+
 import { FC, ReactNode } from "react";
 import FolderTree from "./(DirTree)/FolderTree";
-import FileUploadButton from "./(fileUpload)/(components)/FileUploadButton";
-import SelectedFileCard from "./(fileUpload)/(components)/SelectedFileCard";
+import FileUploadButton from "./(fileUpload)/FileUploadButton";
 import SharedWithMe from "./SharedWithMe";
 import Quota from "./Quota";
+import { useToaster } from "@/app/(common)/(hooks)/(toaster)/useToaster";
 
 const SideBarItem: FC<{ children: ReactNode }> = ({ children }) => {
     return (
@@ -17,19 +16,11 @@ const SideBarItem: FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 const Sidebar = () => {
-    const fileToUpload = useAppSelector(
-        (state: RootState) => state.fileUpload.fileToUpload
-    );
     return (
         <nav className="h-full w-[200px] flex flex-col pt-4">
             <SideBarItem>
                 <FileUploadButton />
             </SideBarItem>
-            {fileToUpload && (
-                <SideBarItem>
-                    <SelectedFileCard />
-                </SideBarItem>
-            )}
             <SideBarItem>
                 <FolderTree />
             </SideBarItem>

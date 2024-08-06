@@ -76,6 +76,12 @@ class EngineManager:
         results = future.result()
         del self.uuid_to_future[uuid]
         return DailymotionUploader.base_url + results if results else results
+    
+    def cancel_action(self, uuid):
+        future = self.uuid_to_future[uuid]
+        future.cancel()
+        del self.uuid_to_future[uuid]
+        Tracker.delete(uuid)
 
 
 Mr_EngineManager: EngineManager = EngineManager()

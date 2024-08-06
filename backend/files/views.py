@@ -57,16 +57,6 @@ class DownloadView(APIView):
             content_type=None,
         )
 
-
-class SerializationProgressView(APIView):
-    def get(self, request: HttpRequest, job_id: str):
-        if Mr_EngineManager.is_processing_done(job_id):
-            path = Mr_EngineManager.get_processed_item_path(job_id)
-            Mr_EngineManager.upload_video_to_providers(job_id, path)
-            return JsonResponse({"progress": 1})
-        return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
-
-
 class UploadProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
         job_owner=file_controller.get_user_for_job(job_id)
@@ -75,24 +65,16 @@ class UploadProgressView(APIView):
         job_error=file_controller.get_job_error(job_id)
         if job_error is not None:
             return JsonResponse({ERROR:job_error},status = status.HTTP_500_INTERNAL_SERVER_ERROR)
-        # if Mr_EngineManager.is_processing_done(job_id):
-        #     # get the file id from the cache
-        #     path, compressed_file_size = Mr_EngineManager.get_processed_item_path_size(job_id)
-        #     file_id = cache.get(job_id)
-        #     # set url to the file
-        #     file = File.objects.get(id=file_id)
-        #     url = Mr_EngineManager.get_url(job_id)
-        #     if url:
-        #         file.url = url
-        #         file.save()
-        #         cache.delete(job_id)
-        #         return JsonResponse({MESSAGE: "upload successful"})
-        #     else:
-        #         File.objects.delete(id=file_id)
-        #         return JsonResponse({ERROR: 'upload failed'}, status=400)
 
         return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
 
+class CancelUploadView(APIView):
+    def delete(self, request: HttpRequest, job_id: str):
+        job_owner=file_controller.get_user_for_job(job_id)
+        if request.user != job_owner:
+            return JsonResponse({ERROR:"Not authorized to cancel this upload job"},status=status.HTTP_403_FORBIDDEN)
+        Mr_EngineManager.cancel_action(job_id)
+        return JsonResponse({MESSAGE:"Upload job cancelled"},status=200)
 
 
 

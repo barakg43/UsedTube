@@ -29,7 +29,7 @@ function CreateNewFolder() {
     });
     const { refetch: refetchDirsTree } = useDirectoryTreeQuery(undefined);
 
-    const toaster = useToaster();
+    const { toaster } = useToaster();
 
     const handleCreateFolder = () => {
         setInputVisible(true);
@@ -38,10 +38,6 @@ function CreateNewFolder() {
     const handleApprove = async () => {
         try {
             await createFolder({ folderName, parentId }).unwrap();
-            // toaster(
-            //     `folder \"${folderName}\" was created successfully`,
-            //     "success"
-            // );
             refetchFolderContent();
             refetchDirsTree();
             setInputVisible(false);
