@@ -31,10 +31,10 @@ const FileUploadButton = () => {
                 `Currently We only support files with size less than ${MAX_FILE_SIZE}MB`
             );
         }
-        if (fileInputRef.current) {
-            //@ts-ignore
-            fileInputRef.current.value = "";
-        }
+        // if (fileInputRef.current) {
+        //     //@ts-ignore
+        //     fileInputRef.current.value = "";
+        // }
     };
     return (
         <ThemeProvider theme={theme}>

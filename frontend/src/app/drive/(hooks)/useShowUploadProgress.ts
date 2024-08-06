@@ -33,6 +33,10 @@ const useShowUploadProgress = () => {
         if (isUploading && data) {
             console.log("Uploading:", data);
             showProgress(jobId, "Uploading file...", data.progress, onCancel);
+            if (data.progress === 1) {
+                toaster("Upload complete", "success");
+                dispatch(setIsUploading(false));
+            }
         }
     }, [data, isUploading, jobId]);
 
