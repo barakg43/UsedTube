@@ -47,13 +47,7 @@ const driveApiSlice = baseApi.injectEndpoints({
                 }
             },
         }),
-        getSerializationProgress: builder.query({
-            query: ({ jobId }: { jobId: string | null }) => ({
-                url: `/files/upload/serialize/progress/${jobId}`,
-                method: "GET",
-            }),
-            transformResponse: (response: { progress: number }) => response,
-        }),
+
         getUploadProgress: builder.query({
             query: ({ jobId }: { jobId: string | null }) => ({
                 url: `/files/upload/progress/${jobId}`,
@@ -62,17 +56,6 @@ const driveApiSlice = baseApi.injectEndpoints({
             transformResponse: (response: { progress: number }) => response,
         }),
 
-        // getUploadProgress: builder.query({
-        //   query: ({ jobId }: { jobId: string | null }) => ({
-        //     url: `/files/upload/progress/${jobId}`,
-        //     method: "GET",
-        //   }),
-        //   transformResponse: (
-        //     response: { data: { folders: FSNode[]; files: FileNode[] } },
-        //     meta,
-        //     arg
-        //   ) => response.data,
-        // }),
         createFolder: builder.mutation({
             query: ({
                 folderName,
@@ -93,7 +76,6 @@ export const {
     useUploadFileMutation,
     useFolderContentQuery,
     useDirectoryTreeQuery,
-    useGetSerializationProgressQuery,
     useCreateFolderMutation,
     useGetUploadProgressQuery,
     useDeleteNodeMutation,

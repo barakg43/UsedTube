@@ -4,8 +4,9 @@ import React, { useRef } from "react";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { ThemeProvider } from "@emotion/react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setSelectedFileToUpload } from "@/redux/slices/fileUploadSlice";
-import { theme } from "../../theme";
+import { setIsUploading } from "@/redux/slices/fileUploadSlice";
+import { theme } from "../theme";
+import { useUploadFileMutation } from "@/redux/api/driveApi";
 
 const MAX_FILE_SIZE = 100;
 const MiB = 1024 * 1024;
@@ -14,13 +15,18 @@ const FileUploadButton = () => {
     const dispatch = useAppDispatch();
     const fileInputRef = useRef(null);
     const isUploading = useAppSelector((state) => state.fileUpload.isUploading);
+    const activeDirectoryId = useAppSelector(
+        (state) => state.items.activeDirectoryId
+    );
+    const [uploadFile] = useUploadFileMutation();
     //@ts-ignore
     const onFileBrowserClick = (e) => {
         const _file = e.target.files?.[0];
         if (_file.size <= 0) {
             alert("File is empty, please select a non empty file");
         } else if (_file.size < MAX_FILE_SIZE * MiB) {
-            dispatch(setSelectedFileToUpload(_file));
+            uploadFile({ file: _file, folderId: activeDirectoryId });
+            dispatch(setIsUploading(true));
         } else {
             alert(
                 `Currently We only support files with size less than ${MAX_FILE_SIZE}MB`
