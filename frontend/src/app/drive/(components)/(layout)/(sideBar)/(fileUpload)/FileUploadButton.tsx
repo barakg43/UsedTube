@@ -31,10 +31,10 @@ const FileUploadButton = () => {
                 `Currently We only support files with size less than ${MAX_FILE_SIZE}MB`
             );
         }
-        // if (fileInputRef.current) {
-        //     //@ts-ignore
-        //     fileInputRef.current.value = "";
-        // }
+        if (fileInputRef.current) {
+            //@ts-ignore
+            fileInputRef.current.value = "";
+        }
     };
     return (
         <ThemeProvider theme={theme}>
@@ -53,8 +53,9 @@ const FileUploadButton = () => {
                 <UploadFileIcon className="mr-2 ml-5" fontSize="small" />
                 Upload file
                 <input
-                    type="file"
                     ref={fileInputRef}
+                    type="file"
+                    accept=".doc, .docx, .pdf, .txt, .ppt, .pptx, .xls, .xlsx, .jpg, .jpeg, .png, .gif, .mp4, .mp3, .zip, .rar, .7z"
                     hidden
                     onChange={onFileBrowserClick}
                 />
