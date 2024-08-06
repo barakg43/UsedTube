@@ -37,7 +37,7 @@ export function useToaster() {
         if (toast.isActive(id)) {
             toast.update(id, {
                 render: content,
-                progress: progress / 100,
+                progress: progress,
                 autoClose: false,
             });
         } else {

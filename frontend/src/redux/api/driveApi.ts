@@ -1,4 +1,3 @@
-import { FileNode, FSNode } from "@/types";
 import { baseApi } from "../baseApi";
 import { setError, setIsUploading, setJobId } from "../slices/fileUploadSlice";
 

@@ -28,3 +28,4 @@ server/engine/logs/
 */credentials.json*
 */token.json*
 
+backend/.env.local

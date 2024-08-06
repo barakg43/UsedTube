@@ -12,7 +12,6 @@ const MAX_FILE_SIZE = 100;
 const MiB = 1024 * 1024;
 
 const FileUploadButton = () => {
-    const dispatch = useAppDispatch();
     const fileInputRef = useRef(null);
     const activeDirectoryId = useAppSelector(
         (state) => state.items.activeDirectoryId
