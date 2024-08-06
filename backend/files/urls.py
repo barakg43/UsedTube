@@ -10,7 +10,7 @@ urlpatterns = [
     path('dir-content/', DirectoryContentView.as_view()),
     path('create-folder', CreateNewFolderView.as_view()),
     path("dir-tree/", DirectoryTree.as_view()),
-    path('upload/serialize/progress/<str:job_id>', SerializationProgressView.as_view()),
     path('upload/progress/<str:job_id>', UploadProgressView.as_view()),
+    path('upload/cancel/<str:job_id>', CancelUploadView.as_view()),
     path('delete/<str:node_id>', DeleteNodeView.as_view()),
 ]

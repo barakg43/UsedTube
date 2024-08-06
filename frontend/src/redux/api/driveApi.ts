@@ -4,6 +4,8 @@ import { setError, setIsUploading, setJobId } from "../slices/fileUploadSlice";
 
 const driveApiSlice = baseApi.injectEndpoints({
     endpoints: (builder) => ({
+        // QUERIES
+        // #######
         folderContent: builder.query({
             query: ({ folderId }: { folderId: string | undefined }) =>
                 `/files/dir-content/${folderId || ""}`,
@@ -14,6 +16,17 @@ const driveApiSlice = baseApi.injectEndpoints({
                 method: "GET",
             }),
         }),
+
+        getUploadProgress: builder.query({
+            query: ({ jobId }: { jobId: string | null }) => ({
+                url: `/files/upload/progress/${jobId}`,
+                method: "GET",
+            }),
+        }),
+
+        // MUTATIONS
+        // ########
+
         deleteNode: builder.mutation({
             query: ({ nodeId }: { nodeId: string }) => ({
                 url: `/files/delete/${nodeId}`,
@@ -48,14 +61,6 @@ const driveApiSlice = baseApi.injectEndpoints({
             },
         }),
 
-        getUploadProgress: builder.query({
-            query: ({ jobId }: { jobId: string | null }) => ({
-                url: `/files/upload/progress/${jobId}`,
-                method: "GET",
-            }),
-            transformResponse: (response: { progress: number }) => response,
-        }),
-
         createFolder: builder.mutation({
             query: ({
                 folderName,
@@ -67,6 +72,13 @@ const driveApiSlice = baseApi.injectEndpoints({
                 url: `/files/create-folder`,
                 method: "POST",
                 body: { folderName, parentId },
+            }),
+        }),
+
+        cancelUpload: builder.mutation({
+            query: ({ jobId }: { jobId: string }) => ({
+                url: `/files/upload/cancel/${jobId}`,
+                method: "DELETE",
             }),
         }),
     }),
