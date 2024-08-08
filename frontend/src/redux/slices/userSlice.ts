@@ -10,7 +10,6 @@ export type UserValues = {
     email: string;
     firstName: string;
     lastName: string;
-    APIProvider2Key: { YouTube: string; Vimeo: string }; // [provider, key]
 };
 
 const initialState: UserValues = {
@@ -20,7 +19,6 @@ const initialState: UserValues = {
     email: "",
     firstName: "",
     lastName: "",
-    APIProvider2Key: { YouTube: "", Vimeo: "" },
 };
 
 export const registerUserData = createAsyncThunk(
@@ -67,10 +65,7 @@ export const userSlice = createSlice({
                 console.error(e);
             }
         },
-        clearAPIProviderData: (state) => {
-            state.APIProvider2Key.YouTube = "";
-            state.APIProvider2Key.Vimeo = "";
-        },
+
         setFormData: (state, action: PayloadAction<UserValues>) => {
             const {
                 username,

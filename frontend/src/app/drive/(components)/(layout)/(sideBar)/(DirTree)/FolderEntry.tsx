@@ -4,7 +4,7 @@ import { useFolderClick } from "../../../../(hooks)/useFolderClick";
 import { useAppDispatch } from "@/redux/hooks";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { toggleIsOpened } from "@/redux/slices/itemsSlice";
+import { toggleIsOpenedDir } from "@/redux/slices/itemsSlice";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import FolderIcon from "@mui/icons-material/Folder";
 
@@ -19,7 +19,7 @@ const FolderEntry: FC<FolderEntryProps> = ({ node }) => {
     const onLabelClick = useFolderClick();
     const hasSubFolders = (node?.children?.length ?? 0) > 0;
     const handleArrowToggle = (node: FSNode): void => {
-        dispatch(toggleIsOpened(node));
+        dispatch(toggleIsOpenedDir(node));
         forceUpdate();
     };
     let prefix;

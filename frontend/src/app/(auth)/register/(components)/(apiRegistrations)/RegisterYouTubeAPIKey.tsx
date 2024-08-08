@@ -22,9 +22,9 @@ const CustomLink: React.FC<{ href: string; children: React.ReactNode }> = ({
 const RegisterYouTubeAPIKey = () => {
     const dispatch = useAppDispatch();
     const user = useAppSelector((s: RootState) => s.user);
-    const APIProvider2Key = useAppSelector(
-        (s: RootState) => s.user.APIProvider2Key
-    );
+    // const APIProvider2Key = useAppSelector(
+    //     // (s: RootState) => s.user.APIProvider2Key
+    // );
 
     const onClick = () => {
         dispatch(registerUserData(user));
@@ -85,14 +85,12 @@ const RegisterYouTubeAPIKey = () => {
                         let value = e.target.value;
                         dispatch(addAPIData({ provider: YOUTUBE, key: value }));
                     }}
-                    value={APIProvider2Key.get(YOUTUBE)}
                     label="YouTube API Key"
                     variant="standard"
                     className="w-full mt-2 mb-2"
                 />
                 <div className="mb-4 flex flex-row-reverse w-full">
                     <Button
-                        disabled={APIProvider2Key.get(YOUTUBE) === ""}
                         variant="contained"
                         color="primary"
                         onClick={onClick}

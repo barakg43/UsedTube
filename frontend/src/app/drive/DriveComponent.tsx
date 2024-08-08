@@ -15,13 +15,15 @@ function DriveComponent({ folderId }: { folderId: string }) {
         (state: RootState) => state.items.activeDirectoryId
     );
 
+    // const shareModalActive = useAppSelector(
+
     if (!isAuthenticated) return <Loading />;
     return (
         <div className="flex flex-col h-full">
             <TopBar />
             <div className="flex flex-row flex-grow bg-paper w-full h-full">
                 <Sidebar />
-                <MainArea folderId={_folderId} />;
+                <MainArea folderId={_folderId} />;{}
             </div>
         </div>
     );
