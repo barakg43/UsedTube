@@ -1,5 +1,6 @@
 import logging
 import uuid
+from typing import Callable
 
 import cv2
 
@@ -21,7 +22,7 @@ class ObfuscationManager:
         self.logger = logging.Logger(GENERAL_LOGGER)
         self.logger.setLevel(logging.DEBUG)
 
-    def obfuscate(self, file_frames_path: str, cover_video_path: str, fourcc: int) -> str:
+    def obfuscate(self, file_frames_path: str, cover_video_path: str, fourcc: int,progress_tracker: Callable[[int], None] = None) -> str:
         # open 2 video as streams file_frames as ff, cover_video as cov
         # create new video container as out
         # do:
@@ -58,8 +59,11 @@ class ObfuscationManager:
             frame_counter += 1
             frame_counter += self.__write_frames_from_cover_to_output_video(out, cover_video, self.cycle)
         if frame_counter < MINIMUM_VIDEO_FRAME_AMOUNT: #make the output video at least 'MINIMUM_VIDEO_FRAME_AMOUNT' frames
-            self.__write_frames_from_cover_to_output_video(out, cover_video, MINIMUM_VIDEO_FRAME_AMOUNT - frame_counter)
+            frame_counter+= self.__write_frames_from_cover_to_output_video(out, cover_video, MINIMUM_VIDEO_FRAME_AMOUNT - frame_counter)
                 # Release video capture and writer
+
+        frame_count = int(out.get(cv2.CAP_PROP_FRAME_COUNT))
+        self.logger.info(f"loop ended with frame_counter: {frame_counter}/{frame_count}")
         file_frames_video.release()
         cover_video.release()
         out.release()
