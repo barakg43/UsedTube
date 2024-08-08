@@ -2,6 +2,7 @@
 import { useToaster } from "@/app/(common)/(hooks)/(toaster)/useToaster";
 import {
     useCancelUploadMutation,
+    useFolderContentQuery,
     useGetUploadProgressQuery,
 } from "@/redux/api/driveApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -17,6 +18,10 @@ const useShowUploadProgress = () => {
 
     // Mutation to cancel the upload
     const [cancelUpload] = useCancelUploadMutation();
+
+    const { refetch } = useFolderContentQuery({
+        folderId: useAppSelector((state) => state.items.activeDirectoryId),
+    });
 
     const { data } = useGetUploadProgressQuery(
         { jobId },
@@ -36,6 +41,7 @@ const useShowUploadProgress = () => {
             if (data.progress === 1) {
                 toaster("Upload complete", "success");
                 dispatch(setIsUploading(false));
+                refetch();
             }
         }
     }, [data, isUploading, jobId]);
