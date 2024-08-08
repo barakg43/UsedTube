@@ -6,6 +6,7 @@ class FileChuckReaderIterator:
         self.chuck_size = chuck_size_in_bytes
         self.file_path = file_path
         self.mode = mode
+        self.is_file_finished = False
         self.file_io: IO = None
 
     def __iter__(self):
@@ -13,10 +14,13 @@ class FileChuckReaderIterator:
         return self
 
     def __next__(self):
+        if self.is_file_finished:
+            raise StopIteration
         chunk = self.file_io.read(self.chuck_size)
         if len(chunk) > 0:
             return chunk
         else:
+            self.is_file_finished = True
             self.file_io.close()
             raise StopIteration
 
