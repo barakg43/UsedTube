@@ -58,7 +58,7 @@ export const {
     setItems,
     setActiveDirectory,
     setDisplayType,
-    toggleIsOpenedDir: toggleIsOpened,
+    toggleIsOpenedDir,
 } = itemsSlice.actions;
 
 export default itemsSlice.reducer;

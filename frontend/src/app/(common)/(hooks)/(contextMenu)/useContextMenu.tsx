@@ -28,7 +28,7 @@ const useContextMenu = () => {
             open={Boolean(anchorPosition.top > 0 && anchorPosition.left > 0)}
             onClose={closeContextMenu}
         >
-            {node.type === "file" && (
+            {/* {node.type === "file" && (
                 <>
                     <MenuItem
                         onClick={() => {
@@ -47,7 +47,23 @@ const useContextMenu = () => {
                         Share
                     </MenuItem>
                 </>
-            )}
+            )} */}
+            <MenuItem
+                onClick={() => {
+                    handleMenuItemClick(node, "download");
+                    closeContextMenu();
+                }}
+            >
+                Download
+            </MenuItem>
+            <MenuItem
+                onClick={() => {
+                    handleMenuItemClick(node, "share");
+                    closeContextMenu();
+                }}
+            >
+                Share
+            </MenuItem>
             <MenuItem
                 onClick={() => {
                     handleMenuItemClick(node, "delete");

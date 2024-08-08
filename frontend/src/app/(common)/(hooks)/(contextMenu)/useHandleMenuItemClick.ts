@@ -9,6 +9,7 @@ import {
     useFolderContentQuery,
 } from "@/redux/api/driveApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setFileNode, setShowModal } from "@/redux/slices/shareSlice";
 import { ContextMenuAction, FSNode } from "@/types";
 
 export const useHandleMenuItemClick = () => {
@@ -46,7 +47,8 @@ export const useHandleMenuItemClick = () => {
     };
 
     const handleShare = (node: FSNode) => {
-        alert(`Sharing: ${node.name}`);
+        dispatch(setFileNode(node));
+        dispatch(setShowModal(true));
     };
 
     const handleMenuItemClick = (node: FSNode, action: ContextMenuAction) => {
