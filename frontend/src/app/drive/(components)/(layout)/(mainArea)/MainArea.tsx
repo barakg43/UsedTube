@@ -31,7 +31,7 @@ const MainArea = ({ folderId }: { folderId: string }) => {
                     <PathTrace parents={parents?.slice().reverse()} />
                 </Typography>
                 <div className="flex flex-row justify-between">
-                    <ShareItem />
+                    {/* <ShareItem /> */}
                     <CreateNewFolder />
                     <ItemsDisplayToggle />
                 </div>

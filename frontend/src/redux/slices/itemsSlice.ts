@@ -30,7 +30,7 @@ export const itemsSlice = createSlice({
         setDisplayType: (state, action: PayloadAction<DisplayType>) => {
             state.displayType = action.payload;
         },
-        toggleIsOpened: (state, action: PayloadAction<FSNode>) => {
+        toggleIsOpenedDir: (state, action: PayloadAction<FSNode>) => {
             const nodeWritableDraft = getWritableDraft(
                 action.payload,
                 state.myItems
@@ -54,7 +54,11 @@ export const itemsSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setItems, setActiveDirectory, setDisplayType, toggleIsOpened } =
-    itemsSlice.actions;
+export const {
+    setItems,
+    setActiveDirectory,
+    setDisplayType,
+    toggleIsOpenedDir,
+} = itemsSlice.actions;
 
 export default itemsSlice.reducer;

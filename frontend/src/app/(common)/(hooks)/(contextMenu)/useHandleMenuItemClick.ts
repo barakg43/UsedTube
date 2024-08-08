@@ -8,10 +8,12 @@ import {
     useDirectoryTreeQuery,
     useFolderContentQuery,
 } from "@/redux/api/driveApi";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setFileNode, setShowModal } from "@/redux/slices/shareSlice";
 import { ContextMenuAction, FSNode } from "@/types";
 
 export const useHandleMenuItemClick = () => {
+    const dispatch = useAppDispatch();
     const { toaster } = useToaster();
     const folderId = useAppSelector((state) => state.items.activeDirectoryId);
     const [deleteNode] = useDeleteNodeMutation();
@@ -44,6 +46,11 @@ export const useHandleMenuItemClick = () => {
             });
     };
 
+    const handleShare = (node: FSNode) => {
+        dispatch(setFileNode(node));
+        dispatch(setShowModal(true));
+    };
+
     const handleMenuItemClick = (node: FSNode, action: ContextMenuAction) => {
         // # 3
 
@@ -52,7 +59,7 @@ export const useHandleMenuItemClick = () => {
                 console.log("Downloading:", node);
                 break;
             case "share":
-                console.log("Sharing:", node);
+                handleShare(node);
                 break;
             case "delete":
                 handleDelete(node.id, node.type, node.name);

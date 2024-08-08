@@ -1,7 +1,7 @@
 # Register your models here.
 from django.contrib import admin
 
-from .models import Folder, File, SharedItem
+from .models import Folder, File
 
 
 @admin.register(Folder)
@@ -20,9 +20,3 @@ class FileAdmin(admin.ModelAdmin):
     raw_id_fields = ('folder', 'owner')
 
 
-@admin.register(SharedItem)
-class SharedItemAdmin(admin.ModelAdmin):
-    list_display = ('folder_item', 'file_item', 'shared_with', 'shared_at')
-    search_fields = ('item__name', 'shared_with__username')
-    list_filter = ('shared_with',)
-    raw_id_fields = ('folder_item', 'file_item', 'shared_with')

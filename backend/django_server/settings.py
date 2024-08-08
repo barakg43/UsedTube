@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     # "rest_framework_simplejwt",
     # 'rest_framework.authtoken',
     'files',
-    'account'
+    'account',
+    'sharing',
 ]
 
 MIDDLEWARE = [

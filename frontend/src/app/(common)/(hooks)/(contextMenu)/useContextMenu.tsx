@@ -48,6 +48,22 @@ const useContextMenu = () => {
                     </MenuItem>
                 </>
             )}
+            {/* <MenuItem
+                onClick={() => {
+                    handleMenuItemClick(node, "download");
+                    closeContextMenu();
+                }}
+            >
+                Download
+            </MenuItem>
+            <MenuItem
+                onClick={() => {
+                    handleMenuItemClick(node, "share");
+                    closeContextMenu();
+                }}
+            >
+                Share
+            </MenuItem> */}
             <MenuItem
                 onClick={() => {
                     handleMenuItemClick(node, "delete");
