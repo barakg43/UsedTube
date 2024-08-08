@@ -18,9 +18,11 @@ from django.urls import path, include
 
 import account.urls as account_urls
 import files.urls as file_urls
+import sharing.urls as sharing_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('files/', include(file_urls)),
-    path('account/', include(account_urls))
+    path('account/', include(account_urls)),
+    path('sharing/', include(sharing_urls)),
 ]

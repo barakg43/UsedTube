@@ -2,7 +2,6 @@ import os
 
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.http import HttpRequest, FileResponse, JsonResponse

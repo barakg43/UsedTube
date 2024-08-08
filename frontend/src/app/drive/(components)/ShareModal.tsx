@@ -3,25 +3,29 @@ import { Button, TextField, Box } from "@mui/material";
 import { useAppDispatch } from "@/redux/hooks";
 import { setShowModal } from "@/redux/slices/shareSlice";
 import { httpClient } from "@/axios";
+import { AxiosError } from "axios";
 
 const ShareModal = () => {
     const [email, setEmail] = useState<String | null>(null);
     const [error, setError] = useState<String | null>(null);
     const [message, setMessage] = useState<String | null>(null);
+    const [disableShareButton, setDisableShareButton] = useState(false);
     const dispatch = useAppDispatch();
 
     const handleShare = async () => {
+        setDisableShareButton(true);
         try {
-            const response = await httpClient.post(`/api/users/${email}`);
-            if (response.status === 406) {
-                setError("User not found or cannot share with yourself.");
-                setMessage(null);
-            } else {
-                setError(null);
-                setMessage(`Sharing file with ${email}.`);
-            }
-        } catch (err) {
-            setError("An error occurred. Please try again later.");
+            const response = await httpClient.get(`/sharing/validate/${email}`);
+            setError(null);
+            setMessage(response.data.message);
+            setInterval(() => {
+                dispatch(setShowModal(false));
+                setDisableShareButton(false);
+            }, 2000);
+
+            //@ts-ignore
+        } catch (err: AxiosError) {
+            setError(err.response.data.error);
             setMessage(null);
         }
     };
@@ -59,6 +63,7 @@ const ShareModal = () => {
                 <Button
                     className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                     onClick={handleShare}
+                    disabled={disableShareButton}
                 >
                     Share
                 </Button>
