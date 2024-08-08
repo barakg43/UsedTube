@@ -1,7 +1,7 @@
 import os
 from concurrent.futures import ThreadPoolExecutor, Future
 from threading import Lock
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Callable
 from uuid import uuid1
 
 from engine.downloader.DailymotionDownloader import DailymotionDownloader
@@ -9,6 +9,7 @@ from engine.downloader.definition import Downloader
 from engine.driver import Driver
 from engine.progress_tracker import Tracker
 from engine.uploader.Dailymotion.uploader import DailymotionUploader
+from files.progress_tracker import ProgressTracker
 
 
 class EngineManager:
@@ -41,9 +42,14 @@ class EngineManager:
         self.uuid_to_future[uuid] = self.workers.submit(Driver().process_file_to_video, file_path, uuid)
         return uuid
 
-    def process_file_to_video_with_upload(self, file_path: str, job_id: uuid1) -> Tuple[str, int]:
-        video_path, zipped_file_size = Driver().process_file_to_video(file_path, job_id)
-        url_result = self.__upload_video_to_providers(job_id, video_path)
+    def process_file_to_video_with_upload(self, file_path: str, job_id: uuid1,
+                                          progress_tracker: Callable[[int, int], None] = None) -> Tuple[str, int]:
+        video_path, zipped_file_size = Driver().process_file_to_video(file_path, job_id, progress_tracker)
+
+        def update_upload_progress(progress: int):
+            progress_tracker(4,progress)
+
+        url_result = self.__upload_video_to_providers(job_id, video_path, update_upload_progress)
         return url_result, zipped_file_size
 
     def process_video_to_file_async(self, video_path: str, compressed_file_size: int) -> uuid1:
@@ -51,6 +57,7 @@ class EngineManager:
         self.uuid_to_future[uuid] = self.workers.submit(Driver().process_video_to_file, video_path,
                                                         compressed_file_size, uuid)
         return uuid
+
     def process_video_to_file_with_download(self, video_url: str, compressed_file_size: int, job_id: uuid1) -> str:
         downloader: Downloader = DailymotionDownloader()  # choose based on URL
         downloaded_video_path = downloader.download(video_url)
@@ -59,6 +66,7 @@ class EngineManager:
         )
         # os.remove(downloaded_video_path)
         return restored_file_path
+
     def get_processed_item_path_size(self, uuid) -> Tuple[str, int] | str:
         future = self.uuid_to_future[uuid]
         results = future.result()
@@ -73,7 +81,8 @@ class EngineManager:
             return future.done()
         raise KeyError(f"uuid {uuid} not found")
 
-    def __upload_video_to_providers(self, job_id, video_path: str) -> str:
+    def __upload_video_to_providers(self, job_id, video_path: str,
+                                    update_upload_progress: Callable[[int], None]) -> str:
         # self.uploader: Uploader = YouTubeUploader(job_id, self._progress_tracker)
         uploader = DailymotionUploader()
         # self.uuid_to_future[job_id] = self.workers.submit(self.uploader.upload, video_path)
