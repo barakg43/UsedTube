@@ -1,7 +1,7 @@
 import io
 import os
 from concurrent.futures import ThreadPoolExecutor, Future
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Callable
 from uuid import uuid1
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -13,6 +13,7 @@ from engine.downloader.definition import Downloader
 from engine.manager import Mr_EngineManager
 from engine.serialization.serializer import deserialize_logger, serialize_logger
 from files.models import File
+from files.progress_tracker import ProgressTracker
 
 
 class FileController:
@@ -21,13 +22,14 @@ class FileController:
         self.workers = ThreadPoolExecutor(20)
         self.engine_manger = Mr_EngineManager
         self.uuid_to_jobDetails: Dict[uuid1, JobDetails] = {}
-        self.logger=serialize_logger
+        self.logger = serialize_logger
         # self.uuid_to_future: Dict[uuid1, Future] = {}
         # self.uuid_to_progress: Dict[uuid1, float] = {}
+
     def save_file_to_video_provider_async(self, user: AppUser, uploaded_file: InMemoryUploadedFile, folder_id: str):
         job_id = str(uuid1())
         try:
-            self.uuid_to_jobDetails[job_id] = JobDetails(user)
+            self.uuid_to_jobDetails[job_id] = JobDetails(user=user,phase_weights_array=[0])
             file_path = os.path.join(ITEMS_READY_FOR_PROCESSING, f"{job_id}_{uploaded_file.name}")
 
             with open(file_path, "wb") as destination:
@@ -47,6 +49,7 @@ class FileController:
     def __save_file_to_video_provider_task(self, job_id, user: AppUser, file_path: str, file_name_with_ext: str,
                                            file_size: int,
                                            folder_id: str):
+
         try:
             self.logger.info(f"Job {job_id} uploading {file_name_with_ext} (size {file_size} bytes) to provider")
             url_result, compressed_size = self.engine_manger.process_file_to_video_with_upload(file_path, job_id)
@@ -71,25 +74,27 @@ class FileController:
     def get_user_for_job(self, job_d: uuid1) -> AppUser:
         return self.uuid_to_jobDetails[job_d].get_user()
 
-    def get_file_from_provider(self,file_id:str,user:AppUser)->uuid1:
+    def get_file_from_provider(self, file_id: str, user: AppUser) -> uuid1:
         job_id = str(uuid1())
-        future= self.workers.submit(self.__get_file_from_provider_task,file_id)
-        self.uuid_to_jobDetails[job_id] = JobDetails(future=future,user=user)
+        future = self.workers.submit(self.__get_file_from_provider_task, file_id)
+        self.uuid_to_jobDetails[job_id] = JobDetails(future=future, user=user)
         return job_id
-    def __get_file_from_provider_task(self,file_id:str)->Tuple[io.BytesIO,str]:
+
+    def __get_file_from_provider_task(self, file_id: str) -> Tuple[io.BytesIO, str]:
         try:
             job_id = str(uuid1())
-            file_to_download:File=File.objects.get(id=file_id)
+            file_to_download: File = File.objects.get(id=file_id)
             file_name = file_to_download.name
             # from the db extract video_url, compressed_file_size, content-type
             compressed_file_size = file_to_download.compressed_size  # in Bytes
             video_url = file_to_download.url
             # use the downloader to download the video from url
-            self.logger.info(f"Job {job_id} downloading {file_name} (size {compressed_file_size} bytes) from {video_url}")
-            file_path= Mr_EngineManager.process_video_to_file_with_download(video_url, compressed_file_size, job_id)
+            self.logger.info(
+                f"Job {job_id} downloading {file_name} (size {compressed_file_size} bytes) from {video_url}")
+            file_path = Mr_EngineManager.process_video_to_file_with_download(video_url, compressed_file_size, job_id)
             in_memory_file = io.BytesIO(open(file_path, "rb").read())
             # os.remove(file_path)
-            return in_memory_file,file_name
+            return in_memory_file, file_name
         except Exception as e:
             deserialize_logger.error(str(e))
             self.uuid_to_jobDetails[job_id].set_error(str(e))
@@ -100,6 +105,7 @@ class FileController:
         del self.uuid_to_jobDetails[uuid]
         # Tracker.delete(uuid)
         return results
+
     def is_processing_done(self, job_id) -> bool:
         future = self.uuid_to_jobDetails[job_id].future
         if future is not None:
@@ -107,15 +113,12 @@ class FileController:
         raise KeyError(f"job_id {job_id} not found")
 
 
-
-
-
-
 class JobDetails:
-    def __init__(self, user: AppUser=None, future: Future = None):
-        self.error: str = None
+    def __init__(self, phase_weights_array: list[int], user: AppUser = None, future: Future = None):
+        self.error: str | None = None
         self.user: AppUser = user
         self.future: Future = future
+        self.progress_tracker: ProgressTracker = ProgressTracker(phase_weights_array)
         self.uuid_to_error: Dict[uuid1, str] = {}
 
     def get_error(self):
@@ -123,10 +126,18 @@ class JobDetails:
 
     def get_user(self):
         return self.user
+
     def get_future(self):
         return self.future
+
     def set_error(self, error: str):
         self.error = error
+
+    def progress_tracker_callback(self) -> Callable[[int, int], None]:
+        return self.progress_tracker.update_progress
+
+    def get_progress(self):
+        return self.progress_tracker.get_total_progress()
 
 
 file_controller = FileController()
