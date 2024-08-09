@@ -1,6 +1,7 @@
 import React from "react";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Button } from "@mui/material";
+
 const SharedWithMe = () => {
     return (
         <Button
@@ -13,6 +14,7 @@ const SharedWithMe = () => {
                     backgroundColor: "transparent",
                 },
             }}
+            // onClick= set Items to be shared items'
         >
             <PeopleAltIcon fontSize="small" className="mr-2 ml-5" />
             Shared With Me
