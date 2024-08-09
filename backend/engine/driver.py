@@ -8,6 +8,7 @@ from typing import Tuple, Callable
 from engine.constants import _4_MiB, COVER_VIDEOS_DIR, TMP_WORK_DIR, FILES_READY_FOR_RETRIEVAL_DIR
 from engine.obfuscation.obfuscation_manager import ObfuscationManager
 from engine.progress_tracker import Tracker
+from engine.serialization.file_chuck_reader_iterator import FileChuckReaderIterator
 from engine.serialization.stateless_serializer import StatelessSerializer, serialize_logger
 
 
@@ -23,8 +24,8 @@ class Driver:
                               progress_tracker: Callable[[int, int], None] = None) \
             -> Tuple[str, int]:
         #   zip
-        update_serialization_progress=Driver.__build_phase_process_updater(1, progress_tracker)
-        update_obfuscation_progress=Driver.__build_phase_process_updater(2, progress_tracker)
+        update_serialization_progress = Driver.__build_phase_process_updater(1, progress_tracker)
+        update_obfuscation_progress = Driver.__build_phase_process_updater(2, progress_tracker)
 
         self.__logger.info(f"zipping {file_path}")
         zipped_path = self.__gzip_it(file_path)
@@ -51,21 +52,21 @@ class Driver:
         self.__logger.info(f"finished processing file to video-result video path {obfuscated_vid_path}")
         return obfuscated_vid_path, zipped_file_size
 
-
-
-
-    def process_video_to_file(self, video_path: str, compressed_file_size: int, jobId: uuid, progress_tracker: Callable[[int, int], None] = None) -> str:
+    def process_video_to_file(self, video_path: str, compressed_file_size: int, jobId: uuid,
+                              progress_tracker: Callable[[int, int], None] = None) -> str:
         update_untangle_progress = Driver.__build_phase_process_updater(1, progress_tracker)
         update_deserialization_progress = Driver.__build_phase_process_updater(2, progress_tracker)
-        def update_progress(progress):
-            print(f"untangling progress:{progress * 100:.2f}%")
+
+
         # untangle
         self.__logger.info(f"{jobId}:untangling {video_path}")
-        serialized_file_as_video_path = self.__obfuscator.untangle(video_path,update_progress)
+        serialized_file_as_video_path = self.__obfuscator.untangle(video_path, update_untangle_progress)
         Tracker.set_progress(jobId, 0.15)
         # deserialize
         self.__logger.info(f"{jobId}:deserializing {serialized_file_as_video_path}")
-        zipped_file_path = self.__serializer.deserialize(serialized_file_as_video_path, compressed_file_size, jobId,update_deserialization_progress)
+        zipped_file_path = self.__serializer.deserialize(serialized_file_as_video_path,
+                                                         compressed_file_size, jobId,
+                                                         update_deserialization_progress)
         # unzip
         os.remove(serialized_file_as_video_path)
         self.__logger.info(f"{jobId}:unzipping {zipped_file_path}")
@@ -80,15 +81,19 @@ class Driver:
         gzipped_path = f"{file_to_upload_path}.gz"
         file_name_with_extension = Path(gzipped_path).name
         tmp_path = Path(TMP_WORK_DIR) / file_name_with_extension
-        with open(file_to_upload_path, 'rb') as f_in, gzip.open(tmp_path, 'wb') as f_out:
-            for chunk in iter(lambda: f_in.read(_4_MiB), b''):
+        f_in=FileChuckReaderIterator(file_to_upload_path, 'rb', _4_MiB)
+        with gzip.open(tmp_path, 'wb') as f_out:
+            for chunk in f_in:
                 f_out.write(chunk)
 
         return tmp_path.as_posix()
 
     @staticmethod
     def __build_phase_process_updater(phase: int, progress_tracker: Callable[[int, int], None]):
-        return lambda progress: progress_tracker(phase, progress)
+        if progress_tracker is not None:
+            return lambda progress: progress_tracker(phase, progress)
+        else:
+            return lambda progress: progress
 
     def __choose_cover_video(self, zipped_path: str) -> str:
         # file_size = BIG_FILE if os.path.getsize(zipped_path) > _4_MiB else SMALL_FILE
@@ -100,4 +105,6 @@ class Driver:
             FILES_READY_FOR_RETRIEVAL_DIR / Path(gzipped_file_path[:-3]).stem).as_posix()  # Remove the '.gz' extension
         with gzip.open(gzipped_file_path, 'rb') as f_in, open(unzipped_path, 'wb') as f_out:
             shutil.copyfileobj(f_in, f_out, _4_MiB)
+            f_out.close()
+            f_in.close()
         return unzipped_path
