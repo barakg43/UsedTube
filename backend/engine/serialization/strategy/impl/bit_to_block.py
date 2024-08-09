@@ -61,6 +61,10 @@ class BitToBlock(SerializationStrategy):
         return np.repeat(bytes_as_rows[:, :, np.newaxis], BYTES_PER_PIXEL, axis=2)
 
     def serialize(self, bytes_chunk, frames_collection, i, context=None):
+        frames_collection[i] = self.serialize_bytes_chunk(bytes_chunk, i, context)
+
+
+    def serialize_bytes_chunk(self, bytes_chunk, index, context=None):
         begin_time = time.time()
         width, height = context.dims
         block_size = self.block_size
@@ -71,10 +75,9 @@ class BitToBlock(SerializationStrategy):
         filled_frame = np.zeros((height, width, BYTES_PER_PIXEL), dtype=np.uint8)
         # fill the frame with
         filled_frame[:frame_of_blocks.shape[0], : frame_of_blocks.shape[1]] = frame_of_blocks
-        frames_collection[i] = filled_frame
         end_time = time.time()
-        self.enc_logger.debug(f"serialized frame {i + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec")
-
+        self.enc_logger.debug(f"serialized frame {index + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec")
+        return filled_frame
     def __save_frame_to_csv(self, is_print_in_binary, is_encrypted, i, array):
         if (i == 0):
             print(f"saving frame {i} to file...")
