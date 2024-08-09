@@ -10,7 +10,7 @@ class AtomicCounter:
     def increment(self):
         return next(self._incs)
 
-    def value(self):
+    def value(self)->int:
         return next(self._incs) - next(self._accesses)
 
     def __getitem__(self, item):
