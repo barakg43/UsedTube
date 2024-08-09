@@ -131,12 +131,14 @@ class ObfuscationManager:
 
             out.write(frame)
             frame_counter += 1
-            progress_tracker(frame_counter / frame_amount)
+            if progress_tracker is not None:
+                progress_tracker(frame_counter / frame_amount)
             # Skip {cycle} frames
             for _ in range(self.cycle):
                 _ = obsv.read()
                 frame_counter += 1
-                progress_tracker(frame_counter / frame_amount)
+                if progress_tracker is not None:
+                    progress_tracker(frame_counter / frame_amount)
 
         # Release video capture and writer
         obsv.release()
