@@ -24,14 +24,17 @@ function PathTrace({ folderId }: { folderId: string }) {
 
     return (
         <div className="flex flex-row flex-start w-full gap-0">
-            {data.parents?.map((parent, index) => (
-                <PathTraceItem
-                    key={index}
-                    id={parent.id}
-                    name={parent.name}
-                    isLastItem={index === data.parents.length - 1}
-                />
-            ))}
+            {data.parents
+                ?.slice()
+                .reverse()
+                .map((parent, index) => (
+                    <PathTraceItem
+                        key={index}
+                        id={parent.id}
+                        name={parent.name}
+                        isLastItem={index === data.parents.length - 1}
+                    />
+                ))}
         </div>
     );
 }
