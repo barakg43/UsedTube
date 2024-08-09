@@ -1,4 +1,7 @@
-import { useFolderContentQuery } from "@/redux/api/driveApi";
+import {
+    useFolderContentQuery,
+    useSharedItemsQuery,
+} from "@/redux/api/driveApi";
 import { useAppSelector } from "@/redux/hooks";
 import { FileNode, FSNode } from "@/types";
 
@@ -11,10 +14,12 @@ const useDisplayItems = ({ folderId }: { folderId: string }) => {
         { skip: folderId === "" }
     );
 
-    // const {data: sharedItems} = useSharedItemsQuery();
+    const { data: sharedItems } = useSharedItemsQuery(undefined, {
+        skip: !isShowingSharedItems,
+    });
 
     if (isShowingSharedItems) {
-        // return sharedItems;
+        return sharedItems;
     }
 
     return aggregateFoldersAndFiles(data);

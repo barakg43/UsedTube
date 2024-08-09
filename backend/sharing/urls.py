@@ -6,4 +6,5 @@ from .views import *
 #
 urlpatterns = [
     path('create/<str:email>&<str:node_id>', Validate.as_view()),
+    path('shared_items/', SharedItemsView.as_view()),
 ]

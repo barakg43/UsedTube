@@ -1,6 +1,7 @@
-import { FSNode } from "@/types";
 import PathTraceItem from "./PathTraceItem";
 import { useFolderContentQuery } from "@/redux/api/driveApi";
+import { useAppSelector } from "@/redux/hooks";
+import { Typography } from "@mui/material";
 
 function PathTrace({ folderId }: { folderId: string }) {
     const { data } = useFolderContentQuery(
@@ -8,7 +9,18 @@ function PathTrace({ folderId }: { folderId: string }) {
         { skip: folderId === "" }
     );
 
+    const isShowingSharedItems = useAppSelector(
+        (state) => state.share.showSharedItems
+    );
+
     if (!data) return null;
+
+    if (isShowingSharedItems)
+        return (
+            <Typography className="text-nowrap text-xl">
+                Shared With Me
+            </Typography>
+        );
 
     return (
         <div className="flex flex-row flex-start w-full gap-0">

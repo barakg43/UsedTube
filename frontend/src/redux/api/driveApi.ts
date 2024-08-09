@@ -17,6 +17,16 @@ const driveApiSlice = baseApi.injectEndpoints({
                 return response;
             },
         }),
+        sharedItems: builder.query({
+            query: () => ({
+                url: "/sharing/shared_items/",
+                method: "GET",
+            }),
+            transformResponse: (response: { files: FileNode[] }) => {
+                return response;
+            },
+        }),
+
         directoryTree: builder.query({
             query: () => ({
                 url: "/files/dir-tree/",
@@ -99,4 +109,5 @@ export const {
     useGetUploadProgressQuery,
     useDeleteNodeMutation,
     useCancelUploadMutation,
+    useSharedItemsQuery,
 } = driveApiSlice;
