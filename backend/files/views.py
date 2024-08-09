@@ -123,6 +123,11 @@ class DirectoryContentView(APIView):
         return JsonResponse(folder_subitems_dict)
 
 
+class SharedItemsView(APIView):
+    def get(self, request: HttpRequest):
+        user = get_user_object(request)
+        shared_items = user.shared_items.all()
+
 class CreateNewFolderView(APIView):
     def post(self, request: HttpRequest):
         folder_name = request.data.get("folderName")

@@ -1,3 +1,4 @@
+import { FileNode, FSNode } from "@/types";
 import { baseApi } from "../baseApi";
 import { setError, setIsUploading, setJobId } from "../slices/fileUploadSlice";
 
@@ -8,6 +9,13 @@ const driveApiSlice = baseApi.injectEndpoints({
         folderContent: builder.query({
             query: ({ folderId }: { folderId: string | undefined }) =>
                 `/files/dir-content/${folderId || ""}`,
+            transformResponse: (response: {
+                files: FileNode[];
+                folders: FSNode[];
+                parents: FSNode[];
+            }) => {
+                return response;
+            },
         }),
         directoryTree: builder.query({
             query: () => ({
