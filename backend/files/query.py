@@ -12,17 +12,24 @@ def beautify_timestamps(item):
     item["updated_at"] = item["updated_at"].strftime("%d %B %Y %H:%M")
     return item
 
+def set_owner_name(item):
+    item["owner"] = AppUser.objects.get(id=item["owner"]).get_full_name()
+    return item
+
 def select_folder_subitems(user, folder_id: str) -> dict:
     parent_folder = Folder.objects.get(id=folder_id)
     sub_folders = Folder.objects.filter(owner=user, parent=parent_folder)
     files = File.objects.filter(owner=user, folder=parent_folder)
     
-    sub_folders_list = list(sub_folders.values())
+    sub_folders_list = list(sub_folders.values("id", "name", "parent", "created_at", "updated_at", "owner"))
     files_list = list(
-        files.values("id", "name", "extension", "size", "folder", "created_at", "updated_at"))
+        files.values("id", "name", "extension", "size", "folder", "created_at", "updated_at", "owner"))
     
     files_list = list(map(beautify_timestamps, files_list))
     sub_folders_list = list(map(beautify_timestamps, sub_folders_list))
+    
+    files_list = list(map(set_owner_name, files_list))
+    sub_folders_list = list(map(set_owner_name, sub_folders_list))
     
     return {"folders": sub_folders_list, "files": files_list}
 
