@@ -5,7 +5,6 @@ import FolderTree from "./(DirTree)/FolderTree";
 import FileUploadButton from "./(fileUpload)/FileUploadButton";
 import SharedWithMe from "./SharedWithMe";
 import Quota from "./Quota";
-import { useToaster } from "@/app/(common)/(hooks)/(toaster)/useToaster";
 
 const SideBarItem: FC<{ children: ReactNode }> = ({ children }) => {
     return (

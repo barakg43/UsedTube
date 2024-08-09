@@ -23,11 +23,15 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
         (state: RootState) => state.items.activeDirectoryId
     );
 
+    const isShowingSharedItems = useAppSelector(
+        (state) => state.share.showSharedItems
+    );
+
     if (!node) return null;
-    const hasChildren =
-        (node?.children?.length ?? //filter((child) => child.type == "folder").
-            0) > 0;
-    const isActiveFolder = activeDirectory === node?.id;
+    const hasChildren = (node?.children?.length ?? 0) > 0;
+    const isActiveFolder =
+        activeDirectory === node?.id && !isShowingSharedItems;
+
     return (
         <TreeContainer>
             <div
@@ -39,7 +43,6 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
                                 : "hover:bg-highlighted"
                         }
                         rounded-full w-full`}
-                //${isActiveFolder ? "text-dustyPaperDark" : "text-black"}
             >
                 {spaces > 0 &&
                     new Array(spaces)
