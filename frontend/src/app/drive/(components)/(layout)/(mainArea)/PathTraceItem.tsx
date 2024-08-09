@@ -1,6 +1,5 @@
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Typography } from "@mui/material";
-import { useRouter } from "next/navigation";
 import { useFolderClick } from "../../../(hooks)/useFolderClick";
 
 function PathTraceItem({
@@ -13,7 +12,6 @@ function PathTraceItem({
     isLastItem: boolean;
 }) {
     const onClickItem = useFolderClick();
-    const router = useRouter();
 
     function onClick() {
         if (!isLastItem) {

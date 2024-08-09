@@ -7,6 +7,7 @@ from files.models import Folder, File
 # from this 2024-08-05T14:23:25.308Z to this 5th August 2024 14:23
 # so i can later do this:
 # sub_folders_list = map(beautify_timestamps, list(sub_folders.values()))
+
 def beautify_timestamps(item):
     item["created_at"] = item["created_at"].strftime("%d %B %Y %H:%M")
     item["updated_at"] = item["updated_at"].strftime("%d %B %Y %H:%M")
