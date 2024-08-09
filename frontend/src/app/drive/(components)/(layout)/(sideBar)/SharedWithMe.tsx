@@ -1,8 +1,13 @@
+"use client";
 import React from "react";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Button } from "@mui/material";
+import { useAppDispatch } from "@/redux/hooks";
+import { setShowSharedItems } from "@/redux/slices/shareSlice";
 
 const SharedWithMe = () => {
+    const dispatch = useAppDispatch();
+
     return (
         <Button
             className="flex justify-start text-black normal-case rounded-full"
@@ -14,7 +19,9 @@ const SharedWithMe = () => {
                     backgroundColor: "transparent",
                 },
             }}
-            // onClick= set Items to be shared items'
+            onClick={() => {
+                dispatch(setShowSharedItems(true));
+            }}
         >
             <PeopleAltIcon fontSize="small" className="mr-2 ml-5" />
             Shared With Me
