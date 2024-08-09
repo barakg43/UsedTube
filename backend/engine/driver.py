@@ -23,10 +23,8 @@ class Driver:
                               progress_tracker: Callable[[int, int], None] = None) \
             -> Tuple[str, int]:
         #   zip
-        def update_serialization_progress(progress: int):
-            progress_tracker(1, progress)
-        def update_obfuscation_progress(progress: int):
-            progress_tracker(2, progress)
+        update_serialization_progress=Driver.__build_phase_process_updater(1, progress_tracker)
+        update_obfuscation_progress=Driver.__build_phase_process_updater(2, progress_tracker)
 
         self.__logger.info(f"zipping {file_path}")
         zipped_path = self.__gzip_it(file_path)
@@ -40,26 +38,34 @@ class Driver:
         self.__logger.info(f"choosing cover {cover_vid_path}")
         out_vid_path = f"{zipped_path}.mp4"
         self.__logger.info(f"starting serializing to {out_vid_path}")
-        self.__serializer.serialize(zipped_path, cover_vid_path, out_vid_path, jobId,update_serialization_progress )
+        self.__serializer.serialize(zipped_path, cover_vid_path, out_vid_path, jobId, update_serialization_progress)
 
         os.remove(zipped_path)
         # obfuscate
         self.__logger.info(f"starting obfuscating with cover video")
-        obfuscated_vid_path = self.__obfuscator.obfuscate(out_vid_path, cover_vid_path, self.__serializer.fourcc,update_obfuscation_progress)
+        obfuscated_vid_path = self.__obfuscator.obfuscate(out_vid_path, cover_vid_path, self.__serializer.fourcc,
+                                                          update_obfuscation_progress)
 
         Tracker.set_progress(jobId, 1)
         os.remove(out_vid_path)
         self.__logger.info(f"finished processing file to video-result video path {obfuscated_vid_path}")
         return obfuscated_vid_path, zipped_file_size
 
-    def process_video_to_file(self, video_path: str, compressed_file_size: int, jobId: uuid) -> str:
+
+
+
+    def process_video_to_file(self, video_path: str, compressed_file_size: int, jobId: uuid, progress_tracker: Callable[[int, int], None] = None) -> str:
+        update_untangle_progress = Driver.__build_phase_process_updater(1, progress_tracker)
+        update_deserialization_progress = Driver.__build_phase_process_updater(2, progress_tracker)
+        def update_progress(progress):
+            print(f"untangling progress:{progress * 100:.2f}%")
         # untangle
         self.__logger.info(f"{jobId}:untangling {video_path}")
-        serialized_file_as_video_path = self.__obfuscator.untangle(video_path)
+        serialized_file_as_video_path = self.__obfuscator.untangle(video_path,update_progress)
         Tracker.set_progress(jobId, 0.15)
         # deserialize
         self.__logger.info(f"{jobId}:deserializing {serialized_file_as_video_path}")
-        zipped_file_path = self.__serializer.deserialize(serialized_file_as_video_path, compressed_file_size, jobId)
+        zipped_file_path = self.__serializer.deserialize(serialized_file_as_video_path, compressed_file_size, jobId,update_deserialization_progress)
         # unzip
         os.remove(serialized_file_as_video_path)
         self.__logger.info(f"{jobId}:unzipping {zipped_file_path}")
@@ -75,8 +81,14 @@ class Driver:
         file_name_with_extension = Path(gzipped_path).name
         tmp_path = Path(TMP_WORK_DIR) / file_name_with_extension
         with open(file_to_upload_path, 'rb') as f_in, gzip.open(tmp_path, 'wb') as f_out:
-            f_out.writelines(f_in)
+            for chunk in iter(lambda: f_in.read(_4_MiB), b''):
+                f_out.write(chunk)
+
         return tmp_path.as_posix()
+
+    @staticmethod
+    def __build_phase_process_updater(phase: int, progress_tracker: Callable[[int, int], None]):
+        return lambda progress: progress_tracker(phase, progress)
 
     def __choose_cover_video(self, zipped_path: str) -> str:
         # file_size = BIG_FILE if os.path.getsize(zipped_path) > _4_MiB else SMALL_FILE
