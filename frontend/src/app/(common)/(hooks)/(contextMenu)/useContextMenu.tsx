@@ -2,6 +2,7 @@ import { FSNode } from "@/types";
 import { Menu, MenuItem } from "@mui/material";
 import React, { useState } from "react";
 import { useHandleMenuItemClick } from "./useHandleMenuItemClick";
+import { useAppSelector } from "@/redux/hooks";
 
 const useContextMenu = () => {
     // return Container, activation function which receives node and action, and event
@@ -18,6 +19,10 @@ const useContextMenu = () => {
     const closeContextMenu = () => {
         setAnchorPosition({ top: 0, left: 0 });
     };
+
+    const isShowingSharedItems = useAppSelector(
+        (state) => state.share.showSharedItems
+    );
 
     const handleMenuItemClick = useHandleMenuItemClick();
 
@@ -38,32 +43,18 @@ const useContextMenu = () => {
                     >
                         Download
                     </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            handleMenuItemClick(node, "share");
-                            closeContextMenu();
-                        }}
-                    >
-                        Share
-                    </MenuItem>
+                    {!isShowingSharedItems && (
+                        <MenuItem
+                            onClick={() => {
+                                handleMenuItemClick(node, "share");
+                                closeContextMenu();
+                            }}
+                        >
+                            Share
+                        </MenuItem>
+                    )}
                 </>
             )}
-            {/* <MenuItem
-                onClick={() => {
-                    handleMenuItemClick(node, "download");
-                    closeContextMenu();
-                }}
-            >
-                Download
-            </MenuItem>
-            <MenuItem
-                onClick={() => {
-                    handleMenuItemClick(node, "share");
-                    closeContextMenu();
-                }}
-            >
-                Share
-            </MenuItem> */}
             <MenuItem
                 onClick={() => {
                     handleMenuItemClick(node, "delete");

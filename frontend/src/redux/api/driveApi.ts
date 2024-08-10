@@ -23,6 +23,9 @@ const driveApiSlice = baseApi.injectEndpoints({
                 method: "GET",
             }),
             transformResponse: (response: { files: FileNode[] }) => {
+                for (const file of response.files) {
+                    file.type = "file";
+                }
                 return response;
             },
         }),

@@ -16,7 +16,11 @@ export const useHandleMenuItemClick = () => {
     const dispatch = useAppDispatch();
     const { toaster } = useToaster();
     const folderId = useAppSelector((state) => state.items.activeDirectoryId);
+    const isShowingSharedItems = useAppSelector(
+        (state) => state.share.showSharedItems
+    );
     const [deleteNode] = useDeleteNodeMutation();
+    // const [deleteSharedNode] = useDeleteNodeMutation();
     const { refetch: refetchDirsTree } = useDirectoryTreeQuery(undefined);
     const { refetch: refetchDirContent } = useFolderContentQuery({
         folderId,
@@ -25,25 +29,28 @@ export const useHandleMenuItemClick = () => {
     const handleDelete = (id: string, type: string, name: string) => {
         let message = "",
             variant = "" as Variants;
-        deleteNode({
-            nodeId: id,
-        })
-            .unwrap()
-            .then((data) => {
-                if (type === FOLDER) {
-                    refetchDirsTree();
-                }
-                refetchDirContent();
-                message = `successfully deleted ${name}`;
-                variant = "success";
-            })
-            .catch((_) => {
-                message = `failed to delete ${name}`;
-                variant = "error";
-            })
-            .finally(() => {
-                toaster(message, variant);
-            });
+
+        isShowingSharedItems
+            ? null // deleteSharedNode
+            : deleteNode({
+                  nodeId: id,
+              })
+                  .unwrap()
+                  .then((_) => {
+                      if (type === FOLDER) {
+                          refetchDirsTree();
+                      }
+                      refetchDirContent();
+                      message = `successfully deleted ${name}`;
+                      variant = "success";
+                  })
+                  .catch((_) => {
+                      message = `failed to delete ${name}`;
+                      variant = "error";
+                  })
+                  .finally(() => {
+                      toaster(message, variant);
+                  });
     };
 
     const handleShare = (node: FSNode) => {
