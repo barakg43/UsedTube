@@ -1,3 +1,4 @@
+import json
 from typing import List
 from django.http import JsonResponse
 from rest_framework.views import APIView
@@ -49,3 +50,18 @@ class SharedItemsView(APIView):
         files_list = list(map(beautify_timestamps, files_list))
         files_list = list(map(set_owner_name, files_list))
         return JsonResponse({'files': files_list}, status=200)
+    
+    def delete(self, request):
+        user = get_user_object(request)
+        file_id = json.loads(request.body).get("nodeId")
+        try:
+            file = File.objects.get(id=file_id)
+            shared_item = SharedItem.objects.get(file_item=file, shared_with=user)
+            shared_item.delete()
+            return JsonResponse({"message": "Successfully unshared"}, status=200)
+        except File.DoesNotExist:
+            return JsonResponse({"error": "File not found"}, status=404)
+        except SharedItem.DoesNotExist:
+            return JsonResponse({"error": "File not shared with user"}, status=404)
+        except:
+            return JsonResponse({"error": "An error occurred"}, status=500)

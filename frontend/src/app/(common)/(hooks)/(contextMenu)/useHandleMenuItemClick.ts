@@ -5,8 +5,10 @@ import {
 import { FOLDER } from "@/constants";
 import {
     useDeleteNodeMutation,
+    useDeleteSharedNodeMutation,
     useDirectoryTreeQuery,
     useFolderContentQuery,
+    useSharedItemsQuery,
 } from "@/redux/api/driveApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setFileNode, setShowModal } from "@/redux/slices/shareSlice";
@@ -20,18 +22,31 @@ export const useHandleMenuItemClick = () => {
         (state) => state.share.showSharedItems
     );
     const [deleteNode] = useDeleteNodeMutation();
-    // const [deleteSharedNode] = useDeleteNodeMutation();
+    const [deleteSharedNode] = useDeleteSharedNodeMutation();
     const { refetch: refetchDirsTree } = useDirectoryTreeQuery(undefined);
     const { refetch: refetchDirContent } = useFolderContentQuery({
         folderId,
     });
+    const { refetch: refetchSharedItems } = useSharedItemsQuery(undefined);
 
     const handleDelete = (id: string, type: string, name: string) => {
         let message = "",
             variant = "" as Variants;
 
         isShowingSharedItems
-            ? null // deleteSharedNode
+            ? deleteSharedNode({ nodeId: id })
+                  .then((_) => {
+                      message = `successfully deleted ${name}`;
+                      variant = "success";
+                      refetchSharedItems();
+                  })
+                  .catch((_) => {
+                      message = `failed to delete ${name}`;
+                      variant = "error";
+                  })
+                  .finally(() => {
+                      toaster(message, variant);
+                  })
             : deleteNode({
                   nodeId: id,
               })

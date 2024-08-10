@@ -27,7 +27,7 @@ const ShareModal = () => {
                 `/sharing/create/${email}&${fileNode.id}`
             );
             setError(null);
-            setMessage("shard successfully");
+            setMessage("shared successfully");
             setTimeout(() => {
                 dispatch(setShowModal(false));
                 setDisableShareButton(false);

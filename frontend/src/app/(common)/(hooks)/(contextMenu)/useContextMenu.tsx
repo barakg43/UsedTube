@@ -33,29 +33,31 @@ const useContextMenu = () => {
             open={Boolean(anchorPosition.top > 0 && anchorPosition.left > 0)}
             onClose={closeContextMenu}
         >
-            {node.type === "file" && (
-                <>
+            {node.type === "file" && [
+                <MenuItem
+                    key="download"
+                    onClick={() => {
+                        handleMenuItemClick(node, "download");
+                        closeContextMenu();
+                    }}
+                >
+                    Download
+                </MenuItem>,
+                !isShowingSharedItems && (
                     <MenuItem
+                        key="share"
                         onClick={() => {
-                            handleMenuItemClick(node, "download");
+                            handleMenuItemClick(node, "share");
                             closeContextMenu();
                         }}
                     >
-                        Download
+                        Share
                     </MenuItem>
-                    {!isShowingSharedItems && (
-                        <MenuItem
-                            onClick={() => {
-                                handleMenuItemClick(node, "share");
-                                closeContextMenu();
-                            }}
-                        >
-                            Share
-                        </MenuItem>
-                    )}
-                </>
-            )}
+                ),
+            ]}
+
             <MenuItem
+                key="delete"
                 onClick={() => {
                     handleMenuItemClick(node, "delete");
                     closeContextMenu();

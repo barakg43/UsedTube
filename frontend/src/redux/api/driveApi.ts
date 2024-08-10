@@ -19,13 +19,15 @@ const driveApiSlice = baseApi.injectEndpoints({
         }),
         sharedItems: builder.query({
             query: () => ({
-                url: "/sharing/shared_items/",
+                url: `/sharing/`,
                 method: "GET",
             }),
             transformResponse: (response: { files: FileNode[] }) => {
-                for (const file of response.files) {
-                    file.type = "file";
-                }
+                if (Array.isArray(response.files))
+                    for (const file of response.files) {
+                        file.type = "file";
+                    }
+                // else response.files/ = "file";
                 return response;
             },
         }),
@@ -53,6 +55,15 @@ const driveApiSlice = baseApi.injectEndpoints({
                 method: "DELETE",
             }),
         }),
+
+        deleteSharedNode: builder.mutation({
+            query: ({ nodeId }: { nodeId: string }) => ({
+                url: `/sharing/`,
+                method: "DELETE",
+                body: { nodeId },
+            }),
+        }),
+
         uploadFile: builder.mutation({
             query: ({ file, folderId }: { file: File; folderId: string }) => {
                 const formData = new FormData();
@@ -113,4 +124,5 @@ export const {
     useDeleteNodeMutation,
     useCancelUploadMutation,
     useSharedItemsQuery,
+    useDeleteSharedNodeMutation,
 } = driveApiSlice;

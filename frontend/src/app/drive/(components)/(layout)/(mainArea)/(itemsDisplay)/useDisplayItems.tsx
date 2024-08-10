@@ -16,6 +16,7 @@ const useDisplayItems = ({ folderId }: { folderId: string }) => {
 
     const { data: shared } = useSharedItemsQuery(undefined, {
         skip: !isShowingSharedItems,
+        pollingInterval: 2000,
     });
 
     if (isShowingSharedItems) {
