@@ -7,17 +7,6 @@ import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    boxShadow: 24,
-    p: 4,
-};
-
 const OnRegistrationModal: React.FC = () => {
     const isOpen = useAppSelector((s: RootState) => s.general.showModal);
     const dispatch = useAppDispatch();

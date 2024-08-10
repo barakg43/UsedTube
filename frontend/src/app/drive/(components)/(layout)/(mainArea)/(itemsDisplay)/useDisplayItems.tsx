@@ -14,12 +14,12 @@ const useDisplayItems = ({ folderId }: { folderId: string }) => {
         { skip: folderId === "" }
     );
 
-    const { data: sharedItems } = useSharedItemsQuery(undefined, {
+    const { data: shared } = useSharedItemsQuery(undefined, {
         skip: !isShowingSharedItems,
     });
 
     if (isShowingSharedItems) {
-        return sharedItems;
+        return shared?.files;
     }
 
     return aggregateFoldersAndFiles(data);

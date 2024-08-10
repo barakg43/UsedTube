@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import RegistrationForm from "./(components)/RegistrationForm";
-import RegisterYouTubeAPIKey from "./(components)/(apiRegistrations)/RegisterYouTubeAPIKey";
 import Link from "next/link";
 import Logo from "@/app/(common)/(components)/Logo";
 import ChooseFirstProvider from "./(components)/ChooseFirstProvider";

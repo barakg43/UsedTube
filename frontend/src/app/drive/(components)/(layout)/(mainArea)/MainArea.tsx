@@ -6,7 +6,7 @@ import ItemsDisplayToggle from "./(itemsDisplay)/ItemsDisplayToggle";
 import CreateNewFolder from "./CreateNewFolder";
 import Loading from "@/app/(common)/(components)/Loading";
 import PathTrace from "./PathTrace";
-import useDisplayItems from "./(itemsDisplay)/UseDisplayItems";
+import useDisplayItems from "./(itemsDisplay)/useDisplayItems";
 
 const MainArea = ({ folderId }: { folderId: string }) => {
     const { isLoading } = useFolderContentQuery(

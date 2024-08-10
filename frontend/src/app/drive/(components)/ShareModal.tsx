@@ -36,7 +36,12 @@ const ShareModal = () => {
 
             //@ts-ignore
         } catch (err: AxiosError) {
-            setError(err.response.data.error);
+            try {
+                setError(err.response.data.error);
+            } catch {
+                setError("something went wrong");
+            }
+
             setDisableShareButton(false);
         }
     };
