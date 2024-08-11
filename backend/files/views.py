@@ -51,7 +51,7 @@ class DownloadViewProgressView(APIView):
         job_error = file_controller.get_job_error(job_id)
         if job_error is not None:
             return JsonResponse({ERROR: job_error}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        if file_controller.is_processing_done(job_id):
+        if file_controller.is_processing_done(job_id) and file_controller.get_job_progress(job_id) == 1:
             # get the final file result from the future task
             bytes_io, file_name = file_controller.get_download_item_bytes_name(job_id)
             return FileResponse(
@@ -60,7 +60,10 @@ class DownloadViewProgressView(APIView):
                 as_attachment=True,
                 content_type=None,
             )
-        return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
+        elif file_controller.is_processing_done(job_id):
+            return JsonResponse({ERROR: "Something went wrong in downloading and processing file"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return JsonResponse({"progress": file_controller.get_job_progress(job_id)})
 
 
 class SerializationProgressView(APIView):
@@ -102,7 +105,7 @@ class UploadProgressView(APIView):
         #         File.objects.delete(id=file_id)
         #         return JsonResponse({ERROR: 'upload failed'}, status=400)
 
-        return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
+        return JsonResponse({"progress": job_complete_percentage})
 
 
 # class RetrieveProcessedItemView(APIView):
