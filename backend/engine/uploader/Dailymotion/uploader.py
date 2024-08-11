@@ -10,7 +10,8 @@ from django_server.settings import BASE_DIR
 from engine.constants import UPLOAD_VIDEO_CHUNK_SIZE, SERIALIZE_LOGGER
 from engine.uploader.definition import Uploader
 
-
+import nest_asyncio
+nest_asyncio.apply()
 class DailymotionUploader(Uploader):
     base_url = "ABCDE"
 
