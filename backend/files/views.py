@@ -35,21 +35,22 @@ class DownloadView(APIView):
         # It is later used when returning the `FileResponse` in the `get` method of the `DownloadView`
         # class to provide the downloaded file with a specific filename when it is sent back to the
         # user for download.
-        file_to_download=File.objects.get(id=file_id)
+        file_to_download = File.objects.get(id=file_id)
         if file_to_download.owner != request.user:
             return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_403_FORBIDDEN)
-        job_id = file_controller.get_file_from_provider(file_id, user)
+        job_id = file_controller.get_file_from_provider_async(file_id, user)
         return JsonResponse({JOB_ID: job_id}, status=status.HTTP_202_ACCEPTED)
 
 
 class DownloadViewProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
-        job_owner=file_controller.get_user_for_job(job_id)
+        job_owner = file_controller.get_user_for_job(job_id)
         if request.user != job_owner:
-            return JsonResponse({ERROR:"Not authorized to view this donwnload job status"},status=status.HTTP_403_FORBIDDEN)
-        job_error=file_controller.get_job_error(job_id)
+            return JsonResponse({ERROR: "Not authorized to view this donwnload job status"},
+                                status=status.HTTP_403_FORBIDDEN)
+        job_error = file_controller.get_job_error(job_id)
         if job_error is not None:
-            return JsonResponse({ERROR:job_error},status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return JsonResponse({ERROR: job_error}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         if file_controller.is_processing_done(job_id):
             # get the final file result from the future task
             bytes_io, file_name = file_controller.get_download_item_bytes_name(job_id)
@@ -60,6 +61,8 @@ class DownloadViewProgressView(APIView):
                 content_type=None,
             )
         return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
+
+
 class SerializationProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
         if Mr_EngineManager.is_processing_done(job_id):
@@ -71,12 +74,18 @@ class SerializationProgressView(APIView):
 
 class UploadProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
-        job_owner=file_controller.get_user_for_job(job_id)
+        job_owner = file_controller.get_user_for_job(job_id)
         if request.user != job_owner:
-            return JsonResponse({ERROR:"Not authorized to view this upload job status"},status=status.HTTP_403_FORBIDDEN)
-        job_error=file_controller.get_job_error(job_id)
+            return JsonResponse({ERROR: "Not authorized to view this upload job status"},
+                                status=status.HTTP_403_FORBIDDEN)
+        job_error = file_controller.get_job_error(job_id)
         if job_error is not None:
-            return JsonResponse({ERROR:job_error},status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return JsonResponse({ERROR: job_error}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        job_complete_percentage = file_controller.get_job_progress(job_id)
+        if file_controller.is_processing_done(job_id) and job_complete_percentage != 1.0:
+            return JsonResponse({ERROR: "there are internal server error"},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         # if Mr_EngineManager.is_processing_done(job_id):
         #     # get the file id from the cache
         #     path, compressed_file_size = Mr_EngineManager.get_processed_item_path_size(job_id)
@@ -112,7 +121,7 @@ class UploadView(APIView):
     def post(self, request: HttpRequest, folder_id: str):
         if FILE not in request.FILES:
             return JsonResponse({ERROR: "no file provided"}, status=400)
-        folder=Folder.objects.filter(id=folder_id).get()
+        folder = Folder.objects.filter(id=folder_id).get()
         if folder.owner != request.user:
             return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_403_FORBIDDEN)
 
@@ -166,7 +175,7 @@ class CreateNewFolderView(APIView):
         try:
             parent_folder = Folder.objects.filter(id=active_directory_id).get()
             new_folder = Folder.objects.create(
-                name=folder_name, parent=parent_folder, owner=get_user_object(request),created_at=timezone.now()
+                name=folder_name, parent=parent_folder, owner=get_user_object(request), created_at=timezone.now()
             )
 
             return JsonResponse(
@@ -183,10 +192,10 @@ class CreateNewFolderView(APIView):
 class DeleteNodeView(APIView):
 
     def __delete_folder(self, folder: Folder):
-        
+
         folder.files.all().delete()
         subfolders = Folder.objects.filter(parent=folder)
-        
+
         for item in subfolders:
             self.__delete_folder(item)
         folder.delete()
