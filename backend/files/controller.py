@@ -119,7 +119,7 @@ class FileController:
 
 
 class JobDetails:
-    def __init__(self, phase_weights_array: list[int], user: AppUser = None, future: Future = None):
+    def __init__(self, phase_weights_array: list[float], user: AppUser = None, future: Future = None):
         self.error: str | None = None
         self.user: AppUser = user
         self.future: Future = future
@@ -138,7 +138,7 @@ class JobDetails:
     def set_error(self, error: str):
         self.error = error
 
-    def progress_tracker_callback(self) -> Callable[[int, int], None]:
+    def progress_tracker_callback(self) -> Callable[[int, float], None]:
         return self.progress_tracker.update_progress
 
     def get_progress(self):
