@@ -47,20 +47,20 @@ class DailymotionUploader(Uploader):
         #     'Content-Type': 'application/x-www-form-urlencoded'
         # }
 
-    def upload(self, file_path: str, progress_tracker: Callable[[int], None] = None) -> str:
+    def upload(self, file_path: str, progress_tracker: Callable[[float], None] = None) -> str:
         upload_url = self.__upload_video(file_path, progress_tracker)
         publish_url = self.__publish_uploaded_video(upload_url)
         return publish_url
 
     # Sending the video file to the upload url obtained in the previous function
-    def __upload_video(self, file_path, tracker: Callable[[int], None]):
+    def __upload_video(self, file_path, tracker: Callable[[float], None]):
 
         video_size = os.stat(file_path).st_size
         chunk_amount = video_size / UPLOAD_VIDEO_CHUNK_SIZE
 
         def progress_tracker(bytes_written, total_size):
-            percent = self.__get_percent_progress(bytes_written, total_size)
-            self.logger.debug(f"{file_path}: Uploaded {percent}%")
+            percent =bytes_written/total_size
+            self.logger.debug(f"{file_path}: Uploaded {percent*100:.2f}%")
             if tracker is not None:
                 tracker(percent)
 
@@ -96,3 +96,5 @@ class DailymotionUploader(Uploader):
         """
         percent = round((min((current * 100) / total, 100)), 2)
         return percent
+
+Mr_DailymotionUploader=DailymotionUploader()
