@@ -69,6 +69,7 @@ class FileController:
                                 owner=user,
                                 url=url_result)
             self.logger.info(f"Job {job_id} done: {file_name} was uploaded successfully on {url_result}")
+            progress_tracker(4,1)
         except Exception as e:
             serialize_logger.error(str(e))
             self.uuid_to_jobDetails[job_id].set_error(str(e))
@@ -79,25 +80,30 @@ class FileController:
     def get_user_for_job(self, job_d: uuid1) -> AppUser:
         return self.uuid_to_jobDetails[job_d].get_user()
 
-    def get_file_from_provider(self, file_id: str, user: AppUser) -> uuid1:
+    def get_file_from_provider_async(self, file_id: str, user: AppUser) -> uuid1:
         job_id = str(uuid1())
-        future = self.workers.submit(self.__get_file_from_provider_task, file_id)
-        self.uuid_to_jobDetails[job_id] = JobDetails(future=future, user=user)
+        future = self.workers.submit(self.__get_file_from_provider_task, file_id, job_id)
+        self.uuid_to_jobDetails[job_id] = JobDetails(future=future, user=user,phase_weights_array=[0.49,0.20,0.30,0.01])
         return job_id
-
-    def __get_file_from_provider_task(self, file_id: str) -> Tuple[io.BytesIO, str]:
+    def get_job_progress(self, job_id: uuid1) -> float:
+        return self.uuid_to_jobDetails[job_id].get_progress()
+    def __get_file_from_provider_task(self, file_id: str, job_id: uuid1) -> Tuple[io.BytesIO, str]:
         try:
-            job_id = str(uuid1())
+
             file_to_download: File = File.objects.get(id=file_id)
             file_name = file_to_download.name
             # from the db extract video_url, compressed_file_size, content-type
             compressed_file_size = file_to_download.compressed_size  # in Bytes
             video_url = file_to_download.url
             # use the downloader to download the video from url
+            progress_tracker = self.uuid_to_jobDetails[job_id].progress_tracker_callback()
             self.logger.info(
                 f"Job {job_id} downloading {file_name} (size {compressed_file_size} bytes) from {video_url}")
-            file_path = Mr_EngineManager.process_video_to_file_with_download(video_url, compressed_file_size, job_id)
-            in_memory_file = io.BytesIO(open(file_path, "rb").read())
+            file_path = Mr_EngineManager.process_video_to_file_with_download(video_url, compressed_file_size, job_id,progress_tracker)
+            file_io = open(file_path, "rb")
+            in_memory_file = io.BytesIO(file_io.read())
+            file_io.flush()
+            file_io.close()
             # os.remove(file_path)
             return in_memory_file, file_name
         except Exception as e:
