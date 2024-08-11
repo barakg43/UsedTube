@@ -1,14 +1,16 @@
+import logging
 import os
 from concurrent.futures import ThreadPoolExecutor, Future
 from threading import Lock
 from typing import Dict, Tuple, Callable
 from uuid import uuid1
 
+from engine.constants import GENERAL_LOGGER
 from engine.downloader.DailymotionDownloader import DailymotionDownloader
 from engine.downloader.definition import Downloader
 from engine.driver import Driver
 from engine.progress_tracker import Tracker
-from engine.uploader.Dailymotion.uploader import DailymotionUploader
+from engine.uploader.Dailymotion.uploader import DailymotionUploader, Mr_DailymotionUploader
 from files.progress_tracker import ProgressTracker
 
 
@@ -43,11 +45,11 @@ class EngineManager:
         return uuid
 
     def process_file_to_video_with_upload(self, file_path: str, job_id: uuid1,
-                                          progress_tracker: Callable[[int, int], None] = None) -> Tuple[str, int]:
+                                          progress_tracker: Callable[[int, float], None] = None) -> Tuple[str, int]:
         video_path, zipped_file_size = Driver().process_file_to_video(file_path, job_id, progress_tracker)
 
         def update_upload_progress(progress: int):
-            progress_tracker(4,progress)
+            progress_tracker(3, progress)
 
         url_result = self.__upload_video_to_providers(job_id, video_path, update_upload_progress)
         return url_result, zipped_file_size
