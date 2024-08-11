@@ -1,4 +1,5 @@
 import uuid
+from typing import Callable
 
 import youtube_dl
 
@@ -8,9 +9,10 @@ from engine.downloader.definition import Downloader
 
 
 class DailymotionDownloader(Downloader):
-    def __init__(self,logger=None):
+    def __init__(self,logger=None,progress_tracker:Callable[[float], None]=None):
 
         self.download_percent = 0.0
+        self.progress_tracker = progress_tracker
         self.logger = logger
         self.video_downloaded_path=None
         pass
@@ -19,6 +21,8 @@ class DailymotionDownloader(Downloader):
         if downloader['status'] == 'downloading':
             percent_str = downloader.get('_percent_str', '0%').strip().replace('%', '')
             self.download_percent = float(percent_str)
+            if self.progress_tracker is not None:
+                self.progress_tracker(self.download_percent/100)
         elif downloader['status'] == 'finished':
             self.video_downloaded_path=downloader["filename"]
 
@@ -38,4 +42,3 @@ class DailymotionDownloader(Downloader):
         return self.video_downloaded_path
     def get_download_percent(self):
         return self.download_percent
-
