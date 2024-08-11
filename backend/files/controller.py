@@ -113,14 +113,17 @@ class FileController:
     def get_download_item_bytes_name(self, uuid) -> Tuple[str, int] | str:
         future = self.uuid_to_jobDetails[uuid].future
         results = future.result()
-        del self.uuid_to_jobDetails[uuid]
+        self.uuid_to_jobDetails[uuid].progress_tracker.update_progress(4, 1)
+        self.remove_job(uuid)
         # Tracker.delete(uuid)
         return results
 
+    def remove_job(self, job_id: uuid1):
+        del self.uuid_to_jobDetails[job_id]
     def is_processing_done(self, job_id) -> bool:
         future = self.uuid_to_jobDetails[job_id].future
         if future is not None:
-            return future.done()
+            return future.done() and self.uuid_to_jobDetails[job_id].get_progress() == 1
         raise KeyError(f"job_id {job_id} not found")
 
 
@@ -146,6 +149,7 @@ class JobDetails:
 
     def progress_tracker_callback(self) -> Callable[[int, float], None]:
         return self.progress_tracker.update_progress
+
 
     def get_progress(self):
         return self.progress_tracker.get_total_progress()

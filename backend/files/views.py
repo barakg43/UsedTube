@@ -51,7 +51,7 @@ class DownloadViewProgressView(APIView):
         job_error = file_controller.get_job_error(job_id)
         if job_error is not None:
             return JsonResponse({ERROR: job_error}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        if file_controller.is_processing_done(job_id) and file_controller.get_job_progress(job_id) == 1:
+        if file_controller.is_processing_done(job_id):
             # get the final file result from the future task
             bytes_io, file_name = file_controller.get_download_item_bytes_name(job_id)
             return FileResponse(
@@ -85,7 +85,10 @@ class UploadProgressView(APIView):
         if job_error is not None:
             return JsonResponse({ERROR: job_error}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         job_complete_percentage = file_controller.get_job_progress(job_id)
-        if file_controller.is_processing_done(job_id) and job_complete_percentage != 1.0:
+        if job_complete_percentage == 1:
+            file_controller.remove_job(job_id)
+            return JsonResponse({"progress":1.0})
+        if file_controller.is_processing_done(job_id):
             return JsonResponse({ERROR: "there are internal server error"},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
