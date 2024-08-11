@@ -87,6 +87,7 @@ class StatelessSerializer:
         :param out_vid_path: points to output save location
         :param cover_video_path: points to cover video
         :parameter file_to_serialize_path: points to file to serialize
+        :param progress_tracker: accept a function that will be called on every progress update and get a float between 0 and 1
         """
 
         cover_video = cv2.VideoCapture(cover_video_path)
