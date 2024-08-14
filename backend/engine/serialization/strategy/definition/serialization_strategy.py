@@ -20,7 +20,15 @@ class SerializationStrategy(ABC):
         pass
 
     @abstractmethod
+    def serialize_bytes_chunk(self, bytes_chunk, index, context=None):
+        pass
+
+    @abstractmethod
     def deserialize(self, bytes_amount_to_read, encrypted_frame: np.ndarray, bytes_collection, i, context=None):
+        pass
+
+    @abstractmethod
+    def deserialize_frame(self, bytes_amount_to_read: int, encrypted_frame: np.ndarray, i: int, context=None)->np.ndarray:
         pass
 
     @dispatch()
