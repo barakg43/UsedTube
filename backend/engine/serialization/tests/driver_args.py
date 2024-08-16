@@ -51,8 +51,8 @@ class DriverArgs:
         return unzipped_file_path
 
     def __gzip_it(self, file_to_upload_path: str) -> str:
-        return file_to_upload_path
-        gzipped_path = f"{file_to_upload_path}_enc.gz"
+        # return file_to_upload_path
+        gzipped_path = f"{uuid.uuid1()}_{file_to_upload_path}_enc.gz"
         file_name_with_extension = Path(gzipped_path).name
         tmp_path = Path(TMP_WORK_DIR) / file_name_with_extension
         with open(file_to_upload_path, 'rb') as f_in, gzip.open(tmp_path, 'wb') as f_out:
