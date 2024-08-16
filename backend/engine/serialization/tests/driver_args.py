@@ -32,7 +32,7 @@ class DriverArgs:
         # obfuscate
         obfuscated_vid_path = self.__obfuscator.obfuscate(out_vid_path, cover_vid_path, self.__serializer.fourcc)
         Tracker.set_progress(jobId, 1)
-        os.remove(out_vid_path)
+        # os.remove(out_vid_path)
         return obfuscated_vid_path, zipped_file_size
 
     def process_video_to_file(self, video_path: str, compressed_file_size: int, jobId: uuid,fourcc:str) -> str:
@@ -69,7 +69,7 @@ class DriverArgs:
         return (COVER_VIDEOS_DIR / "cover-video.mp4").as_posix()
 
     def __ungzip_it(self, gzipped_file_path: str) -> str:
-        return gzipped_file_path
+        # return gzipped_file_path
         unzipped_path = Path(
             FILES_READY_FOR_RETRIEVAL_DIR / Path(gzipped_file_path[:-3]).stem).as_posix()  # Remove the '.gz' extension
         with gzip.open(gzipped_file_path, 'rb') as f_in, open(unzipped_path, 'wb') as f_out:
