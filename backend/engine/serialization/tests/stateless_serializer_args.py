@@ -10,6 +10,7 @@ import numpy as np
 from more_itertools import consume
 from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, TMP_WORK_DIR
 from engine.progress_tracker import Tracker
+from engine.serialization.ffmpeg.video_capture import VideoCapture
 from engine.serialization.ffmpeg.video_write import VideoWriter
 from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 from engine.serialization.strategy.impl.bit_to_block import BitToBlock
@@ -48,13 +49,15 @@ class StatelessSerializerArgs:
     def fourcc(self):
         return self.strategy.fourcc
 
-    def get_video_metadata(self, cover_video) -> Context:
+    def get_video_metadata(self, cover_video:VideoCapture) -> Context:
         context = StatelessSerializerArgs.Context()
+        video_props=cover_video.get_video_props()
         context.dims = (
-            int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            video_props["width"],video_props["height"]
+            # int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         )
-        context.fps = cover_video.get(cv2.CAP_PROP_FPS)
-        context.encoding = cv2.VideoWriter.fourcc(*self.strategy.fourcc) #self.strategy.fourcc
+        context.fps = video_props["fps"] #cover_video.get(cv2.CAP_PROP_FPS)
+        context.encoding =video_props["codec"]    #cv2.VideoWriter.fourcc(*self.strategy.fourcc) #self.strategy.fourcc
         if context.dims[0] == 0 or context.dims[1] == 0:
             raise Exception(f"invalid video dimensions: {context.dims} on file {cover_video}")
         context.dims_multiplied = np.multiply(*context.dims)
@@ -81,7 +84,7 @@ class StatelessSerializerArgs:
         :parameter file_to_serialize_path: points to file to serialize
         """
         file_to_serialize = open(file_to_serialize_path, 'rb')
-        cover_video = cv2.VideoCapture(cover_video_path)
+        cover_video = VideoCapture(cover_video_path)
         if cover_video.isOpened() is False:
             raise Exception(f"failed to open cover video: {cover_video_path}")
         context = self.initialize_serialization_context(file_to_serialize_path, cover_video)
@@ -118,14 +121,14 @@ class StatelessSerializerArgs:
             Tracker.set_progress(jobId, 0.75)
         StatelessSerializerArgs.ser_logger.debug("waiting for workers to finish processing chunks...")
 
-        output_video = cv2.VideoWriter(out_vid_path, context.encoding, context.fps, context.dims)
+        output_video = VideoWriter(out_vid_path, context.encoding, context.fps, context.dims)
         Tracker.set_progress(jobId, 0.85)
         file_to_serialize.close()
 
         consume(map(output_video.write, serialized_frames))
         # Closes all the video sources
         output_video.release()
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
 
     @staticmethod
     def generateSha256ForFile(file_bytes: IO):
@@ -135,7 +138,7 @@ class StatelessSerializerArgs:
         return sha256Hashed
 
     def deserialize(self, serialized_file_as_video_path: str, file_size: int, jobId: uuid):
-        serialized_file_videocap = cv2.VideoCapture(serialized_file_as_video_path)
+        serialized_file_videocap = VideoCapture(serialized_file_as_video_path)
         context = self.initialize_deserialization_context(file_size, serialized_file_videocap)
 
         bytes_left_to_read = file_size
@@ -163,7 +166,7 @@ class StatelessSerializerArgs:
         consume(map(lambda _bytes: deserialized_out_file.write(bytes(_bytes.tolist())), deserialized_bytes))
         deserialized_out_file.close()
         serialized_file_videocap.release()
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
         Tracker.set_progress(jobId, 0.85)
         return deserialized_out_path
 
