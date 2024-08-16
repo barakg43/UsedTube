@@ -51,8 +51,8 @@ class ObfuscationManager:
 
         out_path = (FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}_{fourcc}.mp4").as_posix()
 
-        fourcc  = cv2.VideoWriter.fourcc(*fourcc)
-        out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
+        # fourcc  = cv2.VideoWriter.fourcc(*fourcc)
+        out = VideoWriter(out_path, fourcc, fps, (width, height))
         counter = 0
         while True:
             ret_ff, frame_ff = file_frames_video.read()
@@ -101,8 +101,8 @@ class ObfuscationManager:
         # height = int(obsv.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         out_path = (TMP_WORK_DIR / f"{uuid.uuid4()}.mp4").as_posix()  # Generate unique filename using UUID
-        fourcc = cv2.VideoWriter.fourcc(*fourcc)
-        out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
+        # fourcc = cv2.VideoWriter.fourcc(*fourcc)
+        out = VideoWriter(out_path, fourcc, fps, (width, height))
 
         while True:
             ret, frame = obsv.read()
