@@ -47,7 +47,7 @@ class VideoWriter:
         self.video_stream.width = frame_size[0]
         self.video_stream.height = frame_size[1]
         # print(f"{fourcc} result codec:",self.video_stream.codec_context.name)
-        # self.video_stream.bit_rate = 8000 * kbps
+        self.video_stream.bit_rate = 20000 * kbps
 
         # self.path = out_video_path
         # self.output_video = (
