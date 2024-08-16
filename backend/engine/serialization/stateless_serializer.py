@@ -49,6 +49,7 @@ class StatelessSerializer:
     @staticmethod
     def get_video_metadata(cover_video) -> Context:
         context = StatelessSerializer.Context()
+
         context.dims = (
             int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         )

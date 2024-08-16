@@ -11,6 +11,7 @@ from more_itertools import consume
 from multipledispatch import dispatch
 
 from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, FILES_READY_FOR_RETRIEVAL_DIR
+from engine.serialization.ffmpeg.video_capture import VideoCapture
 from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 from engine.serialization.strategy.impl.bit_to_block import BitToBlock
 
@@ -37,12 +38,14 @@ class Serializer:
         self.deser_logger = logging.getLogger(DESERIALIZE_LOGGER)
         self.original_sha256 = ""
 
-    def get_video_metadata(self, cover_video):
+    def get_video_metadata(self, cover_video:VideoCapture) :
+        video_props=cover_video.get_video_props()
         self.strategy.dims = (
-            int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            video_props["width"],video_props["height"]
+            # int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         )
-        self.fps = cover_video.get(cv2.CAP_PROP_FPS)
-        self.encoding = cv2.VideoWriter.fourcc(*self.strategy.fourcc)
+        self.fps = video_props["fps"]  #cover_video.get(cv2.CAP_PROP_FPS)
+        self.encoding =video_props["codec"] #cv2.VideoWriter.fourcc(*self.strategy.fourcc)
         self.strategy.dims_multiplied = np.multiply(*self.strategy.dims)
 
     def collect_metadata(self, file_br, cover_video):
