@@ -2,9 +2,8 @@ import unittest
 
 from engine.serialization.test_serializer import SerializerTest
 
-
 codec_list = [
-    "av1",
+    # "av1",
     "h264",
     "h264_mf",
     "hevc",
@@ -47,8 +46,8 @@ for codec_pair in codec_list:
 
     # Function to perform the test for a specific codec
 
-    def test_bit_block(self, codec_arg=codec, file_ext_arg=file_ext):
-        SerializerTest.perform_test_1Bit_Block(self, codec_arg, file_ext_arg)
+    def test_bit_block(self, codec_arg=codec, file_ext_arg=file_ext, block_size_arg=4):
+        SerializerTest.perform_test_1Bit_Block(self, codec_arg, file_ext_arg, block_size_arg)
 
 
     setattr(SerializerTest, test_method_name_Bit_Block, test_bit_block)

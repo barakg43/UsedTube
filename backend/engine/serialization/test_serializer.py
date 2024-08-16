@@ -39,6 +39,7 @@ class SerializerTest(unittest.TestCase):
         return paths_dict
 
     def check_pdf_serialization(self, fourcc:str,out_format:str,block_size:int):
+        # proto = StatelessSerializerArgs(fourcc,out_format,block_size)
 
         driver = DriverArgs(fourcc,out_format,block_size)
         # self.enc = StatelessSerializer(proto, concurrent_execution=True)
@@ -116,10 +117,12 @@ class SerializerTest(unittest.TestCase):
 
         return original_sha256, deserialized_sha256
 
-    def perform_test_1Bit_Block(self, codec, file_ext):
+    def perform_test_1Bit_Block(self, codec, file_ext,block_size=4):
         # Replace this with your actual test implementation
         print(f"#### Bit to Block: Testing codec '{codec}' with file extension '.{file_ext}' ###")
-        original_sha256, decrypted_sha256 = self.check_pdf_serialization(fourcc=codec, out_format=file_ext, block_size=4)
+        original_sha256, decrypted_sha256 = self.check_pdf_serialization(fourcc=codec,
+                                                                         out_format=file_ext,
+                                                                         block_size=block_size)
         self.assertEqual( original_sha256, decrypted_sha256)
 
     def perform_test_youtube_1B_1Block_decryption(self, codec, file_ext, encrypted_video_path, original_file_path):
