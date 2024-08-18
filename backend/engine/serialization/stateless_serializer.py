@@ -16,6 +16,7 @@ from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, TMP_WORK_DIR
 from engine.progress_tracker import Tracker
 from engine.serialization.atomic_counter import AtomicCounter
 from engine.serialization.file_chuck_reader_iterator import FileChuckReaderIterator
+from engine.serialization.ffmpeg.video_write import VideoWriter
 from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 from engine.serialization.strategy.impl.bit_to_block import BitToBlock
 
@@ -54,6 +55,7 @@ class StatelessSerializer:
     @staticmethod
     def get_video_metadata(cover_video) -> Context:
         context = StatelessSerializer.Context()
+
         context.dims = (
             int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         )
@@ -205,6 +207,7 @@ class StatelessSerializer:
         except Exception as e:
             StatelessSerializer.ser_logger.error(f"failed to serialize chunk #{index}: {e}")
             raise e
+        output_video = VideoWriter(out_vid_path, context.encoding, context.fps, context.dims)
 
     @staticmethod
     def serialize_frame_done_writer_to_output_task(future_queue,
