@@ -39,15 +39,18 @@ import numpy as np
 # container.close()
 
 kbps = 1024
+
+
 class VideoWriter:
-    def __init__(self, out_video_path, fourcc: str, fps: int, frame_size: (int, int),
+    def __init__(self, out_video_path, fourcc: str, fps: int, frame_size: (int, int), bitrate: int | None = None,
                  logging_stdout=False):
         self.output_video = av.open(out_video_path, mode='w')
         self.video_stream = self.output_video.add_stream(fourcc, rate=fps)
         self.video_stream.width = frame_size[0]
         self.video_stream.height = frame_size[1]
         # print(f"{fourcc} result codec:",self.video_stream.codec_context.name)
-        self.video_stream.bit_rate = 20000 * kbps
+        if bitrate:
+            self.video_stream.bit_rate = bitrate * kbps
 
         # self.path = out_video_path
         # self.output_video = (
@@ -60,16 +63,18 @@ class VideoWriter:
 
     def write(self, frame):
 
-        frame_av = av.VideoFrame.from_ndarray(frame)
+        frame_av = av.VideoFrame.from_ndarray(frame, format='bgr24')
         # packet = self.video_stream.encode(frame_av)
+        out_packet = self.video_stream.encode(frame_av)  # Encode video frame
+        self.output_video.mux(out_packet)
+    # for packet in self.video_stream.encode(frame_av):
+    #         self.output_video.mux(packet)
 
-        for packet in self.video_stream.encode(frame_av):
-            self.output_video.mux(packet)
-
+    def frame_count(self):
+        return self.output_video.streams.video[0].frames
 
     def release(self):
-        for packet in self.video_stream.encode():
-            self.output_video.mux(packet)
+        self.output_video.mux(self.video_stream.encode(None))
 
         # Close the file
         self.output_video.close()
