@@ -1,10 +1,10 @@
 import av
 import numpy as np
 from av.video.stream import VideoStream
-
+import imageio
 
 class VideoCapture:
-    def __init__(self, video_stream_path):
+    def __init__(self, video_stream_path:str):
         self.error_massage = None
         self.video_input = None
         try:
@@ -30,7 +30,9 @@ class VideoCapture:
         # video_stream_details = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
         fps = int(self.video_stream.average_rate)
         codec = self.video_stream.codec_context.name
-        return {"width": width, "height": height, "fps": fps, "codec": codec}
+        frames_count = self.video_stream.frames
+
+        return {"width": width, "height": height, "fps": fps, "codec": codec,"frames_count":frames_count}
 
     def read(self):
         self.__check_if_open()
