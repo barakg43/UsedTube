@@ -1,5 +1,7 @@
+import glob
 import gzip
 import os
+import random
 import shutil
 import uuid
 from pathlib import Path
@@ -91,9 +93,11 @@ class Driver:
             return lambda progress: progress
 
     def __choose_cover_video(self, zipped_path: str) -> str:
+        video_file_list=glob.glob((COVER_VIDEOS_DIR/"cover-video*.mp4").as_posix())
+        chosen_file = random.choice(video_file_list)
         # file_size = BIG_FILE if os.path.getsize(zipped_path) > _4_MiB else SMALL_FILE
         # return (COVER_VIDEOS_DIR / f"{file_size}-files-cover.mp4").as_posix()
-        return (COVER_VIDEOS_DIR / "cover-video.mp4").as_posix()
+        return chosen_file
 
     def __ungzip_it(self, gzipped_file_path: str) -> str:
         unzipped_path = Path(
