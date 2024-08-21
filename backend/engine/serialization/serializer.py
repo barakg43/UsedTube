@@ -24,7 +24,7 @@ IF ONLY ONE COVER VIDEO IS USED, METADATA SHOULD ALSO BE RETRIEVED ONCE
 
 
 class Serializer:
-    def __init__(self, strategy: SerializationStrategy = BitToBlock(2, "avc3", "mp4"), concurrent_execution=True):
+    def __init__(self, strategy: SerializationStrategy = BitToBlock(5, "avc3", "mp4"), concurrent_execution=True):
         self.file_size: int = 0
         self.encoding: int = 0
         self.fps: int = 0
