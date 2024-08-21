@@ -26,7 +26,7 @@ class ObfuscationManager:
         self.logger.setLevel(logging.DEBUG)
 
     def obfuscate(self, file_frames_path: str, cover_video_path: str, fourcc: int,
-                  progress_tracker: Callable[[float], None] = None) -> str:
+                  progress_tracker: Callable[[float], None] = None,bitrate:int|None=None,block_size:int|None=None) -> str:
         # open 2 video as streams file_frames as ff, cover_video as cov
         # create new video container as out
         # do:
@@ -52,12 +52,12 @@ class ObfuscationManager:
         # width = int(file_frames_video.get(cv2.CAP_PROP_FRAME_WIDTH))
         # height = int(file_frames_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        out_path = (FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}.mp4").as_posix()
-        fourcc = cv2.VideoWriter.fourcc(*fourcc)
-        out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
+        out_path = (FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}_{fourcc}_bitrate({bitrate})_block_size({block_size}).mp4").as_posix()
+        # fourcc = cv2.VideoWriter.fourcc(*fourcc)
+        # out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
         frame_counter = [0]  # make it mutable for the progress tracker
 
-        file_frames_amount = int(file_frames_video.get(cv2.CAP_PROP_FRAME_COUNT))
+        file_frames_amount =file_frames_video_props["frames_count"]
         output_frames_amount = file_frames_amount * (self.cycle + 1)
         output_frames_amount_with_min_length = max(MINIMUM_VIDEO_FRAME_AMOUNT, output_frames_amount)
 
@@ -66,9 +66,9 @@ class ObfuscationManager:
             if progress_tracker is not None:
                 progress_tracker(frame_counter[0] / output_frames_amount_with_min_length)
 
-        out = VideoWriter(out_path, fourcc, fps, (width, height))
-        out_path = (FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}_{fourcc}.mp4").as_posix()
+        out = VideoWriter(out_path, fourcc, fps, (width, height),bitrate)
         # fourcc  = cv2.VideoWriter.fourcc(*fourcc)
+        while True:
             ret_ff, frame_ff = file_frames_video.read()
             if not ret_ff:
                 self.logger.info("loop ended. No more frames in file_frames")
@@ -80,13 +80,11 @@ class ObfuscationManager:
             self.__write_frames_from_cover_to_output_video(out, cover_video, self.cycle, frame_counter, update_progress)
 
             self.logger.info("obfuscated frame wrote: " + str(frame_counter[0]))
-        if frame_counter[
-            0] < MINIMUM_VIDEO_FRAME_AMOUNT:  #make the output video at least 'MINIMUM_VIDEO_FRAME_AMOUNT' frames
+        if frame_counter[0] < MINIMUM_VIDEO_FRAME_AMOUNT:  #make the output video at least 'MINIMUM_VIDEO_FRAME_AMOUNT' frames
             self.__write_frames_from_cover_to_output_video(out, cover_video,
                                                            MINIMUM_VIDEO_FRAME_AMOUNT - frame_counter[0], frame_counter,
                                                            update_progress)
 
-        frame_count = int(out.get(cv2.CAP_PROP_FRAME_COUNT))
         self.logger.info(f"loop ended with frame_counter: {frame_counter[0]}/{output_frames_amount_with_min_length}")
         # Release video capture and writer
         file_frames_video.release()
@@ -109,7 +107,7 @@ class ObfuscationManager:
             frame_counter[0] += 1
             update_progress()
 
-    def untangle(self, obfuscated_video_path: str, progress_tracker: Callable[[float], None] = None) -> str:
+    def untangle(self, obfuscated_video_path: str,fourcc:str, progress_tracker: Callable[[float], None] = None) -> str:
         # open the obfuscated_video as obsv
         # create a new out video container as out
         # do:
@@ -126,6 +124,7 @@ class ObfuscationManager:
         fps = obsv_props["fps"]
         width = obsv_props["width"]
         height =obsv_props["height"]
+
         # fps = obsv.get(cv2.CAP_PROP_FPS)
         # width = int(obsv.get(cv2.CAP_PROP_FRAME_WIDTH))
         # height = int(obsv.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -133,8 +132,8 @@ class ObfuscationManager:
         out_path = (TMP_WORK_DIR / f"{uuid.uuid4()}.mp4").as_posix()  # Generate unique filename using UUID
         # fourcc = cv2.VideoWriter.fourcc(*fourcc)
         out = VideoWriter(out_path, fourcc, fps, (width, height))
-
-        frame_amount = int(obsv.get(cv2.CAP_PROP_FRAME_COUNT))
+        frame_counter=0
+        frame_amount = obsv_props["frames_count"]
         while True:
             ret, frame = obsv.read()
             if not ret:
