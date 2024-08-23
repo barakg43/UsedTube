@@ -113,7 +113,7 @@ class FileController:
             file_io.flush()
             file_io.close()
             progress_tracker(4, 1)
-            # os.remove(file_path)
+            os.remove(file_path)
             return in_memory_file, file_name
         except Exception as e:
             deserialize_logger.error(str(e))
