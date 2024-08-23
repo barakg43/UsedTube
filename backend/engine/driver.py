@@ -19,7 +19,7 @@ class Driver:
     def __init__(self):
         self.__serializer = StatelessSerializer()
         self.__logger = serialize_logger
-        self.__obfuscator = ObfuscationManager()
+        self.__obfuscator = ObfuscationManager(intermeshing_cycle=15)
 
     def process_file_to_video(self,
                               file_path: str, job_id: uuid,
