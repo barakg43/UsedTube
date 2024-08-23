@@ -114,22 +114,11 @@ class CancelUploadView(APIView):
         job_owner=file_controller.get_user_for_job(job_id)
         if request.user != job_owner:
             return JsonResponse({ERROR:"Not authorized to cancel this upload job"},status=status.HTTP_403_FORBIDDEN)
-        Mr_EngineManager.cancel_action(job_id)
+        file_controller.cancel_action(job_id)
         return JsonResponse({MESSAGE:"Upload job cancelled"},status=200)
 
 
 
-class UploadView(APIView):
-    def post(self, request: HttpRequest, folder_id: str):
-        if FILE not in request.FILES:
-            return JsonResponse({ERROR: "no file provided"}, status=400)
-        folder = Folder.objects.filter(id=folder_id).get()
-        if folder.owner != request.user:
-            return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_403_FORBIDDEN)
-
-        uploaded_file = request.FILES[FILE]
-        job_id = file_controller.save_file_to_video_provider_async(request.user, uploaded_file, folder_id)
-        return JsonResponse({JOB_ID: job_id}, status=201)
 
 
 class UsedSpaceView(APIView):

@@ -100,18 +100,25 @@ class FileController:
             progress_tracker = self.uuid_to_jobDetails[job_id].progress_tracker_callback()
             self.logger.info(
                 f"Job {job_id} downloading {file_name} (size {compressed_file_size} bytes) from {video_url}")
-            file_path = Mr_EngineManager.process_video_to_file_with_download(video_url, compressed_file_size, job_id,progress_tracker)
+            file_path = Mr_EngineManager.process_video_to_file_with_download(video_url, compressed_file_size, job_id,
+                                                                             progress_tracker)
             file_io = open(file_path, "rb")
             in_memory_file = io.BytesIO(file_io.read())
             file_io.flush()
             file_io.close()
+            progress_tracker(4, 1)
             # os.remove(file_path)
             return in_memory_file, file_name
         except Exception as e:
             deserialize_logger.error(str(e))
             self.uuid_to_jobDetails[job_id].set_error(str(e))
 
-    def get_download_item_bytes_name(self, uuid) -> Tuple[str, int] | str:
+    def cancel_action(self, uuid):
+        future = self.uuid_to_jobDetails[uuid].get_future()
+        future.cancel()
+        del self.uuid_to_jobDetails[uuid]
+
+    def get_download_item_bytes_name(self, uuid) -> Tuple[io.BytesIO, int]:
         future = self.uuid_to_jobDetails[uuid].future
         results = future.result()
         self.uuid_to_jobDetails[uuid].progress_tracker.update_progress(4, 1)
