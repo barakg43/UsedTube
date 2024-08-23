@@ -81,18 +81,24 @@ class FileController:
     def get_user_for_job(self, job_d: uuid1) -> AppUser:
         return self.uuid_to_jobDetails[job_d].get_user()
 
+    def is_job_exist(self, uuid: uuid1) -> bool:
+        return uuid in self.uuid_to_jobDetails
+
     def get_file_from_provider_async(self, file_id: str, user: AppUser) -> uuid1:
         job_id = str(uuid1())
         future = self.workers.submit(self.__get_file_from_provider_task, file_id, job_id)
-        self.uuid_to_jobDetails[job_id] = JobDetails(future=future, user=user,phase_weights_array=[0.49,0.20,0.30,0.01])
+        self.uuid_to_jobDetails[job_id] = JobDetails(future=future, user=user,
+                                                     phase_weights_array=[0.49, 0.20, 0.30, 0.01])
         return job_id
+
     def get_job_progress(self, job_id: uuid1) -> float:
         return self.uuid_to_jobDetails[job_id].get_progress()
+
     def __get_file_from_provider_task(self, file_id: str, job_id: uuid1) -> Tuple[io.BytesIO, str]:
         try:
 
             file_to_download: File = File.objects.get(id=file_id)
-            file_name = file_to_download.name
+            file_name = file_to_download.name + '.' + file_to_download.extension
             # from the db extract video_url, compressed_file_size, content-type
             compressed_file_size = file_to_download.compressed_size  # in Bytes
             video_url = file_to_download.url
