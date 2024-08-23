@@ -53,16 +53,17 @@ class Driver:
 
     def process_video_to_file(self, video_path: str, compressed_file_size: int, jobId: uuid,
                               progress_tracker: Callable[[float, int], None] = None) -> str:
-        update_untangle_progress = Driver.__build_phase_process_updater(1, progress_tracker)
-        update_deserialization_progress = Driver.__build_phase_process_updater(2, progress_tracker)
-
+        update_untangle_progress = Driver.__build_phase_process_updater(2, progress_tracker)
+        update_deserialization_progress = Driver.__build_phase_process_updater(3, progress_tracker)
 
         # untangle
         self.__logger.info(f"{jobId}:untangling {video_path}")
-        serialized_file_as_video_path = self.__obfuscator.untangle(video_path, update_untangle_progress)
+        serialized_file_as_video_path = self.__obfuscator.untangle(video_path, self.__serializer.fourcc,
+                                                                   update_untangle_progress)
         # deserialize
         self.__logger.info(f"{jobId}:deserializing {serialized_file_as_video_path}")
         zipped_file_path = self.__serializer.deserialize(serialized_file_as_video_path,
+
                                                          compressed_file_size, jobId,
                                                          update_deserialization_progress)
         # unzip
