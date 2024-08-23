@@ -16,17 +16,17 @@ from engine.serialization.tests.stateless_serializer_args import StatelessSerial
 
 class DriverArgs:
 
-
-    def __init__(self,fourcc:str="mp4v",out_format:str="mp4",block_size:int=5,concurrent_execution:bool=True):
-        self.__serializer = StatelessSerializerArgs(fourcc,out_format,block_size,concurrent_execution)
+    def __init__(self, fourcc: str = "mp4v", out_format: str = "mp4", block_size: int = 5,
+                 concurrent_execution: bool = True):
+        self.__serializer = StatelessSerializerArgs(fourcc, out_format, block_size, concurrent_execution)
         self.block_size = block_size
-        self.__obfuscator = ObfuscationManager(intermeshing_cycle=0)
+        self.__obfuscator = ObfuscationManager(intermeshing_cycle=20)
         self.__logger = serialize_logger
 
     def process_file_to_video(self,
                               file_path: str, job_id: uuid,
                               progress_tracker: Callable[[int, float], None] = None,
-                              bitrate:int|None = None) \
+                              bitrate: int | None = None) \
             -> Tuple[str, int]:
         #   zip
         update_serialization_progress = DriverArgs.__build_phase_process_updater(1, progress_tracker)
@@ -42,13 +42,14 @@ class DriverArgs:
         self.__logger.info(f"choosing cover {cover_vid_path}")
         out_vid_path = f"{zipped_path}.mp4"
         self.__logger.info(f"starting serializing to {out_vid_path}")
-        self.__serializer.serialize(zipped_path, cover_vid_path, out_vid_path, job_id, update_serialization_progress,bitrate)
+        self.__serializer.serialize(zipped_path, cover_vid_path, out_vid_path, job_id, update_serialization_progress,
+                                    bitrate)
 
         os.remove(zipped_path)
         # obfuscate
         self.__logger.info(f"starting obfuscating with cover video")
         obfuscated_vid_path = self.__obfuscator.obfuscate(out_vid_path, cover_vid_path, self.__serializer.fourcc,
-                                                          update_obfuscation_progress,bitrate,self.block_size)
+                                                          update_obfuscation_progress, bitrate, self.block_size)
 
         os.remove(out_vid_path)
         self.__logger.info(f"finished processing file to video-result video path {obfuscated_vid_path}")
@@ -61,7 +62,8 @@ class DriverArgs:
 
         # untangle
         self.__logger.info(f"{jobId}:untangling {video_path}")
-        serialized_file_as_video_path = self.__obfuscator.untangle(video_path,self.__serializer.fourcc ,update_untangle_progress)
+        serialized_file_as_video_path = self.__obfuscator.untangle(video_path, self.__serializer.fourcc,
+                                                                   update_untangle_progress)
         # deserialize
         self.__logger.info(f"{jobId}:deserializing {serialized_file_as_video_path}")
         zipped_file_path = self.__serializer.deserialize(serialized_file_as_video_path,
@@ -88,7 +90,7 @@ class DriverArgs:
         return tmp_path.as_posix()
 
     @staticmethod
-    def __build_phase_process_updater(phase: int, progress_tracker: Callable[[int, float], None]):
+    def __build_phase_process_updater(phase: int, progress_tracker: Callable[[int, float], None] | None):
         if progress_tracker is not None:
             return lambda progress: progress_tracker(phase, progress)
         else:

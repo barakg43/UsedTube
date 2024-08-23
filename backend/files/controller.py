@@ -29,7 +29,7 @@ class FileController:
     def save_file_to_video_provider_async(self, user: AppUser, uploaded_file: InMemoryUploadedFile, folder_id: str):
         job_id = str(uuid1())
         try:
-            self.uuid_to_jobDetails[job_id] = JobDetails(user=user,phase_weights_array=[0.30,0.20,0.49,0.01])
+            self.uuid_to_jobDetails[job_id] = JobDetails(user=user, phase_weights_array=[0.30, 0.20, 0.49, 0.01])
             file_path = os.path.join(ITEMS_READY_FOR_PROCESSING, f"{job_id}_{uploaded_file.name}")
 
             with open(file_path, "wb") as destination:
@@ -42,7 +42,7 @@ class FileController:
                                 file_path,
                                 uploaded_file.name,
                                 uploaded_file.size,
-                                folder_id,progress_tracker)
+                                folder_id, progress_tracker)
         except Exception as e:
             self.uuid_to_jobDetails[job_id].set_error(str(e))
         return job_id
@@ -57,7 +57,8 @@ class FileController:
 
         try:
             self.logger.info(f"Job {job_id} uploading {file_name_with_ext} (size {file_size} bytes) to provider")
-            url_result, compressed_size = self.engine_manger.process_file_to_video_with_upload(file_path, job_id,progress_tracker)
+            url_result, compressed_size = self.engine_manger.process_file_to_video_with_upload(file_path, job_id,
+                                                                                               progress_tracker)
             file_name_array = file_name_with_ext.split(".")
             file_name = file_name_array[0]
             ext = file_name_array[1]
@@ -69,7 +70,7 @@ class FileController:
                                 owner=user,
                                 url=url_result)
             self.logger.info(f"Job {job_id} done: {file_name} was uploaded successfully on {url_result}")
-            progress_tracker(4,1)
+            progress_tracker(4, 1)
         except Exception as e:
             serialize_logger.error(str(e))
             self.uuid_to_jobDetails[job_id].set_error(str(e))
@@ -120,6 +121,7 @@ class FileController:
 
     def remove_job(self, job_id: uuid1):
         del self.uuid_to_jobDetails[job_id]
+
     def is_processing_done(self, job_id) -> bool:
         future = self.uuid_to_jobDetails[job_id].future
         if future is not None:
@@ -149,7 +151,6 @@ class JobDetails:
 
     def progress_tracker_callback(self) -> Callable[[int, float], None]:
         return self.progress_tracker.update_progress
-
 
     def get_progress(self):
         return self.progress_tracker.get_total_progress()

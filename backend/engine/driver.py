@@ -78,7 +78,7 @@ class Driver:
         gzipped_path = f"{file_to_upload_path}.gz"
         file_name_with_extension = Path(gzipped_path).name
         tmp_path = Path(TMP_WORK_DIR) / file_name_with_extension
-        f_in=FileChuckReaderIterator(file_to_upload_path, 'rb', _4_MiB)
+        f_in = FileChuckReaderIterator(file_to_upload_path, 'rb', _4_MiB)
         with gzip.open(tmp_path, 'wb') as f_out:
             for chunk in f_in:
                 f_out.write(chunk)
@@ -93,7 +93,7 @@ class Driver:
             return lambda progress: progress
 
     def __choose_cover_video(self, zipped_path: str) -> str:
-        video_file_list=glob.glob((COVER_VIDEOS_DIR/"cover-video*.mp4").as_posix())
+        video_file_list = glob.glob((COVER_VIDEOS_DIR / "cover-video*.mp4").as_posix())
         chosen_file = random.choice(video_file_list)
         # file_size = BIG_FILE if os.path.getsize(zipped_path) > _4_MiB else SMALL_FILE
         # return (COVER_VIDEOS_DIR / f"{file_size}-files-cover.mp4").as_posix()
