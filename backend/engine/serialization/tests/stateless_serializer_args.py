@@ -106,7 +106,7 @@ class StatelessSerializerArgs:
         StatelessSerializerArgs.ser_logger.debug(f"about to process {num_of_frames} chunks")
         # read chunks sequentially and start strategy.serialize
 
-        self.strategy.frames_amount = num_of_frames
+        # self.strategy.frames_amount = num_of_frames
 
         output_video, output_worker = self.serialize_frame_after_frame(context,
                                                                        file_to_serialize_path,
@@ -288,7 +288,7 @@ class StatelessSerializerArgs:
             total_progress = written_amount * 0.5 + processed_amount * 0.5
             progress_tracker(total_progress)
 
-        self.strategy.frames_amount = frames_count
+        # self.strategy.frames_amount = frames_count
         future_queue = queue.Queue()
         deserialized_out_path = (TMP_WORK_DIR / f"{uuid.uuid4()}").as_posix()
         output_worker = threading.Thread(target=self.deserialize_frame_done_writer_to_output_task,
