@@ -122,7 +122,7 @@ class SerializerTest(unittest.TestCase):
 
         return original_sha256, deserialized_sha256
 
-    def perform_test_1Bit_Block(self, codec, file_ext, block_size=4, bitrate: int=8000):
+    def perform_test_1Bit_Block(self, codec, file_ext, block_size=4, bitrate: int|None=None):
         # Replace this with your actual test implementation
         print(f"#### Bit to Block: Testing codec '{codec}' with file extension '.{file_ext}' ###")
         original_sha256, decrypted_sha256 = self.check_pdf_serialization(fourcc=codec,
