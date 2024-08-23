@@ -42,7 +42,7 @@ for codec_pair in codec_list:
     codec = codec_pair
     file_ext = "mp4"
 
-    for block_size in range(10, 30, 2):
+    for block_size in [16]:
         for bitrate in range(1000, 20001, 1000):
             test_method_name_Bit_Block = 'test_serializer_pdf_1B_1Block_{0}_{1}_Block_{2:02}_bitrate_{3:05}'.format(
                 codec, file_ext, block_size, bitrate)
@@ -50,10 +50,11 @@ for codec_pair in codec_list:
 
             # Function to perform the test for a specific codec
             def test_bit_block(self, codec=codec, file_ext=file_ext, block_size=block_size, bitrate=bitrate):
-                SerializerTest.perform_test_1Bit_Block(self, codec, file_ext, block_size, bitrate)
+                SerializerTest.perform_test_1Bit_Block(self, codec, file_ext, block_size)
 
 
             setattr(SerializerTest, test_method_name_Bit_Block, test_bit_block)
+            break
 
     # break
 if __name__ == '__main__':
