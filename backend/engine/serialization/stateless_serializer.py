@@ -15,10 +15,12 @@ from more_itertools import consume
 from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, TMP_WORK_DIR
 from engine.progress_tracker import Tracker
 from engine.serialization.atomic_counter import AtomicCounter
+from engine.serialization.ffmpeg.video_capture import VideoCapture
 from engine.serialization.file_chuck_reader_iterator import FileChuckReaderIterator
 from engine.serialization.ffmpeg.video_write import VideoWriter
 from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 from engine.serialization.strategy.impl.bit_to_block import BitToBlock
+from engine.serialization.tests.stateless_serializer_args import StatelessSerializerArgs
 
 serialize_logger = logging.getLogger(SERIALIZE_LOGGER)
 deserialize_logger = logging.getLogger(DESERIALIZE_LOGGER)
@@ -53,14 +55,15 @@ class StatelessSerializer:
         return StatelessSerializer.strategy.fourcc
 
     @staticmethod
-    def get_video_metadata(cover_video) -> Context:
+    def get_video_metadata(cover_video: VideoCapture) -> Context:
         context = StatelessSerializer.Context()
-
+        video_props = cover_video.get_video_props()
         context.dims = (
-            int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            video_props["width"], video_props["height"]
+            # int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         )
-        context.fps = cover_video.get(cv2.CAP_PROP_FPS)
-        context.encoding = cv2.VideoWriter.fourcc(*StatelessSerializer.strategy.fourcc)
+        context.fps = video_props["fps"]  #cover_video.get(cv2.CAP_PROP_FPS)
+        context.encoding = StatelessSerializer.strategy.fourcc  #cv2.VideoWriter.fourcc(*self.strategy.fourcc) #self.strategy.fourcc
         if context.dims[0] == 0 or context.dims[1] == 0:
             raise Exception(f"invalid video dimensions: {context.dims} on file {cover_video}")
         context.dims_multiplied = np.multiply(*context.dims)
@@ -92,7 +95,7 @@ class StatelessSerializer:
         :param progress_tracker: accept a function that will be called on every progress update and get a float between 0 and 1
         """
 
-        cover_video = cv2.VideoCapture(cover_video_path)
+        cover_video = VideoCapture(cover_video_path)
         if cover_video.isOpened() is False:
             raise Exception(f"failed to open cover video: {cover_video_path}")
         context = StatelessSerializer.initialize_serialization_context(file_to_serialize_path, cover_video)
@@ -117,7 +120,7 @@ class StatelessSerializer:
         # Closes all the video sources
         StatelessSerializer.ser_logger.info(f"total of {num_of_frames} chunks were finish processed")
         output_video.release()
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
 
     @staticmethod
     def serialize_frame_after_frame(context,
@@ -140,7 +143,7 @@ class StatelessSerializer:
 
         # serialize frames queue to wait results
         future_queue = queue.Queue()
-        output_video = cv2.VideoWriter(out_vid_path, context.encoding, context.fps, context.dims)
+        output_video = VideoWriter(out_vid_path, context.encoding, context.fps, context.dims)
         output_worker = threading.Thread(target=StatelessSerializer.serialize_frame_done_writer_to_output_task,
                                          args=(future_queue,
                                                frames_amount,
@@ -266,7 +269,7 @@ class StatelessSerializer:
     @staticmethod
     def deserialize(serialized_file_as_video_path: str, file_size: int, jobId: uuid,
                     progress_tracker: Callable[[float], None]):
-        serialized_file_videocap = cv2.VideoCapture(serialized_file_as_video_path)
+        serialized_file_videocap = VideoCapture(serialized_file_as_video_path)
         context = StatelessSerializer.initialize_deserialization_context(file_size, serialized_file_videocap)
         deserialize_processed_counter = AtomicCounter()
         write_processed_counter = AtomicCounter()
@@ -304,7 +307,7 @@ class StatelessSerializer:
         StatelessSerializer.deser_logger.debug(f"total of {frame_number} frames were submitted to workers")
         output_worker.join()
         serialized_file_videocap.release()
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
         return deserialized_out_path
 
     @staticmethod

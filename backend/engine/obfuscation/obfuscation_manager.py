@@ -93,8 +93,8 @@ class ObfuscationManager:
 
         return out_path
 
-    def __write_frames_from_cover_to_output_video(self, obfuscated_video_out: cv2.VideoWriter,
-                                                  cover_video: cv2.VideoCapture,
+    def __write_frames_from_cover_to_output_video(self, obfuscated_video_out:VideoWriter,
+                                                  cover_video: VideoCapture,
                                                   frame_amount: int,
                                                   frame_counter: list[int],
                                                   update_progress: Callable[[], None]):
@@ -131,7 +131,7 @@ class ObfuscationManager:
 
         out_path = (TMP_WORK_DIR / f"{uuid.uuid4()}.mp4").as_posix()  # Generate unique filename using UUID
         # fourcc = cv2.VideoWriter.fourcc(*fourcc)
-        out = VideoWriter(out_path, fourcc, fps, (width, height))
+        out = VideoWriter(out_path, fourcc, fps, (width, height),None)
         frame_counter=0
         frame_amount = obsv_props["frames_count"]
         while True:
