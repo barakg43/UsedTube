@@ -43,6 +43,8 @@ class DownloadView(APIView):
 
 class DownloadViewProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
+        if file_controller.is_job_exist(job_id) is False:
+            return JsonResponse({ERROR: "Job does not exist"}, status=status.HTTP_404_NOT_FOUND)
         job_owner = file_controller.get_user_for_job(job_id)
         if request.user != job_owner:
             return JsonResponse({ERROR: "Not authorized to view this donwnload job status"},
@@ -57,7 +59,6 @@ class DownloadViewProgressView(APIView):
                 bytes_io,
                 filename=file_name,
                 as_attachment=True,
-                content_type=None,
             )
         elif file_controller.is_processing_done(job_id):
             return JsonResponse({ERROR: "Something went wrong in downloading and processing file"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -73,9 +74,22 @@ class SerializationProgressView(APIView):
             return JsonResponse({"progress": 1})
         return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
 
+class UploadView(APIView):
+    def post(self, request: HttpRequest, folder_id: str):
+        if FILE not in request.FILES:
+            return JsonResponse({ERROR: "no file provided"}, status=400)
+        folder = Folder.objects.filter(id=folder_id).get()
+        if folder.owner != request.user:
+            return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_403_FORBIDDEN)
+
+        uploaded_file = request.FILES[FILE]
+        job_id = file_controller.save_file_to_video_provider_async(request.user, uploaded_file, folder_id)
+        return JsonResponse({JOB_ID: job_id}, status=201)
 
 class UploadProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
+        if file_controller.is_job_exist(job_id) is False:
+            return JsonResponse({ERROR: "Job does not exist"}, status=status.HTTP_404_NOT_FOUND)
         job_owner = file_controller.get_user_for_job(job_id)
         if request.user != job_owner:
             return JsonResponse({ERROR: "Not authorized to view this upload job status"},
