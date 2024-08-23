@@ -1,4 +1,5 @@
 import logging
+import os
 from concurrent.futures import ThreadPoolExecutor, Future
 from threading import Lock
 from typing import Dict, Tuple, Callable
@@ -51,6 +52,7 @@ class EngineManager:
             progress_tracker(3, progress)
 
         url_result = self.__upload_video_to_providers(job_id, video_path, update_upload_progress)
+        os.remove(video_path)
         return url_result, zipped_file_size
 
     def process_video_to_file_async(self, video_path: str, compressed_file_size: int) -> uuid1:
