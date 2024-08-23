@@ -105,11 +105,10 @@ class StatelessSerializer:
         StatelessSerializer.ser_logger.debug(f"about to process {num_of_frames} chunks")
         # read chunks sequentially and start strategy.serialize
 
-        StatelessSerializer.strategy.frames_amount = num_of_frames
+        # StatelessSerializer.strategy.frames_amount = num_of_frames
 
         output_video, output_worker = StatelessSerializer.serialize_frame_after_frame(context,
                                                                                       file_to_serialize_path,
-                                                                                      num_of_frames,
                                                                                       out_vid_path,
                                                                                       serialized_frames,
                                                                                       progress_tracker)
@@ -123,18 +122,18 @@ class StatelessSerializer:
     @staticmethod
     def serialize_frame_after_frame(context,
                                     file_to_serialize_path,
-                                    num_of_frames,
                                     out_vid_path,
                                     serialized_frames,
                                     progress_tracker: Callable[[float], None] = None):
         bytes_generator = FileChuckReaderIterator(file_to_serialize_path, 'rb', context.chunk_size)
         serialize_processed_counter = AtomicCounter()
         write_processed_counter = AtomicCounter()
-        futures = np.empty(num_of_frames, dtype=concurrent.futures.Future)
+        frames_amount= context.get_frames_count()
+        futures = np.empty(frames_amount, dtype=concurrent.futures.Future)
 
         def update_total_serialization_progress():
-            processed_amount = serialize_processed_counter.value() / num_of_frames
-            written_amount = write_processed_counter.value() / num_of_frames
+            processed_amount = serialize_processed_counter.value() / frames_amount
+            written_amount = write_processed_counter.value() / frames_amount
             # print(f"processed {processed_amount*100:.2f}%, written {written_amount*100:.2f}%")
             total_progress = written_amount * 0.5 + processed_amount * 0.5
             progress_tracker(total_progress)
@@ -144,7 +143,7 @@ class StatelessSerializer:
         output_video = cv2.VideoWriter(out_vid_path, context.encoding, context.fps, context.dims)
         output_worker = threading.Thread(target=StatelessSerializer.serialize_frame_done_writer_to_output_task,
                                          args=(future_queue,
-                                               num_of_frames,
+                                               frames_amount,
                                                output_video,
                                                update_total_serialization_progress,
                                                write_processed_counter))
@@ -159,7 +158,6 @@ class StatelessSerializer:
                                                             context,
                                                             serialize_processed_counter,
                                                             update_total_serialization_progress)
-
                 future_queue.put(future)
             else:
                 futures[chunk_number] = StatelessSerializer.strategy.serialize(bytes_chunk, serialized_frames,
@@ -181,7 +179,9 @@ class StatelessSerializer:
         try:
             if len(chuck_bytes) == 0:
                 raise BufferError("empty chunk")
-            result_frame = StatelessSerializer.strategy.serialize_bytes_chunk(chuck_bytes, chunk_number, context)
+            result_frame = StatelessSerializer.strategy.serialize_bytes_chunk(chuck_bytes,
+                                                                              chunk_number,
+                                                                              context)
             serialize_processed_counter.increment()
             update_total_serialization_progress()
             return result_frame
@@ -197,7 +197,7 @@ class StatelessSerializer:
                                deserialize_processed_counter: AtomicCounter,
                                update_total_deserialization_progress: Callable[[], None]) -> np.ndarray:
         try:
-            if bytes_amount==0:
+            if bytes_amount == 0:
                 raise BufferError("empty chunk")
             restored_bytes = StatelessSerializer.strategy.deserialize_frame(bytes_amount, encrypted_frame, index,
                                                                             context)
@@ -207,7 +207,6 @@ class StatelessSerializer:
         except Exception as e:
             StatelessSerializer.ser_logger.error(f"failed to serialize chunk #{index}: {e}")
             raise e
-        output_video = VideoWriter(out_vid_path, context.encoding, context.fps, context.dims)
 
     @staticmethod
     def serialize_frame_done_writer_to_output_task(future_queue,
@@ -275,18 +274,16 @@ class StatelessSerializer:
         StatelessSerializer.deser_logger.debug("context initialized...")
         frames_count = context.get_frames_count()
         deserialized_bytes = np.empty(frames_count, dtype=object)
-        futures = np.empty(frames_count, dtype=concurrent.futures.Future)
-
-        StatelessSerializer.deser_logger.debug(f"about to process {frames_count} frames")
-        frame_number = 0
+        StatelessSerializer.deser_logger.debug(f"{jobId}:about to process {frames_count} frames")
 
         def update_total_deserialization_progress():
             processed_amount = deserialize_processed_counter.value() / frames_count
             written_amount = write_processed_counter.value() / frames_count
-            # print(f"processed {processed_amount*100:.2f}%, written {written_amount*100:.2f}%")
+            print(f"processed {processed_amount * 100:.2f}%, written {written_amount * 100:.2f}%")
             total_progress = written_amount * 0.5 + processed_amount * 0.5
             progress_tracker(total_progress)
-        StatelessSerializer.strategy.frames_amount = frames_count
+
+        # StatelessSerializer.strategy.frames_amount = frames_count
         future_queue = queue.Queue()
         deserialized_out_path = (TMP_WORK_DIR / f"{uuid.uuid4()}").as_posix()
         output_worker = threading.Thread(target=StatelessSerializer.deserialize_frame_done_writer_to_output_task,
@@ -339,6 +336,7 @@ class StatelessSerializer:
                                                             context,
                                                             deserialize_processed_counter,
                                                             update_total_deserialization_progress)
+
                 future_queue.put(future)
             else:
                 StatelessSerializer.strategy.deserialize(bytes_amount_to_read, serialized_frame,
