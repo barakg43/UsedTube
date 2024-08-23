@@ -25,9 +25,10 @@ class BitToBlock(SerializationStrategy):
     def __create_blocks_from_bytes(self, bytes_row):
         block_size = self.block_size
         # repeat the bytes columns over the block size(block size:4) - [1,2,3,4] -> [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4]
+        #                                                                           [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4]
+        #                                                                           [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4]
+        #                                                                           [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4]
         bits_block_repeated_over_width = np.repeat(np.repeat(bytes_row, block_size, axis=0), block_size, axis=1)
-        # repeat the bytes rows over the block size(block size:4)- [1,2,3,4] -> [[1,2,3,4] [1,2,3,4] [1,2,3,4] [1,2,3,4]])
-        # bits_block_repeated_over_height = np.tile(bits_block_repeated_over_width, (self.block_size))
         return bits_block_repeated_over_width
 
     def __build_pixel_matrix(self, bytes_chunk, context):
@@ -76,7 +77,7 @@ class BitToBlock(SerializationStrategy):
         filled_frame[:frame_of_blocks.shape[0], : frame_of_blocks.shape[1]] = frame_of_blocks
         end_time = time.time()
         self.enc_logger.debug(
-            f"serialized frame {index + 1}/{self.frames_amount:.0f} end  {end_time - begin_time:.2f} sec")
+            f"serialized frame {index + 1}/{context.get_frames_count():.0f} end  {end_time - begin_time:.2f} sec")
         return filled_frame
 
     def __save_frame_to_csv(self, is_print_in_binary, is_encrypted, i, array):
