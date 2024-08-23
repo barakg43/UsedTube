@@ -136,10 +136,12 @@ class FileController:
         del self.uuid_to_jobDetails[job_id]
 
     def is_processing_done(self, job_id) -> bool:
+        if self.is_job_exist(job_id) is False:
+            raise KeyError(f"job_id {job_id} not found")
         future = self.uuid_to_jobDetails[job_id].future
         if future is not None:
             return future.done() and self.uuid_to_jobDetails[job_id].get_progress() == 1
-        raise KeyError(f"job_id {job_id} not found")
+
 
 
 class JobDetails:
