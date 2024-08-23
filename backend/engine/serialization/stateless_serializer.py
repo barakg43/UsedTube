@@ -282,7 +282,7 @@ class StatelessSerializer:
         def update_total_deserialization_progress():
             processed_amount = deserialize_processed_counter.value() / frames_count
             written_amount = write_processed_counter.value() / frames_count
-            print(f"processed {processed_amount * 100:.2f}%, written {written_amount * 100:.2f}%")
+            # print(f"processed {processed_amount * 100:.2f}%, written {written_amount * 100:.2f}%")
             total_progress = written_amount * 0.5 + processed_amount * 0.5
             progress_tracker(total_progress)
 
