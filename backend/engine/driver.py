@@ -1,5 +1,7 @@
+import glob
 import gzip
 import os
+import random
 import shutil
 import uuid
 from pathlib import Path
@@ -17,7 +19,7 @@ class Driver:
     def __init__(self):
         self.__serializer = StatelessSerializer()
         self.__logger = serialize_logger
-        self.__obfuscator = ObfuscationManager()
+        self.__obfuscator = ObfuscationManager(intermeshing_cycle=15)
 
     def process_file_to_video(self,
                               file_path: str, job_id: uuid,
@@ -51,13 +53,13 @@ class Driver:
 
     def process_video_to_file(self, video_path: str, compressed_file_size: int, jobId: uuid,
                               progress_tracker: Callable[[float, int], None] = None) -> str:
-        update_untangle_progress = Driver.__build_phase_process_updater(1, progress_tracker)
-        update_deserialization_progress = Driver.__build_phase_process_updater(2, progress_tracker)
-
+        update_untangle_progress = Driver.__build_phase_process_updater(2, progress_tracker)
+        update_deserialization_progress = Driver.__build_phase_process_updater(3, progress_tracker)
 
         # untangle
         self.__logger.info(f"{jobId}:untangling {video_path}")
-        serialized_file_as_video_path = self.__obfuscator.untangle(video_path, update_untangle_progress)
+        serialized_file_as_video_path = self.__obfuscator.untangle(video_path, self.__serializer.fourcc,
+                                                                   update_untangle_progress)
         # deserialize
         self.__logger.info(f"{jobId}:deserializing {serialized_file_as_video_path}")
         zipped_file_path = self.__serializer.deserialize(serialized_file_as_video_path,
@@ -76,7 +78,7 @@ class Driver:
         gzipped_path = f"{file_to_upload_path}.gz"
         file_name_with_extension = Path(gzipped_path).name
         tmp_path = Path(TMP_WORK_DIR) / file_name_with_extension
-        f_in=FileChuckReaderIterator(file_to_upload_path, 'rb', _4_MiB)
+        f_in = FileChuckReaderIterator(file_to_upload_path, 'rb', _4_MiB)
         with gzip.open(tmp_path, 'wb') as f_out:
             for chunk in f_in:
                 f_out.write(chunk)
@@ -91,9 +93,11 @@ class Driver:
             return lambda progress: progress
 
     def __choose_cover_video(self, zipped_path: str) -> str:
+        video_file_list = glob.glob((COVER_VIDEOS_DIR / "cover-video*.mp4").as_posix())
+        chosen_file = random.choice(video_file_list)
         # file_size = BIG_FILE if os.path.getsize(zipped_path) > _4_MiB else SMALL_FILE
         # return (COVER_VIDEOS_DIR / f"{file_size}-files-cover.mp4").as_posix()
-        return (COVER_VIDEOS_DIR / "cover-video.mp4").as_posix()
+        return chosen_file
 
     def __ungzip_it(self, gzipped_file_path: str) -> str:
         unzipped_path = Path(

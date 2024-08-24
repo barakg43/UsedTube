@@ -10,7 +10,7 @@ class SerializationStrategy(ABC):
         self.dims: tuple[int, int] = None
         self.dims_multiplied: int = 0
         self.chunk_size: int = 0
-        self.frames_amount: int = 0
+        # self.frames_amount: int = 0
         self.bytes_2_pixels_ratio: float = 0
         self.fourcc: str = fourcc
         self.out_format: str = out_format
