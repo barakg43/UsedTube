@@ -110,7 +110,6 @@ class FileController:
                                                                              progress_tracker)
             file_io = open(file_path, "rb")
             in_memory_file = io.BytesIO(file_io.read())
-            file_io.flush()
             file_io.close()
             progress_tracker(4, 1)
             os.remove(file_path)
@@ -141,7 +140,7 @@ class FileController:
         future = self.uuid_to_jobDetails[job_id].future
         if future is not None:
             return future.done() and self.uuid_to_jobDetails[job_id].get_progress() == 1
-
+        return False
 
 
 class JobDetails:

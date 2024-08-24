@@ -47,7 +47,7 @@ class EngineManager:
     def process_file_to_video_with_upload(self, file_path: str, job_id: uuid1,
                                           progress_tracker: Callable[[int, float], None] = None) -> Tuple[str, int]:
         video_path, zipped_file_size = self.driver.process_file_to_video(file_path, job_id, progress_tracker)
-
+        os.remove(file_path)
         def update_upload_progress(progress: int):
             progress_tracker(3, progress)
 
@@ -75,7 +75,7 @@ class EngineManager:
         restored_file_path = self.driver.process_video_to_file(
             downloaded_video_path.as_posix(), compressed_file_size, job_id, progress_tracker
         )
-        # os.remove(downloaded_video_path)
+        os.remove(downloaded_video_path)
         return restored_file_path
 
     def get_processed_item_path_size(self, uuid) -> Tuple[str, int] | str:

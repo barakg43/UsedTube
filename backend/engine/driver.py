@@ -63,7 +63,6 @@ class Driver:
         # deserialize
         self.__logger.info(f"{jobId}:deserializing {serialized_file_as_video_path}")
         zipped_file_path = self.__serializer.deserialize(serialized_file_as_video_path,
-
                                                          compressed_file_size, jobId,
                                                          update_deserialization_progress)
         # unzip
