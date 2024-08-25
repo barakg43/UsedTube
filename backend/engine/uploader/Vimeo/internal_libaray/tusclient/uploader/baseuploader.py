@@ -7,13 +7,14 @@ from typing import Optional, IO, Dict, TYPE_CHECKING
 
 import requests
 
-from engine.uploader.Vimeo.tusclient.exceptions import TusCommunicationError
-from engine.uploader.Vimeo.tusclient.fingerprint import interface, fingerprint
-from engine.uploader.Vimeo.tusclient.request import catch_requests_error
-from engine.uploader.Vimeo.tusclient.storage.interface import Storage
+from engine.uploader.Vimeo.internal_libaray.tusclient.exceptions import TusCommunicationError
+from engine.uploader.Vimeo.internal_libaray.tusclient.fingerprint import fingerprint
+from engine.uploader.Vimeo.internal_libaray.tusclient.fingerprint import interface
+from engine.uploader.Vimeo.internal_libaray.tusclient.request import catch_requests_error
+from engine.uploader.Vimeo.internal_libaray.tusclient.storage.interface import Storage
 
 if TYPE_CHECKING:
-    from engine.uploader.Vimeo.tusclient.client import TusClient
+    pass
 
 
 class BaseUploader:

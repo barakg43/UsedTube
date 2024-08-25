@@ -1,6 +1,6 @@
 from typing import Dict, Optional
 
-from engine.uploader.Vimeo.tusclient.uploader.uploader import Uploader
+from engine.uploader.Vimeo.internal_libaray.tusclient.uploader.uploader import Uploader
 
 
 class TusClient:

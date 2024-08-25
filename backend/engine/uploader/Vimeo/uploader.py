@@ -2,7 +2,7 @@ import os
 from typing import Callable
 
 from engine.constants import UPLOAD_VIDEO_CHUNK_SIZE, SERIALIZE_LOGGER
-from engine.uploader.Vimeo import vimeo
+from engine.uploader.Vimeo.internal_libaray import vimeo
 from engine.uploader.definition import Uploader
 
 

@@ -6,7 +6,7 @@ from typing import Optional
 import aiohttp
 import requests
 
-from engine.uploader.Vimeo.tusclient.exceptions import TusUploadFailed, TusCommunicationError
+from engine.uploader.Vimeo.internal_libaray.tusclient.exceptions import TusUploadFailed, TusCommunicationError
 
 
 # Catches requests exceptions and throws custom tuspy errors.

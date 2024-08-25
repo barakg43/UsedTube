@@ -4,9 +4,9 @@ from urllib.parse import urljoin
 
 import requests
 
-from engine.uploader.Vimeo.tusclient.exceptions import TusUploadFailed, TusCommunicationError
-from engine.uploader.Vimeo.tusclient.request import TusRequest, catch_requests_error
-from engine.uploader.Vimeo.tusclient.uploader.baseuploader import BaseUploader
+from engine.uploader.Vimeo.internal_libaray.tusclient.exceptions import TusUploadFailed, TusCommunicationError
+from engine.uploader.Vimeo.internal_libaray.tusclient.request import TusRequest, catch_requests_error
+from engine.uploader.Vimeo.internal_libaray.tusclient.uploader.baseuploader import BaseUploader
 
 
 def _verify_upload(request: TusRequest):
