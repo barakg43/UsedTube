@@ -3,7 +3,7 @@ import os
 import re
 from base64 import b64encode
 from sys import maxsize as MAXSIZE
-from typing import Optional, IO, Dict, TYPE_CHECKING
+from typing import Optional, IO, Dict, TYPE_CHECKING, Callable
 
 import requests
 
@@ -115,6 +115,7 @@ class BaseUploader:
             url_storage: Optional[Storage] = None,
             fingerprinter: Optional[interface.Fingerprint] = None,
             upload_checksum=False,
+            progress_callback: Optional[Callable[[int, int], None]] = None,
     ):
         if file_path is None and file_stream is None:
             raise ValueError("Either 'file_path' or 'file_stream' cannot be None.")
@@ -136,6 +137,7 @@ class BaseUploader:
         self.metadata_encoding = metadata_encoding
         self.store_url = store_url
         self.url_storage = url_storage
+        self.progress_callback = progress_callback
         self.fingerprinter = fingerprinter or fingerprint.Fingerprint()
         self.offset = 0
         self.url = None

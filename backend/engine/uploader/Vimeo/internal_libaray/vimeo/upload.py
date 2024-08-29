@@ -3,6 +3,7 @@
 
 import io
 import os
+from typing import Callable, Optional
 
 from . import exceptions
 from ..tusclient import client
@@ -15,7 +16,7 @@ class UploadVideoMixin:
     VERSIONS_ENDPOINT = '{video_uri}/versions'
     DEFAULT_CHUNK_SIZE = (200 * 1024 * 1024)  # 200 MB
 
-    def upload(self, filename, **kwargs):
+    def upload(self, filename,progress: Optional[Callable[[int,int], None]], **kwargs):
         """Upload a file.
 
         This should be used to upload a local file. If you want a form for your
@@ -26,6 +27,7 @@ class UploadVideoMixin:
 
         Args:
             filename (string): Path on disk to file
+            progress (Callable): Progress callback(current, total)
             **kwargs: Supply a `data` dictionary for data to set to your video
                 when uploading. See the API documentation for parameters you
                 can send. This is optional.
@@ -68,7 +70,7 @@ class UploadVideoMixin:
 
         attempt = attempt.json()
 
-        return self.__perform_tus_upload(filename, attempt, chunk_size=chunk_size)
+        return self.__perform_tus_upload(filename, attempt, chunk_size=chunk_size,progress=progress)
 
     #     def replace(self, video_uri, filename, **kwargs):
     #         """Replace the source of a single Vimeo video.
@@ -121,13 +123,14 @@ class UploadVideoMixin:
     #
     #         return self.__perform_tus_upload(filename, attempt, chunk_size=chunk_size)
     #
-    def __perform_tus_upload(self, filename, attempt, chunk_size=DEFAULT_CHUNK_SIZE):
+    def __perform_tus_upload(self, filename, attempt, progress: Callable[[int,int], None]=None,chunk_size=DEFAULT_CHUNK_SIZE):
         """Take an upload attempt and perform the actual upload via tus.
         https://tus.io/
 
         Args:
             filename (string): name of the video file on vimeo.com
             attempt (:obj): requests object
+            progress (:func): function that takes two arguments (current, total)
             chunk_size (int): size of each chunk. defaults to DEFAULT_CHUNK_SIZE
 
         Returns:
@@ -146,7 +149,8 @@ class UploadVideoMixin:
                     chunk_size=chunk_size,
                     file_stream=fs,
                     retries=3,
-                    url=upload_link)
+                    url=upload_link,
+                    progress_callback=progress)
                 uploader.upload()
         except Exception as e:
             raise exceptions.VideoUploadFailure(

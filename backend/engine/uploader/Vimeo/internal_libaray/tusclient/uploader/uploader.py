@@ -55,6 +55,9 @@ class Uploader(BaseUploader):
 
         self._do_request()
         self.offset = int(self.request.response_headers.get("upload-offset"))
+        if self.progress_callback:
+            self.progress_callback(self.offset, self.stop_at)
+
 
     @catch_requests_error
     def create_url(self):
