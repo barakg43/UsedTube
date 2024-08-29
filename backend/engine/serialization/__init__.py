@@ -28,7 +28,6 @@ def init_logger(log_path, logger_name):
         logger.addHandler(console_handler)
 
     logger.addHandler(f_handler)
-
     logger.setLevel(logging.DEBUG)
 
 
