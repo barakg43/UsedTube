@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import Callable
 
@@ -9,7 +10,7 @@ from engine.uploader.definition import Uploader
 # import vimeo
 
 
-class ViemoUploader(Uploader):
+class VimeoUploader(Uploader):
     def __init__(self, logger_name: str = SERIALIZE_LOGGER):
         super().__init__()
 
@@ -18,25 +19,27 @@ class ViemoUploader(Uploader):
             key='7eeff6c80dfa52c5595e578317a80b85b6b4b44e',
             secret='WXuNMiktYVwy7Y0cY3Q/o/uYstlDI2a6Of/SLhKQMCk7s5hf57PMowmOSR7psw9Z4JuwmoAEBmxw1/o/DiL4RyZDfXwfFo/C8EQgriOthomUBs60exIc6xorrHSagLai'
         )
-        file_name = 'C:\\Users\\Barak\\Downloads\\Careers.mp4'
-        uri = self.client.upload(file_name, data={
-            'name': 'Careers',
-        })
-        print(uri)
+        self.logger = logging.getLogger(logger_name)
+        self.videos_url_template = "https://www.vimeo.com/{}"
+        # file_name = 'C:\\Users\\Barak\\Downloads\\Careers.mp4'
+        # uri = self.client.upload(file_name,None, data={
+        #     'name': 'Careers',
+        # })
+        # print(uri)
         # self.client = dailymotion.Dailymotion()
         #
         # # Load .env.local file temporarily from here-only for testing...
         # dotenv_path = BASE_DIR / '.env.local'
         # if path.isfile(dotenv_path):
         #     dotenv.load_dotenv(dotenv_path)
-        # self.logger = logging.getLogger(logger_name)
+
         # self.api_key = getenv("DAILYMOTION_API_KEY")
         # self.api_secret = getenv("DAILYMOTION_API_SECRET")
         # self.username = getenv("DAILYMOTION_USERNAME")
         # self.password = getenv("DAILYMOTION_PASSWORD")
         # self.base_url_api = "https://partner.api.dailymotion.com/rest/"
         # self.auth_url = "https://partner.api.dailymotion.com/oauth/v1/token"
-        # self.videos_url_template = "https://www.dailymotion.com/video/{}"
+
         # self.client.set_grant_type('password',
         #                            api_key=self.api_key,
         #                            api_secret=self.api_secret,
@@ -51,7 +54,8 @@ class ViemoUploader(Uploader):
         # }
         # self.headers = {
         #     'Content-Type': 'application/x-www-form-urlencoded'
-        # }
+        # } api_key: dict[str]
+
 
     def upload(self, file_path: str, progress_tracker: Callable[[float], None] = None) -> str:
         upload_url = self.__upload_video(file_path, progress_tracker)
@@ -61,17 +65,15 @@ class ViemoUploader(Uploader):
     # Sending the video file to the upload url obtained in the previous function
     def __upload_video(self, file_path, tracker: Callable[[float], None]):
 
-        video_size = os.stat(file_path).st_size
-        chunk_amount = video_size / UPLOAD_VIDEO_CHUNK_SIZE
-
         def progress_tracker(bytes_written, total_size):
             percent = bytes_written / total_size
-            self.logger.debug(f"{file_path}: Uploaded {percent * 100:.2f}%")
+            self.logger.info(f"{file_path}:Vimeo Uploaded {percent * 100:.2f}%")
             if tracker is not None:
                 tracker(percent)
 
+
         try:
-            upload_url = self.client.upload(file_path, workers=chunk_amount, progress=progress_tracker)
+            upload_url = self.client.upload(file_path, progress=progress_tracker,data={"chunk_size": UPLOAD_VIDEO_CHUNK_SIZE})
             return upload_url
         except Exception as e:
             self.logger.error(e, exc_info=True)
@@ -82,16 +84,8 @@ class ViemoUploader(Uploader):
         Now that your video has been uploaded, you can publish it to make it visible
         '''
 
-        pub_url = self.client.post(
-            "/me/videos",
-            {
-                "url": uploaded_url,
-                "title": "MyTitle",
-                "published": "true",
-                "channel": "creation",
-                "is_created_for_kids": "false",
-            })
-        return self.videos_url_template.format(pub_url['id'])
+        video_id = uploaded_url.split('/')[-1]
+        return self.videos_url_template.format(video_id)
 
     def __get_percent_progress(self, current, total):
         """
@@ -104,4 +98,4 @@ class ViemoUploader(Uploader):
         return percent
 
 
-Mr_ViemoUploader = ViemoUploader()
+Mr_VimeoUploader = VimeoUploader()
