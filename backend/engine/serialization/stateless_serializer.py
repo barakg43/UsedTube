@@ -238,7 +238,7 @@ class StatelessSerializer:
     @staticmethod
     def deserialize_frame_done_writer_to_output_task(future_queue,
                                                      num_of_bytes_chunk,
-                                                     update_total_serialization_progress,
+                                                     update_total_deserialization_progress,
                                                      write_processed_counter: AtomicCounter,
                                                      deserialized_out_path: str):
 
@@ -251,7 +251,7 @@ class StatelessSerializer:
                 StatelessSerializer.ser_logger.debug(
                     f"deserializer write bytes number #{bytes_number} to output")
                 write_processed_counter.increment()
-                update_total_serialization_progress()
+                update_total_deserialization_progress()
                 # progress_tracker(total_written_percentage)
             except Exception as e:
                 StatelessSerializer.ser_logger.error(

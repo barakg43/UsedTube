@@ -68,7 +68,6 @@ class EngineManager:
                                             job_id: uuid1,
                                             progress_tracker: Callable[[int, float], None] = None) -> str:
         def update_download_progress(progress: float):
-            print(f"progress: {progress}")
             progress_tracker(1, progress)
 
         downloader: Downloader = VideoDownloader(logger=logging.Logger(GENERAL_LOGGER),
