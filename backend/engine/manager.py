@@ -6,11 +6,12 @@ from typing import Dict, Tuple, Callable
 from uuid import uuid1
 
 from engine.constants import GENERAL_LOGGER
-from engine.downloader.DailymotionDownloader import DailymotionDownloader
+from engine.downloader.video_downloader import VideoDownloader
 from engine.downloader.definition import Downloader
 from engine.driver import Driver
 from engine.progress_tracker import Tracker
 from engine.uploader.Dailymotion.uploader import DailymotionUploader, Mr_DailymotionUploader
+from engine.uploader.Vimeo.uploader import Mr_VimeoUploader
 
 
 class EngineManager:
@@ -67,10 +68,11 @@ class EngineManager:
                                             job_id: uuid1,
                                             progress_tracker: Callable[[int, float], None] = None) -> str:
         def update_download_progress(progress: float):
+            print(f"progress: {progress}")
             progress_tracker(1, progress)
 
-        downloader: Downloader = DailymotionDownloader(logger=logging.Logger(GENERAL_LOGGER),
-                                                       progress_tracker=update_download_progress)  # choose based on URL
+        downloader: Downloader = VideoDownloader(logger=logging.Logger(GENERAL_LOGGER),
+                                                 progress_tracker=update_download_progress)  # choose based on URL
         downloaded_video_path = downloader.download(video_url)
         restored_file_path = self.driver.process_video_to_file(
             downloaded_video_path.as_posix(), compressed_file_size, job_id, progress_tracker
@@ -95,7 +97,7 @@ class EngineManager:
     def __upload_video_to_providers(self, job_id, video_path: str,
                                     update_upload_progress: Callable[[int], None]) -> str:
         # self.uploader: Uploader = YouTubeUploader(job_id, self._progress_tracker)
-        uploader = Mr_DailymotionUploader
+        uploader = Mr_VimeoUploader
         # self.uuid_to_future[job_id] = self.workers.submit(self.uploader.upload, video_path)
         video_final_url = uploader.upload(video_path, update_upload_progress)
         return video_final_url
