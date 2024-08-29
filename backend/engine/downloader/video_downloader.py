@@ -9,7 +9,7 @@ from engine.constants import ITEMS_READY_FOR_PROCESSING
 from engine.downloader.definition import Downloader
 
 
-class DailymotionDownloader(Downloader):
+class VideoDownloader(Downloader):
     def __init__(self, logger=None, progress_tracker: Callable[[float], None] = None):
 
         self.download_percent = 0.0
@@ -25,6 +25,8 @@ class DailymotionDownloader(Downloader):
             if self.progress_tracker is not None:
                 self.progress_tracker(self.download_percent / 100)
         elif downloader['status'] == 'finished':
+            if self.progress_tracker is not None:
+                self.progress_tracker(1)
             self.video_downloaded_path = downloader["filename"]
 
     def download(self, video_url: str, debug=False) -> Path:
