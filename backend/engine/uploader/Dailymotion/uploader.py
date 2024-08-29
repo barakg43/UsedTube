@@ -5,13 +5,15 @@ from typing import Callable
 
 import dailymotion
 import dotenv
+import nest_asyncio
 
 from django_server.settings import BASE_DIR
 from engine.constants import UPLOAD_VIDEO_CHUNK_SIZE, SERIALIZE_LOGGER
 from engine.uploader.definition import Uploader
 
-import nest_asyncio
 nest_asyncio.apply()
+
+
 class DailymotionUploader(Uploader):
     base_url = "ABCDE"
 
@@ -59,8 +61,8 @@ class DailymotionUploader(Uploader):
         chunk_amount = video_size / UPLOAD_VIDEO_CHUNK_SIZE
 
         def progress_tracker(bytes_written, total_size):
-            percent =bytes_written/total_size
-            self.logger.debug(f"{file_path}: Uploaded {percent*100:.2f}%")
+            percent = bytes_written / total_size
+            self.logger.info(f"{file_path}:Dailymotion Uploaded {percent * 100:.2f}%")
             if tracker is not None:
                 tracker(percent)
 
@@ -97,4 +99,5 @@ class DailymotionUploader(Uploader):
         percent = round((min((current * 100) / total, 100)), 2)
         return percent
 
-Mr_DailymotionUploader=DailymotionUploader()
+
+Mr_DailymotionUploader = DailymotionUploader()
