@@ -10,40 +10,47 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function useLogin(setError: Function) {
-    const router = useRouter();
-    const dispatch = useAppDispatch();
-    const [loginApi, { isLoading, error }] = useLoginMutation();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const [loginApi, { isLoading, error }] = useLoginMutation();
 
-    useVerifyMutation();
+  useVerifyMutation();
+  const { toaster } = useToaster();
+  const isAuthenticated = useAppSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+  useEffect(() => {
+    if (isAuthenticated) router.push("/drive/");
+  }, [isAuthenticated, router]);
+  const login = ({ username, password }: UserCredentials) => {
+    loginApi({ username, password })
+      .unwrap()
+      .then(() => {
+        dispatch(setAuth());
+        router.push("/drive/");
+      })
+      .catch((e) => {
+        if (e.data == "Network Error") {
+          toaster(
+            "Network error: can't connect server or server unreachable",
+            "error"
+          );
+        } else {
+          setError(USERNAME, {
+            type: "manual",
+            message: "",
+          });
+          setError(PASSWORD, {
+            type: "manual",
+            message: "Invalid username or password",
+          });
+        }
+      });
+  };
 
-    const isAuthenticated = useAppSelector(
-        (state: RootState) => state.auth.isAuthenticated
-    );
-    useEffect(() => {
-        if (isAuthenticated) router.push("/drive/");
-    }, [isAuthenticated, router]);
-    const login = ({ username, password }: UserCredentials) => {
-        loginApi({ username, password })
-            .unwrap()
-            .then(() => {
-                dispatch(setAuth());
-                router.push("/drive/");
-            })
-            .catch(() => {
-                setError(USERNAME, {
-                    type: "manual",
-                    message: "",
-                });
-                setError(PASSWORD, {
-                    type: "manual",
-                    message: "Invalid username or password",
-                });
-            });
-    };
-
-    return {
-        login,
-        error,
-        isLoading,
-    };
+  return {
+    login,
+    error,
+    isLoading,
+  };
 }
