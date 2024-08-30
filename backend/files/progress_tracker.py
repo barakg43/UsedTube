@@ -1,5 +1,7 @@
 import numpy as np
 
+from django_server.settings import DEBUG
+
 
 class ProgressTracker:
     def __init__(self, phase_weights_array: list[float]):
@@ -10,7 +12,8 @@ class ProgressTracker:
         if phase > len(self.phase_weights_array):
             raise IndexError("phase out of bounds")
         self.progress_array[phase - 1] = percentage
-        # print(f"total :{self.get_total_progress() * 100:.3f}%")
+        if DEBUG:
+             print(f"total :{self.get_total_progress() * 100:.3f}%")
 
     def get_total_progress(self):
         return np.multiply(self.progress_array, self.phase_weights_array).sum()

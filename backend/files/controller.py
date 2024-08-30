@@ -8,7 +8,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from account.models import AppUser
 from engine.constants import ITEMS_READY_FOR_PROCESSING
-from engine.downloader.DailymotionDownloader import DailymotionDownloader
+from engine.downloader.video_downloader import VideoDownloader
 from engine.downloader.definition import Downloader
 from engine.manager import Mr_EngineManager
 from engine.serialization.serializer import deserialize_logger, serialize_logger
@@ -106,7 +106,7 @@ class FileController:
             progress_tracker = self.uuid_to_jobDetails[job_id].progress_tracker_callback()
             self.logger.info(
                 f"Job {job_id} downloading {file_name} (size {compressed_file_size} bytes) from {video_url}")
-            file_path = Mr_EngineManager.process_video_to_file_with_download(video_url, compressed_file_size, job_id,
+            file_path = self.engine_manger.process_video_to_file_with_download(video_url, compressed_file_size, job_id,
                                                                              progress_tracker)
             file_io = open(file_path, "rb")
             in_memory_file = io.BytesIO(file_io.read())
