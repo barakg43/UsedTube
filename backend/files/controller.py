@@ -1,9 +1,11 @@
 import io
 import os
 from concurrent.futures import ThreadPoolExecutor, Future
+from datetime import datetime, timezone
 from typing import Dict, Tuple, Callable
 from uuid import uuid1
 
+import pytz
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from account.models import AppUser
@@ -62,13 +64,23 @@ class FileController:
             file_name_array = file_name_with_ext.split(".")
             file_name = file_name_array[0]
             ext = file_name_array[1]
-            File.objects.create(name=file_name,
-                                size=file_size,
-                                compressed_size=compressed_size,
-                                extension=ext,
-                                folder_id=folder_id,
-                                owner=user,
-                                url=url_result)
+            file_object=File.objects.filter(name=file_name, extension=ext, folder_id=folder_id)
+            time_now_tz=datetime.now(pytz.timezone("Asia/Jerusalem"))
+            if file_object.exists():
+                file_object.update(size=file_size,
+                                   compressed_size=compressed_size,
+                                   url=url_result,
+                                   updated_at=time_now_tz)
+            else:
+                File.objects.create(name=file_name,
+                                    size=file_size,
+                                    compressed_size=compressed_size,
+                                    extension=ext,
+                                    folder_id=folder_id,
+                                    owner=user,
+                                    updated_at=time_now_tz,
+                                    created_at=time_now_tz,
+                                    url=url_result)
             self.logger.info(f"Job {job_id} done: {file_name} was uploaded successfully on {url_result}")
             progress_tracker(4, 1)
         except Exception as e:
