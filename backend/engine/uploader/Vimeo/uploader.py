@@ -73,7 +73,7 @@ class VimeoUploader(Uploader):
 
 
         try:
-            upload_url = self.client.upload(file_path, progress=progress_tracker,data={"chunk_size": UPLOAD_VIDEO_CHUNK_SIZE})
+            upload_url = self.client.upload(file_path, progress=progress_tracker,data={"chunk_size": UPLOAD_VIDEO_CHUNK_SIZE//5})
             return upload_url
         except Exception as e:
             self.logger.error(e, exc_info=True)
