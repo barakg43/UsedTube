@@ -1,3 +1,4 @@
+import { FileNode, FSNode } from "@/types";
 import { baseApi } from "../baseApi";
 import { setError, setIsUploading, setJobId } from "../slices/fileUploadSlice";
 
@@ -8,7 +9,29 @@ const driveApiSlice = baseApi.injectEndpoints({
         folderContent: builder.query({
             query: ({ folderId }: { folderId: string | undefined }) =>
                 `/files/dir-content/${folderId || ""}`,
+            transformResponse: (response: {
+                files: FileNode[];
+                folders: FSNode[];
+                parents: FSNode[];
+            }) => {
+                return response;
+            },
         }),
+        sharedItems: builder.query({
+            query: () => ({
+                url: `/sharing/`,
+                method: "GET",
+            }),
+            transformResponse: (response: { files: FileNode[] }) => {
+                if (Array.isArray(response.files))
+                    for (const file of response.files) {
+                        file.type = "file";
+                    }
+                // else response.files/ = "file";
+                return response;
+            },
+        }),
+
         directoryTree: builder.query({
             query: () => ({
                 url: "/files/dir-tree/",
@@ -32,6 +55,15 @@ const driveApiSlice = baseApi.injectEndpoints({
                 method: "DELETE",
             }),
         }),
+
+        deleteSharedNode: builder.mutation({
+            query: ({ nodeId }: { nodeId: string }) => ({
+                url: `/sharing/`,
+                method: "DELETE",
+                body: { nodeId },
+            }),
+        }),
+
         uploadFile: builder.mutation({
             query: ({ file, folderId }: { file: File; folderId: string }) => {
                 const formData = new FormData();
@@ -91,4 +123,6 @@ export const {
     useGetUploadProgressQuery,
     useDeleteNodeMutation,
     useCancelUploadMutation,
+    useSharedItemsQuery,
+    useDeleteSharedNodeMutation,
 } = driveApiSlice;

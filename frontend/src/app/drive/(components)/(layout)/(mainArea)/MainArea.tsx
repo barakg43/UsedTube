@@ -6,29 +6,25 @@ import ItemsDisplayToggle from "./(itemsDisplay)/ItemsDisplayToggle";
 import CreateNewFolder from "./CreateNewFolder";
 import Loading from "@/app/(common)/(components)/Loading";
 import PathTrace from "./PathTrace";
-import { FSNode, FileNode } from "@/types";
-import ShareItem from "./ShareItem";
+import useDisplayItems from "./(itemsDisplay)/useDisplayItems";
 
 const MainArea = ({ folderId }: { folderId: string }) => {
-    const { data, error, isLoading } = useFolderContentQuery(
+    const { isLoading } = useFolderContentQuery(
         { folderId },
         { skip: folderId === "" }
     );
-    const {
-        files,
-        folders,
-        parents,
-    }: { files: FileNode[]; folders: FSNode[]; parents: FSNode[] } = data || {};
+
+    const items = useDisplayItems({ folderId });
 
     if (isLoading) {
-        <Loading />;
+        return <Loading />;
     }
 
     return (
         <div className="bg-white flex flex-col flex-grow px-4 py-4 mb-4 mr-4 rounded-3xl">
             <div className="flex flex-row justify-between w-full">
                 <Typography variant="h4">
-                    <PathTrace parents={parents?.slice().reverse()} />
+                    <PathTrace folderId={folderId} />
                 </Typography>
                 <div className="flex flex-row justify-between">
                     {/* <ShareItem /> */}
@@ -36,11 +32,8 @@ const MainArea = ({ folderId }: { folderId: string }) => {
                     <ItemsDisplayToggle />
                 </div>
             </div>
-            <ItemsDisplay
-                parent={parents && parents[1]}
-                folders={folders}
-                files={files}
-            />
+            {/* @ts-ignore */}
+            <ItemsDisplay items={items} />
         </div>
     );
 };

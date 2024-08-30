@@ -24,6 +24,7 @@ const ItemsDisplayRow: FC<{ items: FSNode[] }> = ({ items }) => {
         { field: "updated_at", headerName: "Updated At", width: 200 },
         { field: "type", headerName: "Type", width: 100 },
         { field: "size", headerName: "Size", width: 100 },
+        { field: "owner", headerName: "Owner", width: 200 },
     ];
 
     const { openContextMenu, renderContextMenu } = useContextMenu();

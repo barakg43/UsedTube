@@ -8,9 +8,7 @@ class SharedItem(models.Model):
     # folder_item = models.ForeignKey(
     #     AppUser, on_delete=models.CASCADE, null=True, related_name="shared_folders"
     # )
-    file_item = models.ForeignKey(
-        File, on_delete=models.CASCADE, null=True, related_name="shared_files"
-    )
+    file_item = models.ForeignKey(File, on_delete=models.CASCADE, related_name="shares")
     shared_with = models.ForeignKey(
         AppUser, on_delete=models.CASCADE, related_name="shared_items"
     )

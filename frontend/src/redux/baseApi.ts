@@ -25,7 +25,7 @@ const baseQueryWithReauth: BaseQueryFn<
             const release = await mutex.acquire();
             try {
                 const refreshResult = await axiosBaseQuery({
-                    url: "/auth/jwt/refresh",
+                    url: "account/auth/jwt/refresh",
                     method: "POST",
                 });
                 if (refreshResult.data) {

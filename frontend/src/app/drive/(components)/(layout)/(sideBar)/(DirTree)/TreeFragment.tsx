@@ -4,6 +4,7 @@ import { RootState } from "@/redux/store";
 import { FSNode } from "@/types";
 import { Button } from "@mui/material";
 import FolderEntry from "./FolderEntry";
+import { useFolderClick } from "@/app/drive/(hooks)/useFolderClick";
 
 const Space = () => {
     return <div className="w-[8px]" />;
@@ -23,11 +24,17 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
         (state: RootState) => state.items.activeDirectoryId
     );
 
+    const isShowingSharedItems = useAppSelector(
+        (state) => state.share.showSharedItems
+    );
+
+    const folderClick = useFolderClick();
+
     if (!node) return null;
-    const hasChildren =
-        (node?.children?.length ?? //filter((child) => child.type == "folder").
-            0) > 0;
-    const isActiveFolder = activeDirectory === node?.id;
+    const hasChildren = (node?.children?.length ?? 0) > 0;
+    const isActiveFolder =
+        activeDirectory === node?.id && !isShowingSharedItems;
+
     return (
         <TreeContainer>
             <div
@@ -39,7 +46,6 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
                                 : "hover:bg-highlighted"
                         }
                         rounded-full w-full`}
-                //${isActiveFolder ? "text-dustyPaperDark" : "text-black"}
             >
                 {spaces > 0 &&
                     new Array(spaces)
@@ -47,10 +53,11 @@ export const TreeFragment: React.FC<MyProps> = ({ node, spaces }) => {
                         .map((_, index) => <Space key={index} />)}
                 <div className="mr-2 flex flex-row overflow-hidden whitespace-nowrap w-full">
                     <Button
-                        className="hover:bg-transparent normal-case text-black flex justify-start w-full rounded-full"
+                        className="hover:bg-transparent normal-case text-black flex justify-start w-full rounded-full flex-grow"
                         component="label"
                         variant="text"
                         size="small"
+                        onClick={() => folderClick(node.id)}
                     >
                         <FolderEntry node={node} />
                     </Button>

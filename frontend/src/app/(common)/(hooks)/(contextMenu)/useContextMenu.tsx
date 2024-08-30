@@ -2,6 +2,7 @@ import { FSNode } from "@/types";
 import { Menu, MenuItem } from "@mui/material";
 import React, { useState } from "react";
 import { useHandleMenuItemClick } from "./useHandleMenuItemClick";
+import { useAppSelector } from "@/redux/hooks";
 
 const useContextMenu = () => {
     // return Container, activation function which receives node and action, and event
@@ -19,6 +20,10 @@ const useContextMenu = () => {
         setAnchorPosition({ top: 0, left: 0 });
     };
 
+    const isShowingSharedItems = useAppSelector(
+        (state) => state.share.showSharedItems
+    );
+
     const handleMenuItemClick = useHandleMenuItemClick();
 
     const renderContextMenu = () => (
@@ -28,17 +33,19 @@ const useContextMenu = () => {
             open={Boolean(anchorPosition.top > 0 && anchorPosition.left > 0)}
             onClose={closeContextMenu}
         >
-            {node.type === "file" && (
-                <>
+            {node.type === "file" && [
+                <MenuItem
+                    key="download"
+                    onClick={() => {
+                        handleMenuItemClick(node, "download");
+                        closeContextMenu();
+                    }}
+                >
+                    Download
+                </MenuItem>,
+                !isShowingSharedItems && (
                     <MenuItem
-                        onClick={() => {
-                            handleMenuItemClick(node, "download");
-                            closeContextMenu();
-                        }}
-                    >
-                        Download
-                    </MenuItem>
-                    <MenuItem
+                        key="share"
                         onClick={() => {
                             handleMenuItemClick(node, "share");
                             closeContextMenu();
@@ -46,25 +53,11 @@ const useContextMenu = () => {
                     >
                         Share
                     </MenuItem>
-                </>
-            )}
-            {/* <MenuItem
-                onClick={() => {
-                    handleMenuItemClick(node, "download");
-                    closeContextMenu();
-                }}
-            >
-                Download
-            </MenuItem>
+                ),
+            ]}
+
             <MenuItem
-                onClick={() => {
-                    handleMenuItemClick(node, "share");
-                    closeContextMenu();
-                }}
-            >
-                Share
-            </MenuItem> */}
-            <MenuItem
+                key="delete"
                 onClick={() => {
                     handleMenuItemClick(node, "delete");
                     closeContextMenu();

@@ -27,7 +27,7 @@ const ShareModal = () => {
                 `/sharing/create/${email}&${fileNode.id}`
             );
             setError(null);
-            setMessage("shard successfully");
+            setMessage("shared successfully");
             setTimeout(() => {
                 dispatch(setShowModal(false));
                 setDisableShareButton(false);
@@ -36,7 +36,12 @@ const ShareModal = () => {
 
             //@ts-ignore
         } catch (err: AxiosError) {
-            setError(err.response.data.error);
+            try {
+                setError(err.response.data.error);
+            } catch {
+                setError("something went wrong");
+            }
+
             setDisableShareButton(false);
         }
     };

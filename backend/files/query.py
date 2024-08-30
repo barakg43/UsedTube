@@ -1,28 +1,26 @@
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 
 from account.models import AppUser
+from django_server.model_utils import beautify_timestamps, set_owner_name
 from files.models import Folder, File
 
-# create a util function which transforms timestamps into nice time format
-# from this 2024-08-05T14:23:25.308Z to this 5th August 2024 14:23
-# so i can later do this:
-# sub_folders_list = map(beautify_timestamps, list(sub_folders.values()))
-def beautify_timestamps(item):
-    item["created_at"] = item["created_at"].strftime("%d %B %Y %H:%M")
-    item["updated_at"] = item["updated_at"].strftime("%d %B %Y %H:%M")
-    return item
+
+
 
 def select_folder_subitems(user, folder_id: str) -> dict:
     parent_folder = Folder.objects.get(id=folder_id)
     sub_folders = Folder.objects.filter(owner=user, parent=parent_folder)
     files = File.objects.filter(owner=user, folder=parent_folder)
     
-    sub_folders_list = list(sub_folders.values())
+    sub_folders_list = list(sub_folders.values("id", "name", "parent", "created_at", "updated_at", "owner"))
     files_list = list(
-        files.values("id", "name", "extension", "size", "folder", "created_at", "updated_at"))
+        files.values("id", "name", "extension", "size", "folder", "created_at", "updated_at", "owner"))
     
     files_list = list(map(beautify_timestamps, files_list))
     sub_folders_list = list(map(beautify_timestamps, sub_folders_list))
+    
+    files_list = list(map(set_owner_name, files_list))
+    sub_folders_list = list(map(set_owner_name, sub_folders_list))
     
     return {"folders": sub_folders_list, "files": files_list}
 

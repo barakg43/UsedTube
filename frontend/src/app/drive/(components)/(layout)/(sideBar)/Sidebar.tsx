@@ -5,11 +5,10 @@ import FolderTree from "./(DirTree)/FolderTree";
 import FileUploadButton from "./(fileUpload)/FileUploadButton";
 import SharedWithMe from "./SharedWithMe";
 import Quota from "./Quota";
-import { useToaster } from "@/app/(common)/(hooks)/(toaster)/useToaster";
 
 const SideBarItem: FC<{ children: ReactNode }> = ({ children }) => {
     return (
-        <div className="rounded-2xl cursor-default items-center mb-3 text-black text-center">
+        <div className="rounded-2xl cursor-default items-center  text-black text-center">
             {children}
         </div>
     );

@@ -1,6 +1,5 @@
 import { FSNode } from "@/types";
 import React, { FC, useCallback, useState } from "react";
-import { useFolderClick } from "../../../../(hooks)/useFolderClick";
 import { useAppDispatch } from "@/redux/hooks";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
@@ -16,7 +15,6 @@ const FolderEntry: FC<FolderEntryProps> = ({ node }) => {
     const dispatch = useAppDispatch();
     const [, updateState] = useState<object>();
     const forceUpdate = useCallback(() => updateState({}), []);
-    const onLabelClick = useFolderClick();
     const hasSubFolders = (node?.children?.length ?? 0) > 0;
     const handleArrowToggle = (node: FSNode): void => {
         dispatch(toggleIsOpenedDir(node));
@@ -52,7 +50,6 @@ const FolderEntry: FC<FolderEntryProps> = ({ node }) => {
             {prefix}
             <div
                 className={`text-left text-ellipsis ml-3 overflow-hidden whitespace-nowrap`}
-                onClick={() => onLabelClick(node.id)}
             >{`${node.name}`}</div>
         </>
     );

@@ -25,7 +25,7 @@ export const registerUserData = createAsyncThunk(
     "account/register",
     async (userData: UserValues, thunkAPI) => {
         const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_HOST}/auth/register`,
+            `${process.env.NEXT_PUBLIC_HOST}account/register`,
             userData
         );
         return response.data;
