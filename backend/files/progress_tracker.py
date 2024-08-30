@@ -12,6 +12,12 @@ class ProgressTracker:
         if phase > len(self.phase_weights_array):
             raise IndexError("phase out of bounds")
         self.progress_array[phase - 1] = percentage
+        # print(f"phase 1 :{ self.progress_array[0]*100:.2f}% # "
+        #       f"phase 2 :{ self.progress_array[1]*100:.2f}% # "
+        #       f"phase 3 :{ self.progress_array[2]*100:.2f}% # "
+        #       f"phase 4 :{ self.progress_array[3]*100:.2f}% # "
+        #       )
+
         if DEBUG:
              print(f"total :{self.get_total_progress() * 100:.3f}%")
 
