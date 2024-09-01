@@ -17,9 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 import account.urls as account_urls
-
-from files import urls as file_urls
 import sharing.urls as sharing_urls
+from files import urls as file_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),

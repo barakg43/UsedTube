@@ -5,13 +5,13 @@ import os
 from concurrent.futures import ThreadPoolExecutor, wait
 from typing import IO, overload
 
-import cv2
 import numpy as np
 from more_itertools import consume
 from multipledispatch import dispatch
 
 from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, FILES_READY_FOR_RETRIEVAL_DIR
 from engine.serialization.ffmpeg.video_capture import VideoCapture
+from engine.serialization.ffmpeg.video_write import VideoWriter
 from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 from engine.serialization.strategy.impl.bit_to_block import BitToBlock
 
@@ -38,14 +38,14 @@ class Serializer:
         self.deser_logger = logging.getLogger(DESERIALIZE_LOGGER)
         self.original_sha256 = ""
 
-    def get_video_metadata(self, cover_video:VideoCapture) :
-        video_props=cover_video.get_video_props()
+    def get_video_metadata(self, cover_video: VideoCapture):
+        video_props = cover_video.get_video_props()
         self.strategy.dims = (
-            video_props["width"],video_props["height"]
+            video_props["width"], video_props["height"]
             # int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         )
-        self.fps = video_props["fps"]  #cover_video.get(cv2.CAP_PROP_FPS)
-        self.encoding =video_props["codec"] #cv2.VideoWriter.fourcc(*self.strategy.fourcc)
+        self.fps = video_props["fps"]  # cover_video.get(cv2.CAP_PROP_FPS)
+        self.encoding = video_props["codec"]  # cv2.VideoWriter.fourcc(*self.strategy.fourcc)
         self.strategy.dims_multiplied = np.multiply(*self.strategy.dims)
 
     def collect_metadata(self, file_br, cover_video):
@@ -60,7 +60,7 @@ class Serializer:
         :parameter file_to_serialize_path: points to file to serialize
         """
         file_to_serialize = open(file_to_serialize_path, 'rb')
-        cover_video = cv2.VideoCapture(cover_video_path)
+        cover_video = VideoCapture(cover_video_path)
         self.collect_metadata(file_to_serialize, cover_video)
         cover_video.release()
 
@@ -93,14 +93,13 @@ class Serializer:
             wait(futures)
         self.ser_logger.debug("waiting for workers to finish processing chunks...")
 
-        output_video = cv2.VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
+        output_video = VideoWriter(out_vid_path, self.encoding, self.fps, self.strategy.dims)
 
         file_to_serialize.close()
 
         consume(map(output_video.write, serialized_frames))
         # Closes all the video sources
         output_video.release()
-        cv2.destroyAllWindows()
 
     def generateSha256ForFile(self, file_bytes: IO):
         file_bytes.seek(0)
@@ -120,7 +119,7 @@ class Serializer:
     @dispatch(str, int, str)
     def deserialize(self, serialized_file_as_video_path: str, file_size: int, deserialized_file_out_path: str):
 
-        serialized_file_videocap = cv2.VideoCapture(serialized_file_as_video_path)
+        serialized_file_videocap = VideoCapture(serialized_file_as_video_path)
         self.get_video_metadata(serialized_file_videocap)
 
         bytes_left_to_read = file_size
@@ -161,7 +160,6 @@ class Serializer:
         consume(map(lambda _bytes: deserialized_out_file.write(bytes(_bytes.tolist())), deserialized_bytes))
         deserialized_out_file.close()
         serialized_file_videocap.release()
-        cv2.destroyAllWindows()
 
     def calculate_total_bytes(self, bytes_left_to_read):
         bytes_amount_to_read = self.chunk_size if bytes_left_to_read > self.strategy.dims_multiplied / self.strategy.bytes_2_pixels_ratio else bytes_left_to_read

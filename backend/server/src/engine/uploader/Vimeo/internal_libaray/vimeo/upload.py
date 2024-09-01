@@ -16,7 +16,7 @@ class UploadVideoMixin:
     VERSIONS_ENDPOINT = '{video_uri}/versions'
     DEFAULT_CHUNK_SIZE = (200 * 1024 * 1024)  # 200 MB
 
-    def upload(self, filename,progress: Optional[Callable[[int,int], None]], **kwargs):
+    def upload(self, filename, progress: Optional[Callable[[int, int], None]], **kwargs):
         """Upload a file.
 
         This should be used to upload a local file. If you want a form for your
@@ -70,7 +70,7 @@ class UploadVideoMixin:
 
         attempt = attempt.json()
 
-        return self.__perform_tus_upload(filename, attempt, chunk_size=chunk_size,progress=progress)
+        return self.__perform_tus_upload(filename, attempt, chunk_size=chunk_size, progress=progress)
 
     #     def replace(self, video_uri, filename, **kwargs):
     #         """Replace the source of a single Vimeo video.
@@ -123,7 +123,8 @@ class UploadVideoMixin:
     #
     #         return self.__perform_tus_upload(filename, attempt, chunk_size=chunk_size)
     #
-    def __perform_tus_upload(self, filename, attempt, progress: Callable[[int,int], None]=None,chunk_size=DEFAULT_CHUNK_SIZE):
+    def __perform_tus_upload(self, filename, attempt, progress: Callable[[int, int], None] = None,
+                             chunk_size=DEFAULT_CHUNK_SIZE):
         """Take an upload attempt and perform the actual upload via tus.
         https://tus.io/
 

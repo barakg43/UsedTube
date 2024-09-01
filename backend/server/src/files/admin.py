@@ -18,5 +18,3 @@ class FileAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     list_filter = ('folder', 'owner', 'created_at')
     raw_id_fields = ('folder', 'owner')
-
-

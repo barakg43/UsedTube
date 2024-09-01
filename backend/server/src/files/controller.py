@@ -62,8 +62,8 @@ class FileController:
             file_name_array = file_name_with_ext.split(".")
             file_name = file_name_array[0]
             ext = file_name_array[1]
-            file_object=File.objects.filter(name=file_name, extension=ext, folder_id=folder_id)
-            time_now_tz=datetime.now(pytz.timezone("Asia/Jerusalem"))
+            file_object = File.objects.filter(name=file_name, extension=ext, folder_id=folder_id)
+            time_now_tz = datetime.now(pytz.timezone("Asia/Jerusalem"))
             if file_object.exists():
                 file_object.update(size=file_size,
                                    compressed_size=compressed_size,
@@ -117,7 +117,7 @@ class FileController:
             self.logger.info(
                 f"Job {job_id} downloading {file_name} (size {compressed_file_size} bytes) from {video_url}")
             file_path = self.engine_manger.process_video_to_file_with_download(video_url, compressed_file_size, job_id,
-                                                                             progress_tracker)
+                                                                               progress_tracker)
             file_io = open(file_path, "rb")
             in_memory_file = io.BytesIO(file_io.read())
             file_io.close()

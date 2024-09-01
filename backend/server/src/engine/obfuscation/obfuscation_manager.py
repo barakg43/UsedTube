@@ -51,7 +51,7 @@ class ObfuscationManager:
         # height = int(file_frames_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         out_path = (
-                    FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}_{fourcc}_bitrate({bitrate})_block_size({block_size}).mp4").as_posix()
+                FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}_{fourcc}_bitrate({bitrate})_block_size({block_size}).mp4").as_posix()
         # fourcc = cv2.VideoWriter.fourcc(*fourcc)
         # out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
         frame_counter = [0]  # make it mutable for the progress tracker

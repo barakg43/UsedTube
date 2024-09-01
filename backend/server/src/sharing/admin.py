@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from sharing.models import SharedItem
 
+
 # Register your models here.
 @admin.register(SharedItem)
 class SharedItemAdmin(admin.ModelAdmin):

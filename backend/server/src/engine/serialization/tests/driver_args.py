@@ -3,9 +3,10 @@ import gzip
 import os
 import random
 import shutil
+import uuid
 from pathlib import Path
 from typing import Tuple, Callable
-import uuid
+
 from engine.constants import _4_MiB, COVER_VIDEOS_DIR, TMP_WORK_DIR, FILES_READY_FOR_RETRIEVAL_DIR
 from engine.obfuscation.obfuscation_manager import ObfuscationManager
 from engine.serialization.file_chuck_reader_iterator import FileChuckReaderIterator

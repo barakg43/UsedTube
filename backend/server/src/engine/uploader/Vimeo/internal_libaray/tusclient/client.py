@@ -38,4 +38,3 @@ class TusClient:
         """
         kwargs["client"] = self
         return Uploader(*args, **kwargs)
-

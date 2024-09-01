@@ -1,6 +1,6 @@
-from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.http import HttpRequest, FileResponse, JsonResponse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.views import APIView
 
@@ -53,7 +53,8 @@ class DownloadViewProgressView(APIView):
                 as_attachment=True,
             )
         elif file_controller.is_processing_done(job_id):
-            return JsonResponse({ERROR: "Something went wrong in downloading and processing file"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return JsonResponse({ERROR: "Something went wrong in downloading and processing file"},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return JsonResponse({"progress": file_controller.get_job_progress(job_id)})
 
@@ -66,6 +67,7 @@ class SerializationProgressView(APIView):
             return JsonResponse({"progress": 1})
         return JsonResponse({"progress": Mr_EngineManager.get_action_progress(job_id)})
 
+
 class UploadView(APIView):
     def post(self, request: HttpRequest, folder_id: str):
         if FILE not in request.FILES:
@@ -77,6 +79,7 @@ class UploadView(APIView):
         uploaded_file = request.FILES[FILE]
         job_id = file_controller.save_file_to_video_provider_async(request.user, uploaded_file, folder_id)
         return JsonResponse({JOB_ID: job_id}, status=201)
+
 
 class UploadProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
@@ -92,7 +95,7 @@ class UploadProgressView(APIView):
         job_complete_percentage = file_controller.get_job_progress(job_id)
         if job_complete_percentage == 1:
             file_controller.remove_job(job_id)
-            return JsonResponse({"progress":1.0})
+            return JsonResponse({"progress": 1.0})
         if file_controller.is_processing_done(job_id):
             return JsonResponse({ERROR: "there are internal server error"},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -115,16 +118,14 @@ class UploadProgressView(APIView):
 
         return JsonResponse({"progress": job_complete_percentage})
 
+
 class CancelUploadView(APIView):
     def delete(self, request: HttpRequest, job_id: str):
-        job_owner=file_controller.get_user_for_job(job_id)
+        job_owner = file_controller.get_user_for_job(job_id)
         if request.user != job_owner:
-            return JsonResponse({ERROR:"Not authorized to cancel this upload job"},status=status.HTTP_403_FORBIDDEN)
+            return JsonResponse({ERROR: "Not authorized to cancel this upload job"}, status=status.HTTP_403_FORBIDDEN)
         file_controller.cancel_action(job_id)
-        return JsonResponse({MESSAGE:"Upload job cancelled"},status=200)
-
-
-
+        return JsonResponse({MESSAGE: "Upload job cancelled"}, status=200)
 
 
 class UsedSpaceView(APIView):

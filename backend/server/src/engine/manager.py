@@ -6,8 +6,8 @@ from typing import Dict, Tuple, Callable
 from uuid import uuid1
 
 from engine.constants import GENERAL_LOGGER
-from engine.downloader.video_downloader import VideoDownloader
 from engine.downloader.definition import Downloader
+from engine.downloader.video_downloader import VideoDownloader
 from engine.driver import Driver
 from engine.progress_tracker import Tracker
 from engine.uploader.Dailymotion.uploader import DailymotionUploader
@@ -49,6 +49,7 @@ class EngineManager:
                                           progress_tracker: Callable[[int, float], None] = None) -> Tuple[str, int]:
         video_path, zipped_file_size = self.driver.process_file_to_video(file_path, job_id, progress_tracker)
         os.remove(file_path)
+
         def update_upload_progress(progress: int):
             progress_tracker(3, progress)
 

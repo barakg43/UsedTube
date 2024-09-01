@@ -6,6 +6,7 @@ def beautify_timestamps(item):
     item["updated_at"] = item["updated_at"].strftime("%d %B %Y %H:%M")
     return item
 
+
 def set_owner_name(item):
     item["owner"] = AppUser.objects.get(id=item["owner"]).get_full_name()
     return item

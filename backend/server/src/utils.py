@@ -2,7 +2,6 @@ import json
 
 from django.http import HttpRequest
 
-
 from account.authentication import CustomJWTAuthentication
 from account.models import AppUser
 

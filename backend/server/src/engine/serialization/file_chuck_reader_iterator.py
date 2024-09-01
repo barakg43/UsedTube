@@ -26,4 +26,3 @@ class FileChuckReaderIterator:
 
     def __del__(self):
         self.file_io.close()
-

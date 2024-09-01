@@ -14,8 +14,8 @@ from more_itertools import consume
 from engine.constants import SERIALIZE_LOGGER, DESERIALIZE_LOGGER, TMP_WORK_DIR
 from engine.serialization.atomic_counter import AtomicCounter
 from engine.serialization.ffmpeg.video_capture import VideoCapture
-from engine.serialization.file_chuck_reader_iterator import FileChuckReaderIterator
 from engine.serialization.ffmpeg.video_write import VideoWriter
+from engine.serialization.file_chuck_reader_iterator import FileChuckReaderIterator
 from engine.serialization.strategy.definition.serialization_strategy import SerializationStrategy
 from engine.serialization.strategy.impl.bit_to_block import BitToBlock
 
@@ -60,8 +60,8 @@ class StatelessSerializerArgs:
             video_props["width"], video_props["height"]
             # int(cover_video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cover_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
         )
-        context.fps = video_props["fps"]  #cover_video.get(cv2.CAP_PROP_FPS)
-        context.encoding = self.strategy.fourcc  #cv2.VideoWriter.fourcc(*self.strategy.fourcc) #self.strategy.fourcc
+        context.fps = video_props["fps"]  # cover_video.get(cv2.CAP_PROP_FPS)
+        context.encoding = self.strategy.fourcc  # cv2.VideoWriter.fourcc(*self.strategy.fourcc) #self.strategy.fourcc
         if context.dims[0] == 0 or context.dims[1] == 0:
             raise Exception(f"invalid video dimensions: {context.dims} on file {cover_video}")
         context.dims_multiplied = np.multiply(*context.dims)

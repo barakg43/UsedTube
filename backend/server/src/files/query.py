@@ -5,23 +5,21 @@ from django_server.model_utils import beautify_timestamps, set_owner_name
 from files.models import Folder, File
 
 
-
-
 def select_folder_subitems(user, folder_id: str) -> dict:
     parent_folder = Folder.objects.get(id=folder_id)
     sub_folders = Folder.objects.filter(owner=user, parent=parent_folder)
     files = File.objects.filter(owner=user, folder=parent_folder)
-    
+
     sub_folders_list = list(sub_folders.values("id", "name", "parent", "created_at", "updated_at", "owner"))
     files_list = list(
         files.values("id", "name", "extension", "size", "folder", "created_at", "updated_at", "owner"))
-    
+
     files_list = list(map(beautify_timestamps, files_list))
     sub_folders_list = list(map(beautify_timestamps, sub_folders_list))
-    
+
     files_list = list(map(set_owner_name, files_list))
     sub_folders_list = list(map(set_owner_name, sub_folders_list))
-    
+
     return {"folders": sub_folders_list, "files": files_list}
 
 

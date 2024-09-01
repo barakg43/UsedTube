@@ -1,10 +1,9 @@
 import av
-import numpy as np
 from av.video.stream import VideoStream
-import imageio
+
 
 class VideoCapture:
-    def __init__(self, video_stream_path:str):
+    def __init__(self, video_stream_path: str):
         self.error_massage = None
         self.video_input = None
         try:
@@ -13,7 +12,7 @@ class VideoCapture:
             self.error_massage = str(e)
             return
         self.path = video_stream_path
-        self.frame_counter=0
+        self.frame_counter = 0
         self.video_stream: VideoStream = self.video_input.streams.video[0]
         self.frames_generator = self.video_input.decode(video=0)
         self.video_props = self.__get_video_props()
@@ -32,13 +31,13 @@ class VideoCapture:
         codec = self.video_stream.codec_context.name
         frames_count = self.video_stream.frames
 
-        return {"width": width, "height": height, "fps": fps, "codec": codec,"frames_count":frames_count}
+        return {"width": width, "height": height, "fps": fps, "codec": codec, "frames_count": frames_count}
 
     def read(self):
         self.__check_if_open()
         frame_cv = next(self.frames_generator, None)
         isValid: bool = frame_cv is not None
-        if not isValid and self.frame_counter==0:
+        if not isValid and self.frame_counter == 0:
             raise BrokenPipeError("Empty frame stream")
         if isValid:
             frame = frame_cv.to_ndarray(format="bgr24")

@@ -58,7 +58,6 @@ class Uploader(BaseUploader):
         if self.progress_callback:
             self.progress_callback(self.offset, self.stop_at)
 
-
     @catch_requests_error
     def create_url(self):
         """

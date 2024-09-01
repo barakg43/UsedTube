@@ -3,6 +3,7 @@ from django.db import models
 from account.models import AppUser
 from files.models import File
 
+
 # Create your models here.
 class SharedItem(models.Model):
     # folder_item = models.ForeignKey(

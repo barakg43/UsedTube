@@ -55,7 +55,6 @@ class VimeoUploader(Uploader):
         #     'Content-Type': 'application/x-www-form-urlencoded'
         # } api_key: dict[str]
 
-
     def upload(self, file_path: str, progress_tracker: Callable[[float], None] = None) -> str:
         upload_url = self.__upload_video(file_path, progress_tracker)
         publish_url = self.__publish_uploaded_video(upload_url)
@@ -70,9 +69,9 @@ class VimeoUploader(Uploader):
             if tracker is not None:
                 tracker(percent)
 
-
         try:
-            upload_url = self.client.upload(file_path, progress=progress_tracker,data={"chunk_size": UPLOAD_VIDEO_CHUNK_SIZE//5})
+            upload_url = self.client.upload(file_path, progress=progress_tracker,
+                                            data={"chunk_size": UPLOAD_VIDEO_CHUNK_SIZE // 5})
             return upload_url
         except Exception as e:
             self.logger.error(e, exc_info=True)

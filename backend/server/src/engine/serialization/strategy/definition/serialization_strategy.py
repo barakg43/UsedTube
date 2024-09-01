@@ -28,7 +28,8 @@ class SerializationStrategy(ABC):
         pass
 
     @abstractmethod
-    def deserialize_frame(self, bytes_amount_to_read: int, encrypted_frame: np.ndarray, i: int, context=None)->np.ndarray:
+    def deserialize_frame(self, bytes_amount_to_read: int, encrypted_frame: np.ndarray, i: int,
+                          context=None) -> np.ndarray:
         pass
 
     @dispatch()
