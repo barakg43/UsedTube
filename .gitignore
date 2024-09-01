@@ -4,28 +4,28 @@
 
 *__pycache__*
 
-backend/server/src/engine/logs/
+backend/server/engine/logs/
 *Postgres*
 
 
-backend/server/src/engine/artifacts/awaiting_retrieval/*
-!backend/server/src/engine/artifacts/awaiting_retrieval/placeholder.txt
-backend/server/src/engine/artifacts/awaiting_storage/*
-!backend/server/src/engine/artifacts/awaiting_storage/placeholder.txt
-backend/server/src/engine/artifacts/cover_videos/*
-!backend/server/src/engine/artifacts/cover_videos/placeholder.txt
-backend/server/src/engine/artifacts/downloaded_preprocessed/*
-!backend/server/src/engine/artifacts/downloaded_preprocessed/placeholder.txt
-backend/server/src/engine/artifacts/test_output_files/*
-!backend/server/src/engine/artifacts/test_output_files/placeholder.txt
-backend/server/src/engine/artifacts/test_resources/*
-!backend/server/src/engine/artifacts/test_resources/placeholder.txt
-backend/server/src/engine/artifacts/tmp/*
-!backend/server/src/engine/artifacts/tmp/placeholder.txt
+backend/server/engine/artifacts/awaiting_retrieval/*
+!backend/server/engine/artifacts/awaiting_retrieval/placeholder.txt
+backend/server/engine/artifacts/awaiting_storage/*
+!backend/server/engine/artifacts/awaiting_storage/placeholder.txt
+backend/server/engine/artifacts/cover_videos/*
+!backend/server/engine/artifacts/cover_videos/placeholder.txt
+backend/server/engine/artifacts/downloaded_preprocessed/*
+!backend/server/engine/artifacts/downloaded_preprocessed/placeholder.txt
+backend/server/engine/artifacts/test_output_files/*
+!backend/server/engine/artifacts/test_output_files/placeholder.txt
+backend/server/engine/artifacts/test_resources/*
+!backend/server/engine/artifacts/test_resources/placeholder.txt
+backend/server/engine/artifacts/tmp/*
+!backend/server/engine/artifacts/tmp/placeholder.txt
 
 server/engine/logs/
 */.venv
 */credentials.json*
 */token.json*
 
-backend/server/src/.env.local
+backend/server/.env.local
