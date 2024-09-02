@@ -74,8 +74,6 @@ export const useHandleMenuItemClick = () => {
     };
 
     const handleMenuItemClick = (node: FSNode, action: ContextMenuAction) => {
-        // # 3
-
         switch (action) {
             case "download":
                 console.log("Downloading:", node);
