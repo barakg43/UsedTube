@@ -28,7 +28,7 @@ class DownloadView(APIView):
         # user for download.
         file_to_download = File.objects.get(id=file_id)
         if file_to_download.owner != request.user:
-            return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_403_FORBIDDEN)
+            return JsonResponse({ERROR: "Not authorized to download this file"}, status=status.HTTP_403_FORBIDDEN)
         job_id = file_controller.get_file_from_provider_async(file_id, user)
         return JsonResponse({JOB_ID: job_id}, status=status.HTTP_202_ACCEPTED)
 
@@ -39,7 +39,7 @@ class DownloadViewProgressView(APIView):
             return JsonResponse({ERROR: "Job does not exist"}, status=status.HTTP_404_NOT_FOUND)
         job_owner = file_controller.get_user_for_job(job_id)
         if request.user != job_owner:
-            return JsonResponse({ERROR: "Not authorized to view this donwnload job status"},
+            return JsonResponse({ERROR: "Not authorized to view this download job status"},
                                 status=status.HTTP_403_FORBIDDEN)
         job_error = file_controller.get_job_error(job_id)
         if job_error is not None:
