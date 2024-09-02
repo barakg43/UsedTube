@@ -7,7 +7,8 @@ ENV PYTHONUNBUFFERED 1
 
 
 # Copy the project code into the container
-COPY . /app/
+WORKDIR /app
+COPY . .
 
 # Install dependencies
-RUN pip install -r /app/requirements.txt
+RUN pip install -r requirements.txt
