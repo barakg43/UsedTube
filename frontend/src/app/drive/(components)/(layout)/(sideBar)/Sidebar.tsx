@@ -8,7 +8,7 @@ import Quota from "./Quota";
 
 const SideBarItem: FC<{ children: ReactNode }> = ({ children }) => {
     return (
-        <div className="rounded-2xl cursor-default items-center  text-black text-center">
+        <div className="rounded-2xl cursor-default items-center  text-black text-center pb-4">
             {children}
         </div>
     );
@@ -17,15 +17,17 @@ const SideBarItem: FC<{ children: ReactNode }> = ({ children }) => {
 const Sidebar = () => {
     return (
         <nav className="h-full w-[200px] flex flex-col pt-4">
-            <SideBarItem>
-                <FileUploadButton />
-            </SideBarItem>
-            <SideBarItem>
-                <FolderTree />
-            </SideBarItem>
-            <SideBarItem>
-                <SharedWithMe />
-            </SideBarItem>
+            <div className="flex-grow">
+                <SideBarItem>
+                    <FileUploadButton />
+                </SideBarItem>
+                <SideBarItem>
+                    <FolderTree />
+                </SideBarItem>
+                <SideBarItem>
+                    <SharedWithMe />
+                </SideBarItem>
+            </div>
             <Quota />
         </nav>
     );
