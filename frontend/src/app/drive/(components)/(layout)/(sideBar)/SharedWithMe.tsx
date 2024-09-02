@@ -15,7 +15,7 @@ const SharedWithMe = () => {
             className={`flex justify-start text-black normal-case rounded-full ${
                 isShowingSharedItems
                     ? "bg-blue-200 hover:bg-blue-300"
-                    : "bg-transparent hover:bg-transparent"
+                    : "bg-transparent hover:bg-highlighted_2"
             } `}
             component="label"
             variant="text"
