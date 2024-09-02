@@ -6,6 +6,7 @@ import threading
 
 import engine.constants as c
 
+
 LOG_DIR = c.ENGINE_ROOT / "logs"
 if not os.path.exists(LOG_DIR):
     os.mkdir(LOG_DIR)
@@ -31,7 +32,6 @@ def init_logger(log_path, logger_name):
     logger.setLevel(logging.DEBUG)
 
 
-init_logger(GENERAL_LOGS, c.GENERAL_LOGGER)
 
 
 def init_logger_async(log_path, logger_name):
@@ -68,3 +68,4 @@ def init_logger_async(log_path, logger_name):
 
 init_logger(ENCRYPTION_LOGS, c.SERIALIZE_LOGGER)
 init_logger(DECRYPTION_LOGS, c.DESERIALIZE_LOGGER)
+init_logger(GENERAL_LOGS, c.GENERAL_LOGGER)

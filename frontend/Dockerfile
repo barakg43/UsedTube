@@ -1,23 +1,35 @@
-# Use an official Python runtime as a parent image
-FROM python:3.12
+FROM node:18-alpine as base
+RUN apk add --no-cache g++ make py3-pip libc6-compat
+WORKDIR /app
+COPY package*.json ./
+EXPOSE 3000
 
-# Set the working directory in the container
+FROM base as builder
+WORKDIR /app
+COPY . .
+RUN npm run build
+
+
+FROM base as production
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+ENV NODE_ENV=production
+RUN npm ci
 
-# Install any needed dependencies specified in requirements.txt
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+USER nextjs
 
-RUN pip3.12 install --no-cache-dir -r requirements.txt
 
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/public ./public
 
-# Make port 80 available to the world outside this container
-EXPOSE 80
+CMD npm start
 
-# Define environment variable
-ENV KING="Omri"
-ENV 
-
-# Run app.py when the container launches
-# CMD ["python", "app.py"]
+FROM base as dev
+ENV NODE_ENV=development
+RUN npm install 
+COPY . .
+CMD npm run dev

@@ -1,20 +1,31 @@
-version: '3.9'
 # we'll keep the version for now to work in Compose and Swarm
 
 services:
   db:
-    image: postgres:10.0-alpine
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
     volumes:
-      - ./db:/docker-entrypoint-initdb.d/
-
-  api:
-    build: api
-    image: dockersamples/wordsmith-api
-    deploy:
-      replicas: 5
-
-  web:
-    build: web
-    image: dockersamples/wordsmith-web
+      - ~/Postgress/data:/var/lib/postgresql/data
+      - "./healthchecks:/healthchecks"
+      # - ./db:/docker-entrypoint-initdb.d/
     ports:
-     - "8080:80"
+      - "5432:5432"
+    healthcheck:
+      test: /healthchecks/postgres.sh
+      interval: "5s"
+  server:
+    build: 
+      context: ./server
+      dockerfile: ./Dockerfile
+    container_name: usedtube_backend
+   # command: sh -c "python3 /app/manage.py migrate --noinput && python3 /app/manage.py collectstatic --noinput && python /app/manage.py runserver 0.0.0.0:8000"
+  #  restart: always
+    environment:
+       - ENV_MODE=production 
+    ports:
+      - "8000:8000"
+    depends_on:
+        db:
+           condition: service_healthy

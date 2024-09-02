@@ -5,11 +5,9 @@ FROM python:3.12
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Set the working directory
-WORKDIR /app
-
-# Install dependencies
-RUN pip install -r requirements.txt
 
 # Copy the project code into the container
 COPY . /app/
+
+# Install dependencies
+RUN pip install -r /app/requirements.txt
