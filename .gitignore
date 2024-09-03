@@ -29,3 +29,5 @@ server/engine/logs/
 */token.json*
 
 backend/server/.env.local
+
+backend/.env
