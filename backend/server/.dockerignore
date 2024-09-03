@@ -1,3 +1,4 @@
 .dockerignore
 Dockerfile
 __pycache__
+engine/artifacts/

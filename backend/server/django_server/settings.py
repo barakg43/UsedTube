@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 from os import path, getenv
 from pathlib import Path
 
@@ -88,15 +89,16 @@ WSGI_APPLICATION = 'django_server.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+db_host = os.environ.get('ENV_MODE') == "production" and os.environ.get('DB_HOST') or "localhost"
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'HOST': db_host,
+        'PORT': os.environ.get('DB_PORT') or '5432',
+        'NAME': os.environ.get('DB_NAME') or 'postgres',
+        'USER': os.environ.get('DB_USER') or 'postgres',
+        'PASSWORD': os.environ.get('DB_PASSWORD') or 'postgres',
     }
 }
 
