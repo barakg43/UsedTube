@@ -48,21 +48,21 @@ const driveApiSlice = baseApi.injectEndpoints({
 
         initiateDownload: builder.query({
             query: ({ nodeId }: { nodeId: string }) => ({
-                url: `/download/init/${nodeId}`,
+                url: `/files/download/init/${nodeId}`,
                 method: "GET",
             }),
         }),
 
         downloadProgress: builder.query({
             query: ({ jobId }: { jobId: string }) => ({
-                url: `/download/progress/${jobId}`,
+                url: `/files/download/progress/${jobId}`,
                 method: "GET",
             }),
         }),
 
         downloadFile: builder.query({
             query: ({ jobId }: { jobId: string }) => ({
-                url: `/download/${jobId}`,
+                url: `/files/download/${jobId}`,
                 method: "GET",
             }),
         }),

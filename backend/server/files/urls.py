@@ -5,7 +5,7 @@ from .views import *
 urlpatterns = [
     path('download/init/<str:file_id>', InitiateDownloadView.as_view()),
     path('download/progress/<str:job_id>', DownloadProgressView.as_view()),
-    path('download/<str:file_id>', DownloadView.as_view()),
+    path('download/<str:job_id>', DownloadView.as_view()),
     
     path('upload/<str:folder_id>', UploadView.as_view()),
     path('upload/progress/<str:job_id>', UploadProgressView.as_view()),
