@@ -46,6 +46,27 @@ const driveApiSlice = baseApi.injectEndpoints({
             }),
         }),
 
+        initiateDownload: builder.query({
+            query: ({ nodeId }: { nodeId: string }) => ({
+                url: `/files/download/init/${nodeId}`,
+                method: "GET",
+            }),
+        }),
+
+        downloadProgress: builder.query({
+            query: ({ jobId }: { jobId: string }) => ({
+                url: `/files/download/progress/${jobId}`,
+                method: "GET",
+            }),
+        }),
+
+        downloadFile: builder.query({
+            query: ({ jobId }: { jobId: string }) => ({
+                url: `/files/download/${jobId}`,
+                method: "GET",
+            }),
+        }),
+
         // MUTATIONS
         // ########
 
@@ -116,13 +137,16 @@ const driveApiSlice = baseApi.injectEndpoints({
 });
 
 export const {
-    useUploadFileMutation,
-    useFolderContentQuery,
-    useDirectoryTreeQuery,
-    useCreateFolderMutation,
-    useGetUploadProgressQuery,
-    useDeleteNodeMutation,
-    useCancelUploadMutation,
     useSharedItemsQuery,
+    useDownloadFileQuery,
+    useDirectoryTreeQuery,
+    useFolderContentQuery,
+    useDownloadProgressQuery,
+    useInitiateDownloadQuery,
+    useGetUploadProgressQuery,
     useDeleteSharedNodeMutation,
+    useCancelUploadMutation,
+    useCreateFolderMutation,
+    useDeleteNodeMutation,
+    useUploadFileMutation,
 } = driveApiSlice;

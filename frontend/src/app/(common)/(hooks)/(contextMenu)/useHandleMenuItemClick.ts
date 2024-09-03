@@ -13,6 +13,8 @@ import {
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setFileNode, setShowModal } from "@/redux/slices/shareSlice";
 import { ContextMenuAction, FSNode } from "@/types";
+import { use } from "react";
+import useHandleDownload from "./useHandleDownload";
 
 export const useHandleMenuItemClick = () => {
     const dispatch = useAppDispatch();
@@ -73,12 +75,12 @@ export const useHandleMenuItemClick = () => {
         dispatch(setShowModal(true));
     };
 
-    const handleMenuItemClick = (node: FSNode, action: ContextMenuAction) => {
-        // # 3
+    const handleDownload = useHandleDownload();
 
+    const handleMenuItemClick = (node: FSNode, action: ContextMenuAction) => {
         switch (action) {
             case "download":
-                console.log("Downloading:", node);
+                handleDownload(node.id);
                 break;
             case "share":
                 handleShare(node);
