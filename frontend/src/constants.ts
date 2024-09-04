@@ -14,3 +14,4 @@ export const WAIT_FOR_SERVER_TO_UPLOAD = 2;
 export const FETCH_FILE_METADATA = 3;
 export const YOUTUBE = "YouTube";
 export const VIMEO = "Vimeo";
+export const DAILYMOTION = "Dailymotion";

@@ -3,8 +3,7 @@ import { TextField, Typography, Button } from "@mui/material";
 import React, { ChangeEvent, FC } from "react";
 import { useAppDispatch } from "@/redux/hooks";
 import { addAPIData } from "@/redux/slices/userSlice";
-import { setShowModal } from "@/redux/slices/generalSlice";
-import { YOUTUBE } from "@/constants";
+import { DAILYMOTION } from "@/constants";
 import { useToaster } from "@/app/(common)/(hooks)/(toaster)/useToaster";
 
 const CustomLink: React.FC<{ href: string; children: React.ReactNode }> = ({
@@ -18,57 +17,43 @@ const CustomLink: React.FC<{ href: string; children: React.ReactNode }> = ({
     );
 };
 
-const RegisterYouTubeAPIKey: FC<{ goBack: Function }> = ({ goBack }) => {
+const RegisterDailymotionAPIKey: FC<{ goBack: Function }> = ({ goBack }) => {
     const dispatch = useAppDispatch();
     const toaster = useToaster();
     const onClick = () => {
-        toaster.toaster("YouTube API key added", "success");
+        toaster.toaster("Dailymotion API key added", "success");
         goBack();
     };
+
     return (
         <div className="flex justify-center items-center h-screen">
             <div className="flex flex-col items-start gap-4">
                 <Typography variant="h4" align="left">
-                    How to get YouTube API secrets
+                    How to get Dailymotion API secrets
                 </Typography>
                 <Typography variant="body1" align="left">
-                    To use the YouTube API, you need to create a project in the
-                    Google Cloud Platform and enable the YouTube API for that
-                    project.
+                    To use the Dailymotion API, you need to create an app on the
+                    Dailymotion Developer Platform and generate an API key.
                 </Typography>
                 <Typography variant="h5" align="left">
-                    Step 1: Create a project
-                </Typography>
-                <Typography variant="body1" align="left">
-                    Go to the{" "}
-                    <CustomLink href="https://console.developers.google.com/">
-                        Google Cloud Platform
-                    </CustomLink>{" "}
-                    and create a new project.
-                </Typography>
-                <Typography variant="h5" align="left">
-                    Step 2: Enable the YouTube API
+                    Step 1: Create an app
                 </Typography>
                 <Typography variant="body1" align="left">
                     Go to the{" "}
-                    <CustomLink href="https://console.developers.google.com/apis/library/youtube.googleapis.com">
-                        YouTube API
+                    <CustomLink href="https://developer.dailymotion.com/apps">
+                        Dailymotion Developer Platform
                     </CustomLink>{" "}
-                    page and enable the API for your project.
+                    and create a new app.
                 </Typography>
                 <Typography variant="h5" align="left">
-                    Step 3: Create credentials
+                    Step 2: Generate API key
                 </Typography>
                 <Typography variant="body1" align="left">
-                    Go to the{" "}
-                    <CustomLink href="https://console.developers.google.com/apis/credentials">
-                        Credentials
-                    </CustomLink>{" "}
-                    page and create a new API key (Create Credentials -&gt; API
-                    Key).
+                    After creating the app, navigate to the `API Keys` section
+                    and generate a new API key.
                 </Typography>
                 <Typography variant="h5" align="left">
-                    Step 4: Copy and paste the API key here:
+                    Step 3: Copy and paste the API key here:
                 </Typography>
                 <Typography variant="body1" align="left">
                     Copy the API key and paste it into the API key field below.
@@ -78,9 +63,11 @@ const RegisterYouTubeAPIKey: FC<{ goBack: Function }> = ({ goBack }) => {
                         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                     ) => {
                         let value = e.target.value;
-                        dispatch(addAPIData({ provider: YOUTUBE, key: value }));
+                        dispatch(
+                            addAPIData({ provider: DAILYMOTION, key: value })
+                        );
                     }}
-                    label="YouTube API Key"
+                    label="Dailymotion API Key"
                     variant="standard"
                     className="w-full mt-2 mb-2"
                 />
@@ -104,9 +91,8 @@ const RegisterYouTubeAPIKey: FC<{ goBack: Function }> = ({ goBack }) => {
                     </Button>
                 </div>
             </div>
-            {/* <OnRegistrationModal /> */}
         </div>
     );
 };
 
-export default RegisterYouTubeAPIKey;
+export default RegisterDailymotionAPIKey;

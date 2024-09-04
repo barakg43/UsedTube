@@ -21,11 +21,13 @@ import {
 } from "@/redux/slices/userSlice";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useToaster } from "@/app/(common)/(hooks)/(toaster)/useToaster";
 
 const RegistrationForm: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const dispatch = useAppDispatch();
     const router = useRouter();
+    const toaster = useToaster();
 
     const {
         handleSubmit,
@@ -40,6 +42,7 @@ const RegistrationForm: React.FC = () => {
 
     const onSubmit: SubmitHandler<UserValues> = async (data: UserValues) => {
         dispatch(registerUserData(data));
+        toaster.toaster(`${data.username} registered successfully`, "success");
         router.push("/providers");
     };
 
