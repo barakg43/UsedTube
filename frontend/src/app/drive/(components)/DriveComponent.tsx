@@ -4,6 +4,8 @@ import MainArea from "./(layout)/(mainArea)/MainArea";
 import Sidebar from "./(layout)/(sideBar)/Sidebar";
 import TopBar from "./(layout)/(topBar)/TopBar";
 import ShareModal from "./ShareModal";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 function DriveComponent({ folderId }: { folderId: string | undefined }) {
     const showShareModal = useAppSelector((state) => state.share.showModal);
