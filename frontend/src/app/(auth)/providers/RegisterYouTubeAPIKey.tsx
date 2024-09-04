@@ -1,7 +1,6 @@
 "use client";
 import { TextField, Typography, Button } from "@mui/material";
 import React, { ChangeEvent } from "react";
-import OnRegistrationModal from "../OnRegistrationModal";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { registerUserData, addAPIData } from "@/redux/slices/userSlice";
 import { RootState } from "@/redux/store";
@@ -27,7 +26,6 @@ const RegisterYouTubeAPIKey = () => {
     // );
 
     const onClick = () => {
-        dispatch(registerUserData(user));
         dispatch(setShowModal(true));
     };
     return (
@@ -94,12 +92,22 @@ const RegisterYouTubeAPIKey = () => {
                         variant="contained"
                         color="primary"
                         onClick={onClick}
+                        sx={{
+                            marginLeft: "1em",
+                        }}
                     >
                         Submit
                     </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={onClick}
+                    >
+                        Back
+                    </Button>
                 </div>
             </div>
-            <OnRegistrationModal />
+            {/* <OnRegistrationModal /> */}
         </div>
     );
 };

@@ -14,14 +14,18 @@ import {
     USERNAME,
 } from "@/constants";
 import { useAppDispatch } from "@/redux/hooks";
-import { UserValues, setFormData } from "@/redux/slices/userSlice";
+import {
+    UserValues,
+    registerUserData,
+    setFormData,
+} from "@/redux/slices/userSlice";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
-const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
-    setIsFinishFillingForm,
-}) => {
+const RegistrationForm: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const dispatch = useAppDispatch();
+    const router = useRouter();
 
     const {
         handleSubmit,
@@ -35,8 +39,8 @@ const RegistrationForm: React.FC<{ setIsFinishFillingForm: Function }> = ({
     });
 
     const onSubmit: SubmitHandler<UserValues> = async (data: UserValues) => {
-        dispatch(setFormData({ ...data }));
-        setIsFinishFillingForm(true);
+        dispatch(registerUserData(data));
+        router.push("/providers");
     };
 
     const validateNotExisting = async (field: string, value: string) => {

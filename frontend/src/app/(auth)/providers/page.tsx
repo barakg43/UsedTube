@@ -1,9 +1,12 @@
 "use client";
 import { Typography } from "@mui/material";
 import React, { FC, useState } from "react";
-import youtube from "../../../../../public/youtube.png";
+import youtube from "../../../../public/youtube.png";
+import vimeo from "../../../../public/vimeo.png";
 import Image, { StaticImageData } from "next/image";
-import RegisterYouTubeAPIKey from "./(apiRegistrations)/RegisterYouTubeAPIKey";
+import RegisterYouTubeAPIKey from "./RegisterYouTubeAPIKey";
+import Logo from "@/app/(common)/(components)/Logo";
+import { useRouter } from "next/navigation";
 
 const ProviderBox: FC<{
     provider: string;
@@ -24,19 +27,30 @@ const ProviderBox: FC<{
 };
 
 const ChooseProvider: FC<{ setProvider: Function }> = ({ setProvider }) => {
+    const router = useRouter();
     return (
-        <div className="flex flex-row w-full justify-center">
-            <div className="flex flex-col justify-center">
-                <div className="mb-10">
-                    <Typography variant="h5">
-                        choose your first provider
-                    </Typography>
+        <div>
+            <div
+                onClick={() => {
+                    router.push("/");
+                }}
+            >
+                <Logo />
+            </div>
+            <div className="flex flex-col justify-center items-center">
+                <div className="my-10">
+                    <Typography variant="h5">Choose Provider</Typography>
                 </div>
                 <div className="flex gap-4">
                     <ProviderBox
                         provider="YouTube"
                         setProvider={setProvider}
                         imageSrc={youtube}
+                    />
+                    <ProviderBox
+                        provider="Vimeo"
+                        setProvider={() => {}}
+                        imageSrc={vimeo}
                     />
                     {/* PROVIDER BOX FOR EACH ADDITIONAL PROVIDER*/}
                 </div>
