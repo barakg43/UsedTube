@@ -1,16 +1,23 @@
-import React from "react";
+import { useStorageSpaceQuery } from "@/redux/api/driveApi";
 
-const Quota = () => {
-    let how_much_left = 0;
-    let quota_unit = "KB";
-    const file_size = 1024
-    const file_unit = "GB";
+function Quota() {
+    const { data, error, isLoading } = useStorageSpaceQuery(undefined, {pollingInterval:1000});
+
+    const totalSize = data?.value || 0;
+
+    const formatSize = (size:number) => {
+        if (size < 1024) return `${size} bytes`;
+        else if (size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
+        else if (size < 1024 * 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+        else return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+    };
 
     return (
         <div className="text-sm flex justify-center pt-4 mt-24 pb-12">
-            `{how_much_left + quota_unit} used of {file_size + file_unit}`
+            `{formatSize(totalSize)} used of 1024TB`
         </div>
     );
-};
+}
+
 
 export default Quota;
