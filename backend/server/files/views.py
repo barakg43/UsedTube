@@ -34,7 +34,7 @@ class InitiateDownloadView(APIView):
         # or if the file is owned by the user, then the user can download the file
         # else the user is not authorized to download the file
         if file_to_download.owner != request.user and not shared_with_user(file_to_download, user):
-            return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_401_UNAUTHORIZED)
+            return JsonResponse({ERROR: "Not authorized to download this folder"}, status=status.HTTP_401_UNAUTHORIZED)
         
         job_id = file_controller.get_file_from_provider_async(file_id, user)
         return JsonResponse({JOB_ID: job_id}, status=status.HTTP_202_ACCEPTED)
