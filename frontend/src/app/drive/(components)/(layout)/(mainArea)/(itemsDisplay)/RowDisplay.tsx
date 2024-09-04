@@ -57,7 +57,13 @@ const ItemsDisplayRow: FC<{ items: FSNode[] }> = ({ items }) => {
                     if (params.row.type === "folder") {
                         folderClick(params.row.id);
                     } else {
-                        alert("prompt download");
+                        const rowId = String(
+                            (
+                                event.currentTarget as HTMLDivElement
+                            ).getAttribute("data-id")
+                        );
+                        const record = items.find((item) => item.id === rowId);
+                        if (record) openContextMenu(event, record);
                     }
                 }}
             />
