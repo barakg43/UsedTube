@@ -46,8 +46,8 @@ class DownloadProgressView(APIView):
             return JsonResponse({ERROR: "Job does not exist"}, status=status.HTTP_404_NOT_FOUND)
         job_owner = file_controller.get_user_for_job(job_id)
         if request.user != job_owner:
-            return JsonResponse({ERROR: "Not authorized to view this donwnload job status"},
-                                status=status.HTTP_401_UNAUTHORIZED)
+            return JsonResponse({ERROR: "Not authorized to view this download job status"},
+                                status=status.HTTP_403_FORBIDDEN)
         job_error = file_controller.get_job_error(job_id)
         if job_error is not None:
             return JsonResponse({ERROR: job_error}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

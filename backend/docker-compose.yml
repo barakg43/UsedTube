@@ -4,14 +4,14 @@ services:
   db:
     image: postgres
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
+       POSTGRES_USER: ${DB_USER:-postgres} 
+       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres} 
     volumes:
       - ~/Postgress/data:/var/lib/postgresql/data
       - "./healthchecks:/healthchecks"
       # - ./db:/docker-entrypoint-initdb.d/
     ports:
-      - "5432:5432"
+      - "5432:${DB_PORT:-5432}"
     healthcheck:
       test: /healthchecks/postgres.sh
       interval: "5s"
@@ -20,12 +20,16 @@ services:
       context: ./server
       dockerfile: ./Dockerfile
     container_name: usedtube_backend
-   # command: sh -c "python3 /app/manage.py migrate --noinput && python3 /app/manage.py collectstatic --noinput && python /app/manage.py runserver 0.0.0.0:8000"
-  #  restart: always
+    command: sh -c "python3 manage.py migrate --noinput && python3 manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+    restart: always
     environment:
-       - ENV_MODE=production 
+       ENV_MODE: production 
+       DB_USER: ${DB_USER} 
+       DB_PASSWORD: ${DB_PASSWORD}
+       DB_HOST: ${DB_HOST}
+       DB_PORT: ${DB_PORT:-5432}
     ports:
-      - "8000:8000"
+      - "9090:8000"
     depends_on:
         db:
-           condition: service_healthy
+          condition: service_healthy
