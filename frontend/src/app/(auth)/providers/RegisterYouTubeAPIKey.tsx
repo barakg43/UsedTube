@@ -1,6 +1,6 @@
 "use client";
 import { TextField, Typography, Button } from "@mui/material";
-import React, { ChangeEvent, FC } from "react";
+import React, { ChangeEvent, FC, useState } from "react";
 import { useAppDispatch } from "@/redux/hooks";
 import { addAPIData } from "@/redux/slices/userSlice";
 import { setShowModal } from "@/redux/slices/generalSlice";
@@ -19,6 +19,7 @@ const CustomLink: React.FC<{ href: string; children: React.ReactNode }> = ({
 };
 
 const RegisterYouTubeAPIKey: FC<{ goBack: Function }> = ({ goBack }) => {
+    const [apikey, setApikey] = useState("");
     const dispatch = useAppDispatch();
     const toaster = useToaster();
     const onClick = () => {
@@ -77,8 +78,7 @@ const RegisterYouTubeAPIKey: FC<{ goBack: Function }> = ({ goBack }) => {
                     onChange={(
                         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                     ) => {
-                        let value = e.target.value;
-                        dispatch(addAPIData({ provider: YOUTUBE, key: value }));
+                        setApikey(e.target.value);
                     }}
                     label="YouTube API Key"
                     variant="standard"
@@ -88,6 +88,7 @@ const RegisterYouTubeAPIKey: FC<{ goBack: Function }> = ({ goBack }) => {
                     <Button
                         variant="contained"
                         color="primary"
+                        disabled={apikey === ""}
                         onClick={onClick}
                         sx={{
                             marginLeft: "1em",
