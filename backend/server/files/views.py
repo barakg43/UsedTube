@@ -86,7 +86,7 @@ class UploadView(APIView):
         if FILE not in request.FILES:
             return JsonResponse({ERROR: "no file provided"}, status=400)
         folder = Folder.objects.filter(id=folder_id).get()
-        if folder.owner != request.user:
+        if folder.owner != get_user_object(request):
             return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_403_FORBIDDEN)
 
         uploaded_file = request.FILES[FILE]
@@ -158,7 +158,7 @@ class DirectoryTree(APIView):
 
 
 class DirectoryContentView(APIView):
-    def get(self, request, folder_id: str = None):
+    def get(self, request, folder_id: str | None = None):
         # create a json listing all files and their size of the requested folder
         user = get_user_object(request)
         if folder_id is None:
@@ -166,7 +166,6 @@ class DirectoryContentView(APIView):
         try:
             folder_subitems_dict = select_folder_subitems(user, folder_id)
             folder_subitems_dict["parents"] = get_parent_tree_array(user, folder_id)
-            folder_subitems_dict["quota"] = user.storage_usage
         except PermissionDenied as e:
             return JsonResponse({ERROR: e.args[0]}, status=status.HTTP_403_FORBIDDEN)
         except (ObjectDoesNotExist, ValidationError) as e:

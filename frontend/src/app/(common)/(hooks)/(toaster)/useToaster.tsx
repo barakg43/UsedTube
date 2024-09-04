@@ -1,5 +1,10 @@
 import { toast, ToastPosition, ToastContent } from "react-toastify";
-import { CircularProgress, IconButton, Typography } from "@mui/material";
+import {
+    Button,
+    CircularProgress,
+    IconButton,
+    Typography,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 
@@ -28,9 +33,9 @@ export function useToaster() {
                 >
                     {message}
                 </Typography>
-                <IconButton onClick={onCancel} size="small">
-                    <CloseIcon />
-                </IconButton>
+                <Button onClick={onCancel} size="small">
+                    Cancel
+                </Button>
             </div>
         );
 

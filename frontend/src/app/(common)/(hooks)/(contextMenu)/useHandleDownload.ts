@@ -29,6 +29,7 @@ const useHandleDownload = () => {
     const [nodeId, setNodeId] = useState(EMPTY_IDENTIFIER);
     const [phase, setPhase] = useState<DownloadPhase>("initiate download");
     const [_jobId, setJobId] = useState<string>(EMPTY_IDENTIFIER);
+    const [anyErrors, setAnyErrors] = useState(false);
     const { data: jobIdWrapper } = useInitiateDownloadQuery(
         { nodeId },
         { skip: phase !== "initiate download" || nodeId === EMPTY_IDENTIFIER }
@@ -39,7 +40,8 @@ const useHandleDownload = () => {
         {
             skip:
                 phase !== "poll download progress" ||
-                nodeId === EMPTY_IDENTIFIER,
+                nodeId === EMPTY_IDENTIFIER ||
+                anyErrors,
             pollingInterval: 200,
         }
     );
@@ -62,6 +64,7 @@ const useHandleDownload = () => {
                     if (progress?.progress === 100) {
                         setPhase("download file");
                     } else if (progressError) {
+                        setAnyErrors(true);
                         setNodeId(EMPTY_IDENTIFIER);
                         setPhase("initiate download");
                     } else {
