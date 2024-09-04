@@ -8,7 +8,7 @@ function ItemsDisplay({ items }: { items: FSNode[] }) {
     const displayType = useAppSelector((state) => state.items.displayType);
 
     return (
-        <div className="bg-paper rounded-2xl flex flex-grow w-full h-full">
+        <div className="bg-paper rounded-2xl flex flex-grow w-full">
             {displayType === GRID ? (
                 <ItemsDisplayGrid
                     //@ts-ignore
