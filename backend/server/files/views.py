@@ -35,7 +35,7 @@ class InitiateDownloadView(APIView):
         # else the user is not authorized to download the file
         if file_to_download.owner != request.user and not shared_with_user(file_to_download, user):
             return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_401_UNAUTHORIZED)
-        
+
         job_id = file_controller.get_file_from_provider_async(file_id, user)
         return JsonResponse({JOB_ID: job_id}, status=status.HTTP_202_ACCEPTED)
 
@@ -51,10 +51,10 @@ class DownloadProgressView(APIView):
         job_error = file_controller.get_job_error(job_id)
         if job_error is not None:
             return JsonResponse({ERROR: job_error}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
         else:
             return JsonResponse({"progress": file_controller.get_job_progress(job_id)})
-        
+
 
 class DownloadView(APIView):
     def get(self, request: HttpRequest, job_id:str):
@@ -143,8 +143,7 @@ class CancelUploadView(APIView):
 
 class UsedSpaceView(APIView):
     def get(self, request: HttpRequest):
-        used_space = request.user
-        return JsonResponse({"value": used_space.value})
+        return JsonResponse({"value": get_user_object(request).storage_usage})
 
 
 class DirectoryTree(APIView):

@@ -38,6 +38,13 @@ const driveApiSlice = baseApi.injectEndpoints({
                 method: "GET",
             }),
         }),
+        
+        storageSpace: builder.query({
+            query: () => ({
+                url: "/files/used-space/",
+                method: "GET",
+            }),
+        }),
 
         getUploadProgress: builder.query({
             query: ({ jobId }: { jobId: string | null }) => ({
@@ -144,6 +151,7 @@ export const {
     useDownloadProgressQuery,
     useInitiateDownloadQuery,
     useGetUploadProgressQuery,
+    useStorageSpaceQuery,
     useDeleteSharedNodeMutation,
     useCancelUploadMutation,
     useCreateFolderMutation,
