@@ -1,12 +1,10 @@
+import { httpClient } from "@/axios";
 import {
-  useDownloadFileQuery,
   useDownloadProgressQuery,
   useInitiateDownloadQuery,
 } from "@/redux/api/driveApi";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useToaster } from "../(toaster)/useToaster";
-import { httpClient } from "@/axios";
-import { metadata } from "../../../layout";
 
 type DownloadPhase =
   | "initiate download"
@@ -44,11 +42,6 @@ const useHandleDownload = () => {
     }
   );
 
-  const { data: file } = useDownloadFileQuery(
-    { jobId: _jobId },
-    { skip: phase !== "download file" || _jobId === EMPTY_IDENTIFIER }
-  );
-
   useEffect(() => {
     if (nodeId !== EMPTY_IDENTIFIER) {
       switch (phase) {
@@ -78,23 +71,10 @@ const useHandleDownload = () => {
           break;
         case "download file":
           downloadFile(`/files/download/${_jobId}`);
-          //   if (file) {
-          //     download(file);
-          //     const url = window.URL.createObjectURL(
-          //       new Blob([file], { type: "application/pdf" })
-          //     );
-          //     const a = document.createElement("a");
-          //     a.href = url;
-          //     a.download = file.name;
-          //     a.click();
-          //     window.URL.revokeObjectURL(url);
-          //     setNodeId(EMPTY_IDENTIFIER);
-          //     setPhase("initiate download");
-          //   }
           break;
       }
     }
-  }, [nodeId, phase, jobIdWrapper, _jobId, progress, file]);
+  }, [nodeId, phase, jobIdWrapper, _jobId, progress]);
 
   return (nodeId: string) => {
     setNodeId(nodeId);
@@ -105,7 +85,6 @@ const useHandleDownload = () => {
 export default useHandleDownload;
 function downloadFile(url: string) {
   httpClient({ url, method: "GET", responseType: "blob" }).then((response) => {
-    console.log(response.headers);
     // create file link in browser's memory
     const href = window.URL.createObjectURL(
       new Blob([response.data], { type: response.headers["content-type"] })
@@ -113,7 +92,6 @@ function downloadFile(url: string) {
     const filename = response.headers["content-disposition"]
       .split("=")[1]
       .replace(/"/g, "");
-    console.log("filename", filename);
     // create "a" HTML element with href to file & click
     const link = document.createElement("a");
     link.href = href;
