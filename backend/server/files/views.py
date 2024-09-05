@@ -37,8 +37,8 @@ class InitiateDownloadView(APIView):
         # or if the file is owned by the user, then the user can download the file
         # else the user is not authorized to download the file
         if file_to_download.owner != request.user and not shared_with_user(file_to_download, user):
-            return JsonResponse({ERROR: "Not authorized to download this folder"}, status=status.HTTP_401_UNAUTHORIZED)
-        
+            return JsonResponse({ERROR: "Not authorized to download this file"}, status=status.HTTP_401_UNAUTHORIZED)        
+          
         job_id = file_controller.get_file_from_provider_async(file_id, user)
         return JsonResponse({JOB_ID: job_id}, status=status.HTTP_202_ACCEPTED)
 
@@ -54,10 +54,10 @@ class DownloadProgressView(APIView):
         job_error = file_controller.get_job_error(job_id)
         if job_error is not None:
             return JsonResponse({ERROR: job_error}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
         else:
             return JsonResponse({"progress": file_controller.get_job_progress(job_id)})
-        
+
 
 class DownloadView(APIView):
     def get(self, request: HttpRequest, job_id:str):
@@ -99,7 +99,7 @@ class UploadView(APIView):
         if FILE not in request.FILES:
             return JsonResponse({ERROR: "no file provided"}, status=400)
         folder = Folder.objects.filter(id=folder_id).get()
-        if folder.owner != request.user:
+        if folder.owner != get_user_object(request):
             return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_403_FORBIDDEN)
 
         uploaded_file = request.FILES[FILE]
@@ -162,8 +162,7 @@ class CancelDownloadView(APIView):
         return JsonResponse({MESSAGE: "download job cancelled"}, status=200)
 class UsedSpaceView(APIView):
     def get(self, request: HttpRequest):
-        used_space = request.user
-        return JsonResponse({"value": used_space.value})
+        return JsonResponse({"value": get_user_object(request).storage_usage})
 
 
 class DirectoryTree(APIView):
@@ -177,7 +176,7 @@ class DirectoryTree(APIView):
 
 
 class DirectoryContentView(APIView):
-    def get(self, request, folder_id: str = None):
+    def get(self, request, folder_id: str | None = None):
         # create a json listing all files and their size of the requested folder
         user = get_user_object(request)
         if folder_id is None:
@@ -185,7 +184,6 @@ class DirectoryContentView(APIView):
         try:
             folder_subitems_dict = select_folder_subitems(user, folder_id)
             folder_subitems_dict["parents"] = get_parent_tree_array(user, folder_id)
-            folder_subitems_dict["quota"] = user.storage_usage
         except PermissionDenied as e:
             return JsonResponse({ERROR: e.args[0]}, status=status.HTTP_403_FORBIDDEN)
         except (ObjectDoesNotExist, ValidationError) as e:

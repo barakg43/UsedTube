@@ -1,12 +1,11 @@
 "use client";
 import { TextField, Typography, Button } from "@mui/material";
-import React, { ChangeEvent } from "react";
-import OnRegistrationModal from "../OnRegistrationModal";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { registerUserData, addAPIData } from "@/redux/slices/userSlice";
-import { RootState } from "@/redux/store";
+import React, { ChangeEvent, FC, useState } from "react";
+import { useAppDispatch } from "@/redux/hooks";
+import { addAPIData } from "@/redux/slices/userSlice";
 import { setShowModal } from "@/redux/slices/generalSlice";
 import { YOUTUBE } from "@/constants";
+import { useToaster } from "@/app/(common)/(hooks)/(toaster)/useToaster";
 
 const CustomLink: React.FC<{ href: string; children: React.ReactNode }> = ({
     href,
@@ -19,16 +18,13 @@ const CustomLink: React.FC<{ href: string; children: React.ReactNode }> = ({
     );
 };
 
-const RegisterYouTubeAPIKey = () => {
+const RegisterYouTubeAPIKey: FC<{ goBack: Function }> = ({ goBack }) => {
+    const [apikey, setApikey] = useState("");
     const dispatch = useAppDispatch();
-    const user = useAppSelector((s: RootState) => s.user);
-    // const APIProvider2Key = useAppSelector(
-    //     // (s: RootState) => s.user.APIProvider2Key
-    // );
-
+    const toaster = useToaster();
     const onClick = () => {
-        dispatch(registerUserData(user));
-        dispatch(setShowModal(true));
+        toaster.toaster("YouTube API key added", "success");
+        goBack();
     };
     return (
         <div className="flex justify-center items-center h-screen">
@@ -82,8 +78,7 @@ const RegisterYouTubeAPIKey = () => {
                     onChange={(
                         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                     ) => {
-                        let value = e.target.value;
-                        dispatch(addAPIData({ provider: YOUTUBE, key: value }));
+                        setApikey(e.target.value);
                     }}
                     label="YouTube API Key"
                     variant="standard"
@@ -93,13 +88,24 @@ const RegisterYouTubeAPIKey = () => {
                     <Button
                         variant="contained"
                         color="primary"
+                        disabled={apikey === ""}
                         onClick={onClick}
+                        sx={{
+                            marginLeft: "1em",
+                        }}
                     >
                         Submit
                     </Button>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => goBack()}
+                    >
+                        Back
+                    </Button>
                 </div>
             </div>
-            <OnRegistrationModal />
+            {/* <OnRegistrationModal /> */}
         </div>
     );
 };

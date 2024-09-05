@@ -32,12 +32,20 @@ const driveApiSlice = baseApi.injectEndpoints({
       },
     }),
 
-    directoryTree: builder.query({
-      query: () => ({
-        url: "/files/dir-tree/",
-        method: "GET",
-      }),
-    }),
+
+        directoryTree: builder.query({
+            query: () => ({
+                url: "/files/dir-tree/",
+                method: "GET",
+            }),
+        }),
+        
+        storageSpace: builder.query({
+            query: () => ({
+                url: "/files/used-space/",
+                method: "GET",
+            }),
+        }),
 
     getUploadProgress: builder.query({
       query: ({ jobId }: { jobId: string | null }) => ({
@@ -133,16 +141,17 @@ const driveApiSlice = baseApi.injectEndpoints({
 });
 
 export const {
-  useSharedItemsQuery,
-  useDownloadFileQuery,
-  useDirectoryTreeQuery,
-  useFolderContentQuery,
-  useDownloadProgressQuery,
-  useInitiateDownloadMutation,
-  useGetUploadProgressQuery,
-  useDeleteSharedNodeMutation,
-  useCancelUploadMutation,
-  useCreateFolderMutation,
-  useDeleteNodeMutation,
-  useUploadFileMutation,
+    useSharedItemsQuery,
+    useDownloadFileQuery,
+    useDirectoryTreeQuery,
+    useFolderContentQuery,
+    useDownloadProgressQuery,
+    useInitiateDownloadQuery,
+    useGetUploadProgressQuery,
+    useStorageSpaceQuery,
+    useDeleteSharedNodeMutation,
+    useCancelUploadMutation,
+    useCreateFolderMutation,
+    useDeleteNodeMutation,
+    useUploadFileMutation,
 } = driveApiSlice;

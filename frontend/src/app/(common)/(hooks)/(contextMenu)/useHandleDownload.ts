@@ -25,6 +25,7 @@ const useHandleDownload = () => {
 
   const toaster = useToaster();
 
+
   //   const [nodeId, setNodeId] = useState(EMPTY_IDENTIFIER);
   const [phase, setPhase] = useState<DownloadPhase>("waiting_download");
   const [jobId, setJobId] = useState<string>(EMPTY_IDENTIFIER);
@@ -37,6 +38,7 @@ const useHandleDownload = () => {
       pollingInterval: 500,
     }
   );
+
 
   //   useEffect(() => {
   //     if (jobId !== EMPTY_IDENTIFIER && phase === "initiate download") {
@@ -82,6 +84,7 @@ const useHandleDownload = () => {
     }
   }, [jobId, progress, phase, progressError, toaster]);
 
+
   const onDownloadInit = useCallback(
     (nodeId: string) => {
       initDownload({ nodeId })
@@ -115,6 +118,7 @@ const useHandleDownload = () => {
   // console.log("result id ", result);
   // setJobId(EMPTY_IDENTIFIER);
   // setPhase("waiting_download");
+
 
   //   useEffect(() => {
   //     console.log(

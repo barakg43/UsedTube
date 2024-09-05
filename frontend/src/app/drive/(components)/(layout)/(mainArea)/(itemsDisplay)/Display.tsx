@@ -11,6 +11,7 @@ function ItemsDisplay<T extends FSNode>({ items }: { items: T[] }) {
     name: "extension" in item ? item.name + "." + item.extension : item.name,
   }));
 
+
   return (
     <div className='bg-paper rounded-2xl flex flex-grow w-full h-full'>
       {displayType === GRID ? (
@@ -26,6 +27,7 @@ function ItemsDisplay<T extends FSNode>({ items }: { items: T[] }) {
       )}
     </div>
   );
+
 }
 
 export default ItemsDisplay;
