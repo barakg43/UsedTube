@@ -25,7 +25,7 @@ const ItemsDisplayNode: FC<{ node: FSNode }> = ({ node }) => {
                         if (node.type === FOLDER) {
                             folderClick(node.id);
                         } else {
-                            alert("prompt download");
+                            openContextMenu(e, node);
                         }
                     }}
                 >

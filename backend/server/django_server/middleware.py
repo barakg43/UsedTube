@@ -4,16 +4,10 @@ class ResponseLoggingMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
-
+        if (response):
+            pass
         # Print the response headers
         print("[Response Headers:]\n#################")
         for header, value in response.items():
             print(f"{header}: {value}")
-
-        # Print the response content
-        print("[Response Content:]\n#################")
-        # try:
-        #     # print(response.content)
-        # except:
-        #     print("No content")
         return response
