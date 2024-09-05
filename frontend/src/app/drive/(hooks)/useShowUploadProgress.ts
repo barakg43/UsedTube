@@ -36,7 +36,6 @@ const useShowUploadProgress = () => {
 
   useEffect(() => {
     if (isUploading && data) {
-      console.log("Uploading:", data);
       showProgress(
         jobId,
         `${new Number(data.progress * 100).toFixed(2)}% Uploading file...`,
