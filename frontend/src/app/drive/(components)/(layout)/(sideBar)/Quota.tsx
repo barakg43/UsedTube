@@ -16,7 +16,7 @@ function Quota() {
     };
 
     return (
-        <div className="text-sm flex justify-center pt-4 mt-24 pb-12">
+        <div className="text-sm flex justify-center pt-4 mt-24 pb-6">
             {formatSize(totalSize)} used of 1024TB
         </div>
     );
