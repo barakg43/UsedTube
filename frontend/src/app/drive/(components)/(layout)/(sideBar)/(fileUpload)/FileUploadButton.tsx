@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import React, { useRef } from "react";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { ThemeProvider } from "@emotion/react";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppSelector } from "@/redux/hooks";
 import { theme } from "../theme";
 import { useUploadFileMutation } from "@/redux/api/driveApi";
 import useShowUploadProgress from "@/app/drive/(hooks)/useShowUploadProgress";

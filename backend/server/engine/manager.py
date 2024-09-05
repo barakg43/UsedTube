@@ -10,7 +10,7 @@ from engine.downloader.definition import Downloader
 from engine.downloader.video_downloader import VideoDownloader
 from engine.driver import Driver
 from engine.progress_tracker import Tracker
-from engine.uploader.Dailymotion.uploader import DailymotionUploader
+from engine.uploader.Dailymotion.uploader import DailymotionUploader, Mr_DailymotionUploader
 from engine.uploader.Vimeo.uploader import Mr_VimeoUploader
 
 
@@ -97,7 +97,7 @@ class EngineManager:
     def __upload_video_to_providers(self, job_id, video_path: str,
                                     update_upload_progress: Callable[[int], None]) -> str:
         # self.uploader: Uploader = YouTubeUploader(job_id, self._progress_tracker)
-        uploader = Mr_VimeoUploader
+        uploader = Mr_DailymotionUploader #Mr_VimeoUploader #Mr_DailymotionUploader
         # self.uuid_to_future[job_id] = self.workers.submit(self.uploader.upload, video_path)
         video_final_url = uploader.upload(video_path, update_upload_progress)
         return video_final_url

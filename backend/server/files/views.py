@@ -1,7 +1,10 @@
+import io
+
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.http import HttpRequest, FileResponse, JsonResponse
 from django.utils import timezone
 from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from constants import FILE, ERROR, JOB_ID, MESSAGE
@@ -9,11 +12,14 @@ from engine.manager import Mr_EngineManager
 from files.controller import file_controller
 from files.models import File, Folder
 from files.query import select_folder_subitems, get_folder_tree, get_parent_tree_array
+from sharing.models import SharedItem
 from utils import get_user_object
 
 
-class DownloadView(APIView):
+class InitiateDownloadView(APIView):
     def get(self, request: HttpRequest, file_id: str):
+        def shared_with_user(file: File, user):
+            return SharedItem.objects.filter(file_item=file, shared_with=user).exists()
         user = request.user
         # you get in request: user id, file_name
         # The `file_name` variable in the `DownloadView` class is being set to 'sample-file2.pdf'.
@@ -27,13 +33,17 @@ class DownloadView(APIView):
         # class to provide the downloaded file with a specific filename when it is sent back to the
         # user for download.
         file_to_download = File.objects.get(id=file_id)
-        if file_to_download.owner != request.user:
-            return JsonResponse({ERROR: "Not authorized to download this file"}, status=status.HTTP_403_FORBIDDEN)
+        # if the file is shared with the user, then the user can download the file
+        # or if the file is owned by the user, then the user can download the file
+        # else the user is not authorized to download the file
+        if file_to_download.owner != request.user and not shared_with_user(file_to_download, user):
+            return JsonResponse({ERROR: "Not authorized to download this folder"}, status=status.HTTP_401_UNAUTHORIZED)
+        
         job_id = file_controller.get_file_from_provider_async(file_id, user)
         return JsonResponse({JOB_ID: job_id}, status=status.HTTP_202_ACCEPTED)
 
 
-class DownloadViewProgressView(APIView):
+class DownloadProgressView(APIView):
     def get(self, request: HttpRequest, job_id: str):
         if file_controller.is_job_exist(job_id) is False:
             return JsonResponse({ERROR: "Job does not exist"}, status=status.HTTP_404_NOT_FOUND)
@@ -44,19 +54,35 @@ class DownloadViewProgressView(APIView):
         job_error = file_controller.get_job_error(job_id)
         if job_error is not None:
             return JsonResponse({ERROR: job_error}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+        else:
+            return JsonResponse({"progress": file_controller.get_job_progress(job_id)})
+        
+
+class DownloadView(APIView):
+    def get(self, request: HttpRequest, job_id:str):
+        # file_io = open("C:\\ComputerScience\\Workshop\\UsedTube\\backend\\server\\engine\\artifacts\\test_resources\\sample-file3.pdf", "rb")
+        # in_memory_file = io.BytesIO(file_io.read())
+        # fileResponse = FileResponse(
+        #         in_memory_file,
+        #         filename="sample-file3.pdf",
+        #         as_attachment=True,
+        #     )
+        # fileResponse['Access-Control-Expose-Headers'] = 'Content-Disposition'
+        # return fileResponse
+        response = None
         if file_controller.is_processing_done(job_id):
             # get the final file result from the future task
             bytes_io, file_name = file_controller.get_download_item_bytes_name(job_id)
-            return FileResponse(
+            response = FileResponse(
                 bytes_io,
                 filename=file_name,
                 as_attachment=True,
             )
-        elif file_controller.is_processing_done(job_id):
-            return JsonResponse({ERROR: "Something went wrong in downloading and processing file"},
-                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            response['Access-Control-Expose-Headers'] = 'Content-Disposition'
         else:
-            return JsonResponse({"progress": file_controller.get_job_progress(job_id)})
+            response = JsonResponse({ERROR: "Fuck You"}, status=status.HTTP_409_CONFLICT)
+        return response
 
 
 class SerializationProgressView(APIView):
@@ -127,7 +153,13 @@ class CancelUploadView(APIView):
         file_controller.cancel_action(job_id)
         return JsonResponse({MESSAGE: "Upload job cancelled"}, status=200)
 
-
+class CancelDownloadView(APIView):
+    def delete(self, request: HttpRequest, job_id: str):
+        job_owner = file_controller.get_user_for_job(job_id)
+        if request.user != job_owner:
+            return JsonResponse({ERROR: "Not authorized to cancel this download job"}, status=status.HTTP_403_FORBIDDEN)
+        file_controller.cancel_action(job_id)
+        return JsonResponse({MESSAGE: "download job cancelled"}, status=200)
 class UsedSpaceView(APIView):
     def get(self, request: HttpRequest):
         used_space = request.user
