@@ -5,6 +5,7 @@ import {
 } from "@/redux/api/driveApi";
 import { useEffect, useState } from "react";
 import { useToaster } from "../(toaster)/useToaster";
+import { axiosQueryReauth } from "@/redux/baseApi";
 
 type DownloadPhase =
   | "initiate download"
@@ -70,37 +71,46 @@ const useHandleDownload = () => {
 
           break;
         case "download file":
+          toaster.showProgress(nodeId, `100% Preparing done`, 100);
+          setNodeId(EMPTY_IDENTIFIER);
+          setPhase("initiate download");
+          setJobId(EMPTY_IDENTIFIER);
           downloadFile(`/files/download/${_jobId}`);
           break;
       }
     }
-  }, [nodeId, phase, jobIdWrapper, _jobId, progress]);
+  }, [nodeId, phase, jobIdWrapper, _jobId, progress, toaster, progressError]);
 
   return (nodeId: string) => {
     setNodeId(nodeId);
+    setJobId(EMPTY_IDENTIFIER);
     setPhase("initiate download");
   };
 };
 
 export default useHandleDownload;
-function downloadFile(url: string) {
-  httpClient({ url, method: "GET", responseType: "blob" }).then((response) => {
-    // create file link in browser's memory
-    const href = window.URL.createObjectURL(
-      new Blob([response.data], { type: response.headers["content-type"] })
-    );
-    const filename = response.headers["content-disposition"]
-      .split("=")[1]
-      .replace(/"/g, "");
-    // create "a" HTML element with href to file & click
-    const link = document.createElement("a");
-    link.href = href;
-    link.setAttribute("download", filename);
-    document.body.appendChild(link);
-    link.click();
-
-    // clean up "a" element & remove ObjectURL
-    document.body.removeChild(link);
-    URL.revokeObjectURL(href);
+async function downloadFile(url: string) {
+  const response = await axiosQueryReauth({
+    url,
+    method: "GET",
+    responseType: "blob",
   });
+  if (!response.headers) return;
+  // create file link in browser's memory
+  const href = window.URL.createObjectURL(
+    new Blob([response.data], { type: response.headers?.["content-type"] })
+  );
+  const filename = response.headers?.["content-disposition"]
+    .split("=")[1]
+    .replace(/"/g, "");
+  // create "a" HTML element with href to file & click
+  const link = document.createElement("a");
+  link.href = href;
+  link.setAttribute("download", filename);
+  document.body.appendChild(link);
+  link.click();
+
+  // clean up "a" element & remove ObjectURL
+  document.body.removeChild(link);
+  URL.revokeObjectURL(href);
 }
