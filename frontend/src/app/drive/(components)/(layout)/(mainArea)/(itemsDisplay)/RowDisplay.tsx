@@ -32,10 +32,13 @@ const ItemsDisplayRow: FC<{ items: FSNode[] }> = ({ items }) => {
     const folderClick = useFolderClick();
 
     return (
-        <div className="h-[100%] w-[100%] overflow-auto">
+        <div className="h-[100%] w-[85vw] overflow-auto">
             <DataGrid
                 columns={columns}
                 rows={items}
+                sx={{
+                    height: "71vh",
+                }}
                 slotProps={{
                     row: {
                         // @ts-ignore
