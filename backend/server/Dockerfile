@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.12
+FROM python:3.12.5-slim-bullseye
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -7,7 +7,11 @@ ENV PYTHONUNBUFFERED 1
 
 
 # Copy the project code into the container
-COPY . /app/
+WORKDIR /app
+COPY . .
 
 # Install dependencies
-RUN pip install -r /app/requirements.txt
+RUN apt-get update \
+    && apt-get -y install libpq-dev gcc \
+    && pip install psycopg2-binary
+RUN pip install -r requirements.txt
