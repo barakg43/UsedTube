@@ -37,8 +37,8 @@ class InitiateDownloadView(APIView):
         # or if the file is owned by the user, then the user can download the file
         # else the user is not authorized to download the file
         if file_to_download.owner != request.user and not shared_with_user(file_to_download, user):
-            return JsonResponse({ERROR: "Not authorized to download this folder"}, status=status.HTTP_401_UNAUTHORIZED)
-        
+            return JsonResponse({ERROR: "Not authorized to download this file"}, status=status.HTTP_401_UNAUTHORIZED)        
+          
         job_id = file_controller.get_file_from_provider_async(file_id, user)
         return JsonResponse({JOB_ID: job_id}, status=status.HTTP_202_ACCEPTED)
 
@@ -54,22 +54,13 @@ class DownloadProgressView(APIView):
         job_error = file_controller.get_job_error(job_id)
         if job_error is not None:
             return JsonResponse({ERROR: job_error}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
         else:
             return JsonResponse({"progress": file_controller.get_job_progress(job_id)})
-        
+
 
 class DownloadView(APIView):
     def get(self, request: HttpRequest, job_id:str):
-        # file_io = open("C:\\ComputerScience\\Workshop\\UsedTube\\backend\\server\\engine\\artifacts\\test_resources\\sample-file3.pdf", "rb")
-        # in_memory_file = io.BytesIO(file_io.read())
-        # fileResponse = FileResponse(
-        #         in_memory_file,
-        #         filename="sample-file3.pdf",
-        #         as_attachment=True,
-        #     )
-        # fileResponse['Access-Control-Expose-Headers'] = 'Content-Disposition'
-        # return fileResponse
         response = None
         if file_controller.is_processing_done(job_id):
             # get the final file result from the future task
@@ -99,10 +90,13 @@ class UploadView(APIView):
         if FILE not in request.FILES:
             return JsonResponse({ERROR: "no file provided"}, status=400)
         folder = Folder.objects.filter(id=folder_id).get()
-        if folder.owner != request.user:
+        if folder.owner != get_user_object(request):
             return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_403_FORBIDDEN)
 
         uploaded_file = request.FILES[FILE]
+        user = get_user_object(request)
+        user.storage_usage += uploaded_file.size
+        user.save()
         job_id = file_controller.save_file_to_video_provider_async(request.user, uploaded_file, folder_id)
         return JsonResponse({JOB_ID: job_id}, status=201)
 
@@ -121,27 +115,11 @@ class UploadProgressView(APIView):
         job_complete_percentage = file_controller.get_job_progress(job_id)
         if job_complete_percentage == 1:
             file_controller.remove_job(job_id)
+            
             return JsonResponse({"progress": 1.0})
         if file_controller.is_processing_done(job_id):
             return JsonResponse({ERROR: "there are internal server error"},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        # if Mr_EngineManager.is_processing_done(job_id):
-        #     # get the file id from the cache
-        #     path, compressed_file_size = Mr_EngineManager.get_processed_item_path_size(job_id)
-        #     file_id = cache.get(job_id)
-        #     # set url to the file
-        #     file = File.objects.get(id=file_id)
-        #     url = Mr_EngineManager.get_url(job_id)
-        #     if url:
-        #         file.url = url
-        #         file.save()
-        #         cache.delete(job_id)
-        #         return JsonResponse({MESSAGE: "upload successful"})
-        #     else:
-        #         File.objects.delete(id=file_id)
-        #         return JsonResponse({ERROR: 'upload failed'}, status=400)
-
         return JsonResponse({"progress": job_complete_percentage})
 
 
@@ -162,8 +140,7 @@ class CancelDownloadView(APIView):
         return JsonResponse({MESSAGE: "download job cancelled"}, status=200)
 class UsedSpaceView(APIView):
     def get(self, request: HttpRequest):
-        used_space = request.user
-        return JsonResponse({"value": used_space.value})
+        return JsonResponse({"value": get_user_object(request).storage_usage})
 
 
 class DirectoryTree(APIView):
@@ -177,7 +154,7 @@ class DirectoryTree(APIView):
 
 
 class DirectoryContentView(APIView):
-    def get(self, request, folder_id: str = None):
+    def get(self, request, folder_id: str | None = None):
         # create a json listing all files and their size of the requested folder
         user = get_user_object(request)
         if folder_id is None:
@@ -185,7 +162,6 @@ class DirectoryContentView(APIView):
         try:
             folder_subitems_dict = select_folder_subitems(user, folder_id)
             folder_subitems_dict["parents"] = get_parent_tree_array(user, folder_id)
-            folder_subitems_dict["quota"] = user.storage_usage
         except PermissionDenied as e:
             return JsonResponse({ERROR: e.args[0]}, status=status.HTTP_403_FORBIDDEN)
         except (ObjectDoesNotExist, ValidationError) as e:
@@ -221,27 +197,34 @@ class CreateNewFolderView(APIView):
 
 
 class DeleteNodeView(APIView):
+    def __delete_folder(self, folder: Folder, user):
 
-    def __delete_folder(self, folder: Folder):
-
-        folder.files.all().delete()
+        files = folder.files.all()
+        for file in files:
+            user.storage_usage -= file.size
+            user.save()
+            file.delete()
+        
         subfolders = Folder.objects.filter(parent=folder)
-
+        
         for item in subfolders:
             self.__delete_folder(item)
         folder.delete()
 
     def delete(self, request: HttpRequest, node_id: str):
+        user = get_user_object(request)
         if not node_id:
             return JsonResponse({"error": "node id is required"}, status=400)
 
         if File.objects.filter(id=node_id).exists():
             File.objects.filter(id=node_id).delete()
+            user.storage_usage -= File.objects.get(id=node_id).size
+            user.save()
             return JsonResponse({"message": "file deleted successfully"}, status=200)
 
         if Folder.objects.filter(id=node_id).exists():
             folder = Folder.objects.filter(id=node_id).get()
-            self.__delete_folder(folder)
+            self.__delete_folder(folder, user)
             return JsonResponse({"message": "folder deleted successfully"}, status=200)
 
         return JsonResponse({"error": "node not found"}, status=404)

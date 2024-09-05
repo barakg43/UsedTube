@@ -16,7 +16,7 @@ const SideBarItem: FC<{ children: ReactNode }> = ({ children }) => {
 
 const Sidebar = () => {
     return (
-        <nav className="h-full w-[200px] flex flex-col pt-4">
+        <nav className="h-full w-[200px] flex flex-col">
             <div className="flex-grow">
                 <SideBarItem>
                     <FileUploadButton />

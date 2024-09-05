@@ -13,7 +13,7 @@ const LogoutButton = () => {
     return (
         <div>
             <Button
-                className="top-1 right-1 bg-paper hover:bg-highlighted"
+                className="bg-paper hover:bg-highlighted h-[100%] ml-1"
                 onClick={() => {
                     logout();
                 }}

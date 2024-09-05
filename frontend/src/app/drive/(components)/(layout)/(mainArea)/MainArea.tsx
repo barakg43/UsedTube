@@ -21,8 +21,8 @@ const MainArea = ({ folderId }: { folderId: string }) => {
     }
 
     return (
-        <div className="bg-white flex flex-col flex-grow px-4 py-4 mb-4 mr-4 rounded-3xl">
-            <div className="flex flex-row justify-between w-full">
+        <div className="bg-white flex flex-col flex-grow px-4 py-4 mb-4 mr-4 rounded-3xl h-[85vh]">
+            <div className="flex flex-row justify-between w-full h-fit">
                 <Typography variant="h4">
                     <PathTrace folderId={folderId} />
                 </Typography>

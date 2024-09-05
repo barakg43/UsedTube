@@ -1,5 +1,10 @@
 import { toast, ToastPosition, ToastContent } from "react-toastify";
-import { CircularProgress, IconButton, Typography } from "@mui/material";
+import {
+    Button,
+    CircularProgress,
+    IconButton,
+    Typography,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 
@@ -30,6 +35,7 @@ export function useToaster() {
         </IconButton>
       </div>
     );
+
 
     if (toast.isActive(id)) {
       toast.update(id, {
