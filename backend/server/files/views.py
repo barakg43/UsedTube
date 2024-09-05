@@ -103,6 +103,9 @@ class UploadView(APIView):
             return JsonResponse({ERROR: "Not authorized to upload this folder"}, status=status.HTTP_403_FORBIDDEN)
 
         uploaded_file = request.FILES[FILE]
+        user = get_user_object(request)
+        user.storage_usage += uploaded_file.size
+        user.save()
         job_id = file_controller.save_file_to_video_provider_async(request.user, uploaded_file, folder_id)
         return JsonResponse({JOB_ID: job_id}, status=201)
 
@@ -121,6 +124,7 @@ class UploadProgressView(APIView):
         job_complete_percentage = file_controller.get_job_progress(job_id)
         if job_complete_percentage == 1:
             file_controller.remove_job(job_id)
+            
             return JsonResponse({"progress": 1.0})
         if file_controller.is_processing_done(job_id):
             return JsonResponse({ERROR: "there are internal server error"},
@@ -219,27 +223,34 @@ class CreateNewFolderView(APIView):
 
 
 class DeleteNodeView(APIView):
+    def __delete_folder(self, folder: Folder, user):
 
-    def __delete_folder(self, folder: Folder):
-
-        folder.files.all().delete()
+        files = folder.files.all()
+        for file in files:
+            user.storage_usage -= file.size
+            user.save()
+            file.delete()
+        
         subfolders = Folder.objects.filter(parent=folder)
-
+        
         for item in subfolders:
             self.__delete_folder(item)
         folder.delete()
 
     def delete(self, request: HttpRequest, node_id: str):
+        user = get_user_object(request)
         if not node_id:
             return JsonResponse({"error": "node id is required"}, status=400)
 
         if File.objects.filter(id=node_id).exists():
             File.objects.filter(id=node_id).delete()
+            user.storage_usage -= File.objects.get(id=node_id).size
+            user.save()
             return JsonResponse({"message": "file deleted successfully"}, status=200)
 
         if Folder.objects.filter(id=node_id).exists():
             folder = Folder.objects.filter(id=node_id).get()
-            self.__delete_folder(folder)
+            self.__delete_folder(folder, user)
             return JsonResponse({"message": "folder deleted successfully"}, status=200)
 
         return JsonResponse({"error": "node not found"}, status=404)

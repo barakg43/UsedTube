@@ -20,7 +20,7 @@ const ItemsDisplayNode: FC<{ node: FSNode }> = ({ node }) => {
                 leaveDelay={200}
             >
                 <div
-                    className="cursor-pointer hover:bg-highlighted flex-grow flex flex-row items-center rounded-2xl px-2 py-2 mt-2 mr-6 bg-dustyPaper hover:bg-dustyPaperDark border max-h-16 text-ellipsis overflow-hidden whitespace-nowrap"
+                    className="cursor-pointer max-w-[18vw] hover:bg-highlighted flex-grow flex flex-row items-center rounded-2xl px-2 py-1 mt-2 ml-2 mr-2 bg-dustyPaper hover:bg-dustyPaperDark border max-h-16 text-ellipsis overflow-hidden whitespace-nowrap"
                     onClick={(e) => {
                         if (node.type === FOLDER) {
                             folderClick(node.id);

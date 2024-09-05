@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 const TopBar = () => {
     const router = useRouter();
     return (
-        <div className="bg-paper h-[120px] flex flex-row justify-between pb-10">
+        <div className="bg-paper h-[120px] flex flex-row justify-between pb-10 pt-2 pr-2">
             <ThemeProvider theme={theme}>
                 <Logo color="blue-500" />
                 <div className="flex flex-row">

@@ -12,7 +12,7 @@ urlpatterns = [
     path('upload/progress/<str:job_id>', UploadProgressView.as_view()),
     path('upload/progress/<str:job_id>/cancel', UploadProgressView.as_view()),
     
-    path('used-space', UsedSpaceView.as_view(), name='used_space'),
+    path('used-space/', UsedSpaceView.as_view(), name='used_space'),
     path('dir-content/<str:folder_id>', DirectoryContentView.as_view()),
     path('dir-content/', DirectoryContentView.as_view()),
     path("dir-tree/", DirectoryTree.as_view()),
