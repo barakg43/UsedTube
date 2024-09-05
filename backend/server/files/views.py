@@ -153,7 +153,13 @@ class CancelUploadView(APIView):
         file_controller.cancel_action(job_id)
         return JsonResponse({MESSAGE: "Upload job cancelled"}, status=200)
 
-
+class CancelDownloadView(APIView):
+    def delete(self, request: HttpRequest, job_id: str):
+        job_owner = file_controller.get_user_for_job(job_id)
+        if request.user != job_owner:
+            return JsonResponse({ERROR: "Not authorized to cancel this download job"}, status=status.HTTP_403_FORBIDDEN)
+        file_controller.cancel_action(job_id)
+        return JsonResponse({MESSAGE: "download job cancelled"}, status=200)
 class UsedSpaceView(APIView):
     def get(self, request: HttpRequest):
         used_space = request.user
