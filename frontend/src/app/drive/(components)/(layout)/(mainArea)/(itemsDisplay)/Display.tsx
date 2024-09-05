@@ -6,7 +6,7 @@ import ItemsDisplayRow from "./RowDisplay";
 
 function ItemsDisplay<T extends FSNode>({ items }: { items: T[] }) {
     const displayType = useAppSelector((state) => state.items.displayType);
-    const items_with_file_ext = items.map((item) => ({
+    const items_with_file_ext = items?.map((item) => ({
         ...item,
         name:
             "extension" in item ? item.name + "." + item.extension : item.name,

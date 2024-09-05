@@ -61,15 +61,6 @@ class DownloadProgressView(APIView):
 
 class DownloadView(APIView):
     def get(self, request: HttpRequest, job_id:str):
-        # file_io = open("C:\\ComputerScience\\Workshop\\UsedTube\\backend\\server\\engine\\artifacts\\test_resources\\sample-file3.pdf", "rb")
-        # in_memory_file = io.BytesIO(file_io.read())
-        # fileResponse = FileResponse(
-        #         in_memory_file,
-        #         filename="sample-file3.pdf",
-        #         as_attachment=True,
-        #     )
-        # fileResponse['Access-Control-Expose-Headers'] = 'Content-Disposition'
-        # return fileResponse
         response = None
         if file_controller.is_processing_done(job_id):
             # get the final file result from the future task
@@ -129,23 +120,6 @@ class UploadProgressView(APIView):
         if file_controller.is_processing_done(job_id):
             return JsonResponse({ERROR: "there are internal server error"},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        # if Mr_EngineManager.is_processing_done(job_id):
-        #     # get the file id from the cache
-        #     path, compressed_file_size = Mr_EngineManager.get_processed_item_path_size(job_id)
-        #     file_id = cache.get(job_id)
-        #     # set url to the file
-        #     file = File.objects.get(id=file_id)
-        #     url = Mr_EngineManager.get_url(job_id)
-        #     if url:
-        #         file.url = url
-        #         file.save()
-        #         cache.delete(job_id)
-        #         return JsonResponse({MESSAGE: "upload successful"})
-        #     else:
-        #         File.objects.delete(id=file_id)
-        #         return JsonResponse({ERROR: 'upload failed'}, status=400)
-
         return JsonResponse({"progress": job_complete_percentage})
 
 

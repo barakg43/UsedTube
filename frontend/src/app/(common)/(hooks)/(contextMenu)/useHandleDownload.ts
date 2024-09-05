@@ -24,8 +24,6 @@ const useHandleDownload = () => {
     */
 
     const toaster = useToaster();
-
-    //   const [nodeId, setNodeId] = useState(EMPTY_IDENTIFIER);
     const [phase, setPhase] = useState<DownloadPhase>("waiting_download");
     const [jobId, setJobId] = useState<string>(EMPTY_IDENTIFIER);
     const [initDownload] = useInitiateDownloadMutation();

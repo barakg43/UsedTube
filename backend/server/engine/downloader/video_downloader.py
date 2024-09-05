@@ -34,14 +34,18 @@ class VideoDownloader(Downloader):
             'outtmpl': f'{ITEMS_READY_FOR_PROCESSING}/{uuid.uuid1()}_%(title)s.%(ext)s',
             'progress_hooks': [self.download_hook],
             "logger": self.logger,
-            # "verbose": debug,
+            "verbose": debug,
             "format": "bestvideo[ext=mp4]/mp4",
+            "nocolor": True
             # "force−ipv4": True,
             # "cookies":f'{ITEMS_READY_FOR_PROCESSING}/cookies.txt',
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([video_url.strip()])
-
+            try:
+                ydl.download([video_url.strip()])
+            except Exception as e:
+                print(e)
+                
         return Path(self.video_downloaded_path)
 
     def get_download_percent(self):
