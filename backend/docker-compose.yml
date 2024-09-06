@@ -29,7 +29,29 @@ services:
        DB_HOST: ${DB_HOST}
        DB_PORT: ${DB_PORT:-5432}
     ports:
-      - "9090:8000"
+      - "8080:8000"
+#    volumes:
+#          - "./gunicorn:/app/gunicorn"
     depends_on:
         db:
           condition: service_healthy
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: ../frontend/Dockerfile
+    container_name: usedtube_frontend
+    command: sh -c "node server.js"
+    restart: always
+#    environment:
+#      ENV_MODE: production
+#      DB_USER: ${DB_USER}
+#      DB_PASSWORD: ${DB_PASSWORD}
+#      DB_HOST: ${DB_HOST}
+#      DB_PORT: ${DB_PORT:-5432}
+    ports:
+      - "9090:3000"
+#    volumes:
+#      - "./gunicorn:/app/gunicorn"
+#    depends_on:
+#      db:
+#        condition: service_healthy
