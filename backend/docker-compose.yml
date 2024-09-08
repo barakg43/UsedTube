@@ -30,6 +30,8 @@ services:
        DB_PORT: ${DB_PORT:-5432}
     ports:
       - "9090:8000"
+#    volumes:
+#          - "./gunicorn:/app/gunicorn"
     depends_on:
         db:
           condition: service_healthy

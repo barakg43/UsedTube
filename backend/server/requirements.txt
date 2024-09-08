@@ -16,7 +16,11 @@ django-cors-headers==4.3.1
 aiohttp==3.10.5
 pytz==2024.1
 dailymotion==0.2.5
-psycopg2==2.9.9
 yt-dlp[default,curl-cffi]==2024.8.6
 more-itertools==10.2.0
 nest-asyncio==1.6.0
+#for HTTPS
+django-extensions==3.2.3
+Werkzeug==3.0.4
+pyOpenSSL==24.2.1
+psycopg2-binary==2.9.9
