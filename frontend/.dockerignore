@@ -4,3 +4,5 @@ Dockerfile
 .vscode
 .node_modules
 .gitignore
+docker_build_push.bat
+README.md

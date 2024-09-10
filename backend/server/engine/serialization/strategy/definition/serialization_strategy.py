@@ -32,16 +32,8 @@ class SerializationStrategy(ABC):
                           context=None) -> np.ndarray:
         pass
 
-    @dispatch()
-    def calculate_chunk_size(self):
-        if self.chunk_size <= 0:
-            self.chunk_size = int(self.dims_multiplied / self.bytes_2_pixels_ratio)
-        if self.chunk_size == 0:
-            raise Exception(
-                f"chuck size cannot be zero: dims- {self.dims_multiplied}; ratio- {self.bytes_2_pixels_ratio}")
-        return self.chunk_size
 
-    @dispatch(np.int32)
+
     def calculate_chunk_size(self, dims_multiplied: int) -> int:
         chunk_size = int(dims_multiplied / self.bytes_2_pixels_ratio);
         if chunk_size == 0:

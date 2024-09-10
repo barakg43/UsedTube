@@ -24,5 +24,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('files/', include(file_urls)),
     path('account/', include(account_urls)),
-    path('sharing/', include(sharing_urls)),
+    path('sharing', include(sharing_urls)),
 ]
