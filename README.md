@@ -20,8 +20,8 @@ look for open-code-projects.bat in the root folder
 
 #### 6. create .env.local file and place it in `backend\server`:
 [content of file]
-DEVELOPMENT_MODE=
-SECRET_KEY= 
+DEVELOPMENT_MODE=\n
+SECRET_KEY=\n
 DEBUG=
 DOMAIN='localhost:3000'
 AUTH_COOKIE_SECURE='True'
