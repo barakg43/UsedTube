@@ -19,9 +19,9 @@ look for open-code-projects.bat in the root folder
 #### 5. make sure you have postgres db running on port 5432, can use docker and `backend\run-postgres.bat` script to launch containerized db
 
 #### 6. create .env.local file and place it in `backend\server`:
-[content of file]
-DEVELOPMENT_MODE=\n
-SECRET_KEY=\n
+```
+DEVELOPMENT_MODE=
+SECRET_KEY=
 DEBUG=
 DOMAIN='localhost:3000'
 AUTH_COOKIE_SECURE='True'
@@ -29,7 +29,7 @@ DAILYMOTION_API_KEY=
 DAILYMOTION_API_SECRET=
 DAILYMOTION_USERNAME=
 DAILYMOTION_PASSWORD=
-
+```
 #### 7. run django migrations in activated venv:
 ```
 $> python server\manage.py makemigrations
