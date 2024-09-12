@@ -13,6 +13,6 @@ class AppUserAdmin(admin.ModelAdmin):
 
 @admin.register(APIProvider)
 class APIProviderAdmin(admin.ModelAdmin):
-    list_display = ('provider_name', 'api_key', 'user')
+    list_display = ('provider_name', 'api_keys', 'user')
     search_fields = ('provider_name', 'user__username')
     list_filter = ('provider_name', 'user')

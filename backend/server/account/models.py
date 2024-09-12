@@ -12,7 +12,7 @@ class AppUser(AbstractUser):
 
 class APIProvider(models.Model):
     provider_name = models.CharField(max_length=30, primary_key=True)
-    api_key = models.TextField()
+    api_keys = models.TextField()
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
 
     def __str__(self):

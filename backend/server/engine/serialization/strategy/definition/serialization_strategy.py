@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
-from multipledispatch import dispatch
 
 
 class SerializationStrategy(ABC):
@@ -10,7 +9,6 @@ class SerializationStrategy(ABC):
         self.dims: tuple[int, int] = None
         self.dims_multiplied: int = 0
         self.chunk_size: int = 0
-        # self.frames_amount: int = 0
         self.bytes_2_pixels_ratio: float = 0
         self.fourcc: str = fourcc
         self.out_format: str = out_format
@@ -31,8 +29,6 @@ class SerializationStrategy(ABC):
     def deserialize_frame(self, bytes_amount_to_read: int, encrypted_frame: np.ndarray, i: int,
                           context=None) -> np.ndarray:
         pass
-
-
 
     def calculate_chunk_size(self, dims_multiplied: int) -> int:
         chunk_size = int(dims_multiplied / self.bytes_2_pixels_ratio);

@@ -46,14 +46,10 @@ class ObfuscationManager:
         file_frames_video_props = file_frames_video.get_video_props()
         fps = file_frames_video_props["fps"]
         width, height = file_frames_video_props["width"], file_frames_video_props["height"]
-        # fps = file_frames_video.get(cv2.CAP_PROP_FPS)
-        # width = int(file_frames_video.get(cv2.CAP_PROP_FRAME_WIDTH))
-        # height = int(file_frames_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         out_path = (
                 FILES_READY_FOR_STORAGE_DIR / f"{uuid.uuid4()}_{fourcc}_bitrate({bitrate})_block_size({block_size}).mp4").as_posix()
-        # fourcc = cv2.VideoWriter.fourcc(*fourcc)
-        # out = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
+
         frame_counter = [0]  # make it mutable for the progress tracker
 
         file_frames_amount = file_frames_video_props["frames_count"]
@@ -126,12 +122,8 @@ class ObfuscationManager:
         width = obsv_props["width"]
         height = obsv_props["height"]
 
-        # fps = obsv.get(cv2.CAP_PROP_FPS)
-        # width = int(obsv.get(cv2.CAP_PROP_FRAME_WIDTH))
-        # height = int(obsv.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
         out_path = (TMP_WORK_DIR / f"{uuid.uuid4()}.mp4").as_posix()  # Generate unique filename using UUID
-        # fourcc = cv2.VideoWriter.fourcc(*fourcc)
+
         out = VideoWriter(out_path, fourcc, fps, (width, height), None)
         frame_counter = [0]
         frame_amount = obsv_props["frames_count"]

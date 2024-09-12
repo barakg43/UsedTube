@@ -8,7 +8,7 @@ from uuid import uuid1
 import pytz
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from account.models import AppUser
+from account.models import AppUser, APIProvider
 from engine.constants import ITEMS_READY_FOR_PROCESSING
 from engine.manager import Mr_EngineManager
 from engine.serialization.serializer import deserialize_logger, serialize_logger
@@ -23,8 +23,6 @@ class FileController:
         self.engine_manger = Mr_EngineManager
         self.uuid_to_jobDetails: Dict[uuid1, JobDetails] = {}
         self.logger = serialize_logger
-        # self.uuid_to_future: Dict[uuid1, Future] = {}
-        # self.uuid_to_progress: Dict[uuid1, float] = {}
 
     def save_file_to_video_provider_async(self, user: AppUser, uploaded_file: InMemoryUploadedFile, folder_id: str):
         job_id = str(uuid1())
@@ -57,7 +55,9 @@ class FileController:
 
         try:
             self.logger.info(f"Job {job_id} uploading {file_name_with_ext} (size {file_size} bytes) to provider")
+            providers = APIProvider.objects.filter(user=user)
             url_result, compressed_size = self.engine_manger.process_file_to_video_with_upload(file_path, job_id,
+                                                                                               providers,
                                                                                                progress_tracker)
             file_name_array = file_name_with_ext.split(".")
             file_name = file_name_array[0]
@@ -82,7 +82,7 @@ class FileController:
             self.logger.info(f"Job {job_id} done: {file_name} was uploaded successfully on {url_result}")
             progress_tracker(4, 1)
         except Exception as e:
-            serialize_logger.error(str(e))
+            self.logger.error(e.with_traceback(e.__traceback__))
             self.uuid_to_jobDetails[job_id].set_error(str(e))
 
     def get_job_error(self, job_id: uuid1) -> str | None:
@@ -111,12 +111,12 @@ class FileController:
             file_name = file_to_download.name + '.' + file_to_download.extension
             # from the db extract video_url, compressed_file_size, content-type
             compressed_file_size = file_to_download.compressed_size  # in Bytes
-            video_url = file_to_download.url
+            video_urls = file_to_download.url
             # use the downloader to download the video from url
             progress_tracker = self.uuid_to_jobDetails[job_id].progress_tracker_callback()
             self.logger.info(
-                f"Job {job_id} downloading {file_name} (size {compressed_file_size} bytes) from {video_url}")
-            file_path = self.engine_manger.process_video_to_file_with_download(video_url, compressed_file_size, job_id,
+                f"Job {job_id} downloading {file_name} (size {compressed_file_size} bytes) from {video_urls}")
+            file_path = self.engine_manger.process_video_to_file_with_download(video_urls, compressed_file_size, job_id,
                                                                                progress_tracker)
             file_io = open(file_path, "rb")
             in_memory_file = io.BytesIO(file_io.read())

@@ -6,7 +6,6 @@ import threading
 
 import engine.constants as c
 
-
 LOG_DIR = c.ENGINE_ROOT / "logs"
 if not os.path.exists(LOG_DIR):
     os.mkdir(LOG_DIR)
@@ -30,8 +29,6 @@ def init_logger(log_path, logger_name):
 
     logger.addHandler(f_handler)
     logger.setLevel(logging.DEBUG)
-
-
 
 
 def init_logger_async(log_path, logger_name):

@@ -51,7 +51,7 @@ class Driver:
         return obfuscated_vid_path, zipped_file_size
 
     def process_video_to_file(self, video_path: str, compressed_file_size: int, jobId: uuid,
-                              progress_tracker: Callable[[float, int], None] = None) -> str:
+                              progress_tracker: Callable[[int, float], None] = None) -> str:
         update_untangle_progress = Driver.__build_phase_process_updater(2, progress_tracker)
         update_deserialization_progress = Driver.__build_phase_process_updater(3, progress_tracker)
 
@@ -94,8 +94,7 @@ class Driver:
     def __choose_cover_video(self, zipped_path: str) -> str:
         video_file_list = glob.glob((COVER_VIDEOS_DIR / "cover-video*.mp4").as_posix())
         chosen_file = random.choice(video_file_list)
-        # file_size = BIG_FILE if os.path.getsize(zipped_path) > _4_MiB else SMALL_FILE
-        # return (COVER_VIDEOS_DIR / f"{file_size}-files-cover.mp4").as_posix()
+
         return chosen_file
 
     def __ungzip_it(self, gzipped_file_path: str) -> str:

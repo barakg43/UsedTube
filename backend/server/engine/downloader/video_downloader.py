@@ -45,7 +45,7 @@ class VideoDownloader(Downloader):
                 ydl.download([video_url.strip()])
             except Exception as e:
                 print(e)
-                
+
         return Path(self.video_downloaded_path)
 
     def get_download_percent(self):
