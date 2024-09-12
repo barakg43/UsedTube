@@ -16,17 +16,12 @@ class VideoCapture:
         self.video_stream: VideoStream = self.video_input.streams.video[0]
         self.frames_generator = self.video_input.decode(video=0)
         self.video_props = self.__get_video_props()
-        # self.frame_size_bytes = self.video_props["width"] * self.video_props[
-        #     "height"] * 3  # H * W * 3 channels * 1-byte/channel
 
     def __get_video_props(self):
         self.__check_if_open()
-        # probe = ffmpeg.probe(video_stream_path)
-        # video_stream_details = next(
-        #     (stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
+
         width = self.video_stream.width
         height = self.video_stream.height
-        # video_stream_details = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
         fps = int(self.video_stream.average_rate)
         codec = self.video_stream.codec_context.name
         frames_count = self.video_stream.frames
@@ -46,12 +41,6 @@ class VideoCapture:
         else:
             return isValid, None
 
-    # buffer = self.video_stream.stdout.read(self.frame_size_bytes)
-    # #  check buffer length is not W*H*3 (when FFmpeg streaming ends).
-    # ret = len(buffer) == self.frame_size_bytes
-    # width, height = self.video_props["width"], self.video_props[
-    #     "height"]
-    # frame = np.frombuffer(buffer, np.uint8).reshape(height, width, 3)
     def get_video_props(self):
         self.__check_if_open()
 

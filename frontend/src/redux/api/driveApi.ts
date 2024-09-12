@@ -1,6 +1,7 @@
 import { FileNode, FSNode } from "@/types";
 import { baseApi } from "../baseApi";
 import { setError, setIsUploading, setJobId } from "../slices/fileUploadSlice";
+// import { useUploadFileMutation } from "@/redux/api/driveApi";
 
 const driveApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -152,5 +153,4 @@ export const {
   useCancelUploadMutation,
   useCreateFolderMutation,
   useDeleteNodeMutation,
-  useUploadFileMutation,
 } = driveApiSlice;

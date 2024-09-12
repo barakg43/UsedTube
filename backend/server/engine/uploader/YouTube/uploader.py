@@ -23,36 +23,37 @@ RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 YOUTUBE_UPLOAD_SCOPE = "https://www.googleapis.com/auth/youtube.upload"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
-YOUTUBE_TOKEN = 'youtube_token.json'
-YOUTUBE_CREDENTIALS = os.path.join(os.path.dirname(__file__), 'client_secrets.json')
+
+
+# YOUTUBE_TOKEN = 'youtube_token.json'
+# YOUTUBE_CREDENTIALS = os.path.join(os.path.dirname(__file__), 'client_secrets.json')
 
 
 class YouTubeUploader(Uploader):
-    def __init__(self, uuid, tracker):
-        self.credentials = self.__get_credentials()
-        self.youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, credentials=self.credentials)
-        self.tracker = tracker
-        self.uuid = uuid
+    def __init__(self):
+        # self.credentials = self.__get_credentials()
+        # self.tracker = tracker
+        # self.uuid = uuid
         self.base_url = "https://www.youtube.com/watch?v="
 
-    def __get_credentials(self):
+    def __get_credentials(self, api_keys: dict):
         credentials = None
-        if os.path.exists(YOUTUBE_TOKEN):
-            credentials = Credentials.from_authorized_user_file(YOUTUBE_TOKEN, [YOUTUBE_UPLOAD_SCOPE])
+        if os.path.exists(api_keys["token"]):
+            credentials = Credentials.from_text(api_keys["token"], [YOUTUBE_UPLOAD_SCOPE])
 
         if not credentials or not credentials.valid:
             if credentials and credentials.expired and credentials.refresh_token:
                 credentials.refresh(Request())
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(YOUTUBE_CREDENTIALS, [YOUTUBE_UPLOAD_SCOPE])
+                flow = InstalledAppFlow.from_client_secrets_file(api_keys["keys"], [YOUTUBE_UPLOAD_SCOPE])
                 credentials = flow.run_local_server(port=0)
-                with open(YOUTUBE_TOKEN, 'w') as token:
-                    token.write(credentials.to_json())
 
         return credentials
 
-    def upload_video(self, video_path: str):
-        request = self.youtube.videos().insert(
+    def upload_video(self, video_path: str, api_keys: dict):
+        credentials = self.__get_credentials(api_keys)
+        youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, credentials=credentials)
+        request = youtube.videos().insert(
             part='snippet,status',
             body=self.__request_body(),
             media_body=MediaFileUpload(video_path, chunksize=-1, resumable=True)
@@ -107,3 +108,6 @@ class YouTubeUploader(Uploader):
                 sleep_seconds = random.random() * max_sleep
                 print(f"Sleeping {sleep_seconds} seconds and then retrying...")
                 time.sleep(sleep_seconds)
+
+
+Mr_YoutubeUploader = YouTubeUploader()
